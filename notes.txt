@@ -1,0 +1,27 @@
+Writing and Compiling C
+-----------------------
+1. Write your C code
+
+2. Compile 
+$ c99 -g3 -o <name of executable file> <name of source file>
+Note that the order of the flags matter!
+
+3. Execute
+$ ./<name of executable file>
+
+OR
+
+2. Compile
+$ gcc <name of executable file>
+
+3. Execute
+$ ./a.out
+
+Redirecting Input/Output
+----------------
+To write output from an executable into a text file:
+$ ./executable_file > output.txt
+
+To feed input into an executable from a text file:
+$ ./executable_file < input.txt
+
