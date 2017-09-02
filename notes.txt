@@ -25,3 +25,57 @@ $ ./executable_file > output.txt
 To feed input into an executable from a text file:
 $ ./executable_file < input.txt
 
+Debugging using gdb
+-------------------
+Debugging using gdb will allow us to see our code executed
+and then stopped at any break point we want.
+
+start by calling
+$ gdb executable_file
+
+This will call a line that looks weird. 
+
+(gdb) 
+
+the (gdb) replaces the $ in the bash. Now, call
+
+(gdb) run <any arguments>
+
+which will run your program. To add in a break point,
+call 
+
+(gdb) break <the point to break at>
+
+To continue onto the next line, call 
+
+(gdb) n
+
+and to display the value of variables, call
+
+(gdb) display <variable name>
+
+To quit, simply call
+
+(gdb) quit
+
+The main method
+-----------------
+All C programs must have a function that looks something like this:
+
+int main(int argc, char **argv) {
+    // your code
+    return 0;
+}
+
+The Math library
+--------------
+to include the math library, simply cite the header file:
+
+#include <math.h>
+
+but make sure that when you compile you write
+
+$ c99 file_name.c -lm
+
+the -lm flag tells the compiler to unclude math.h
+
