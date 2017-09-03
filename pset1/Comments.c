@@ -56,10 +56,17 @@ int main(int argc, char **argv) {
                     case '*':
                         extended_comment_delimiter = 1;
                         break;
+                    case ' ':
+                        getchar();
+                        break;
                     default:
                         putchar(c);
                 }
-            } else {
+            } else if (c == 10) {
+                putchar(c);
+                getchar();
+            }
+            else {
                 putchar(c);
             }
         }
