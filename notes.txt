@@ -79,3 +79,20 @@ $ c99 file_name.c -lm
 
 the -lm flag tells the compiler to unclude math.h
 
+Standard I/O
+--------------
+putchar("this writes a single char");
+getchar(); // this reads a single char
+ungetc(); // this unreads a single char
+
+printf("%f", 1.07); // this prints strings
+scanf("%lf %lf", &a, %b); this reads strings
+
+fopen("file_name.txt", "rw"); 
+PSET 1
+---------
+See page 121 in Aspnes
+
+Miscellaneous
+---------------
+use single quetes for int chars
