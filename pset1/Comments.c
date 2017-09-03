@@ -10,12 +10,30 @@ int main(int argc, char **argv) {
     // the comment toggles
     int line_comment = 0;
     int extended_comment = 0;
+    int extended_comment_delimiter = 0;
+    int line_comment_delimiter = 0;
 
     
     while( (c = getchar()) != EOF) {
         
         // c is the current char, d is the next char
         int d = peekchar();
+        
+        if(extended_comment_delimiter) {
+            if (c != ' ' && c != '*') {
+                putchar(c);
+                extended_comment_delimiter = 0;
+                extended_comment = 1;
+            }
+        }
+        
+        if(line_comment_delimiter) {
+            if (c != ' ') {
+                putchar(c);
+                line_comment_delimiter = 0;
+                line_comment = 1;
+            }
+        }
         
         // if you're in a line comment, print until a new line 
         if(line_comment) {
