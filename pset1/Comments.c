@@ -21,35 +21,46 @@ int main(int argc, char **argv) {
         
         if(extended_comment_delimiter) {
             if (c != ' ' && c != '*') {
-                putchar(c);
                 extended_comment_delimiter = 0;
-                extended_comment = 1;
+                extended_comment = !extended_comment;
             }
         }
         
         if(line_comment_delimiter) {
-            if (c != ' ') {
-                putchar(c);
+            if (c != ' ' && c !='/') {
                 line_comment_delimiter = 0;
-                line_comment = 1;
+                line_comment = !line_comment;
             }
         }
         
         // if you're in a line comment, print until a new line 
         if(line_comment) {
-            putchar(c);
             if(c == 10) {
                 line_comment = 0;
-                putchar('\n');
-            }
+                // putchar('\n');
+            } else {
+                putchar(c);            
+            }    
         }
         
         // if you're in an extended comment, print until the tags close
         if(extended_comment) {
-            putchar(c);
-            if(c == '*' && d == '/') {
-                extended_comment = 0;
-                putchar('\n');
+            
+            // switch this logic
+            if(c == '*') {
+                // switch up the logic haha i crack myself up
+                switch (d) {
+                    case '/':
+                        extended_comment_delimiter = 1;
+                        break;
+                    case '*':
+                        extended_comment_delimiter = 1;
+                        break;
+                    default:
+                        putchar(c);
+                }
+            } else {
+                putchar(c);
             }
         }
         
