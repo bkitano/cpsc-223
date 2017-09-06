@@ -1,0 +1,26 @@
+#!/bin/bash
+make
+ printf "\n test 1: \n"
+./Comments2 < test1.txt
+ printf "\n test 2: \n"
+./Comments2 < test2.txt
+ printf "\n test 3: \n"
+./Comments2 < test3.txt
+ printf "\n test 4: \n"
+./Comments2 < test4.txt
+ printf "\n test 5: \n"
+./Comments2 < test5.txt
+ printf "\n test 6: \n"
+./Comments2 < test6.txt
+ printf "\n test 7: \n"
+./Comments2 < test7.txt
+ printf "\n test 8: \n"
+./Comments2 < test8.txt
+ printf "\n test 9: \n"
+./Comments2 < test9.txt
+ printf "\n test 10: \n"
+./Comments2 < test10.txt
+ printf "\n test 11: \n"
+./Comments2 < test11.txt
+ printf "\n test 12: \n"
+./Comments2 < test12.txt

@@ -1,0 +1,4 @@
+/** Adds two integers.
+  * @param x an integer
+  * @param y an integer
+  * @return returns the sum of x and y*/

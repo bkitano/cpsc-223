@@ -1,0 +1,2 @@
+"/* This is not a comment since it it in a string literal */"
+

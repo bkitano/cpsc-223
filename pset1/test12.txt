@@ -1,0 +1,10 @@
+# An empty C comment (using a bash-style comment to comment C/C++ comments!)
+/*   */
+# An empty multi-line C comment
+/**
+ *
+ *
+ *
+ */
+# An empty C++ comment
+//

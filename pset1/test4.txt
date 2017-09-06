@@ -1,0 +1,10 @@
+#include <stdio.h>
+
+//This program does nothing but has nice comments.
+int main(int argc, char **argv)
+{
+  /*At least I like the comments*/
+  return 1;
+}
+/*Students should develop their
+own test cases too.*/
