@@ -1,2 +1,2 @@
-Comments2: Comments2.c
-	c99 -g3 -Wall -o Comments2 Comments2.c
+Comments3: Comments3.c
+	c99 -g3 -Wall -o Comments3 Comments3.c

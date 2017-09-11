@@ -7,9 +7,13 @@
 #define BACKSLASH_ASCII 92
 #define FORWARDSLASH_ASCII 47
 
-typedef enum {STRING_LITERAL_SUPPRESS, ONE_SLASH, LEADING_STAR, EXTENDED_COMMENT,
-    JAVADOC, TRAILING_STAR, SINGLE_LINE,
-    REGULAR_CODE} state;
+typedef enum {
+    SINGLE_LINE, SINGLE_LINE_JAVADOC, SINGLE_LINE_LEADING_CHARACTERS,
+    EXTENDED_COMMENT, EXTENDED_JAVADOC, EXTENDED_LEADING_CHARACTERS,
+    STRING_LITERAL_SUPPRESS, REGULAR_CODE
+} state;
+
+int peekchar(void);
 
 int main() {
     
@@ -17,13 +21,22 @@ int main() {
     state curr = REGULAR_CODE; // initialize the state at REGULAR_CODE
         
     while ( (c = getchar()) != EOF) {
-        
+    
+        int d = peekchar(); // the next character
+    
         switch (curr) {
             
             case REGULAR_CODE:
                 switch(c) {
                     case FORWARDSLASH_ASCII:
-                        curr = ONE_SLASH;
+                        switch(d) {
+                            case '/':
+                                curr = SINGLE_LINE_LEADING_CHARACTERS;
+                                break;
+                            case '*':
+                                curr = EXTENDED_LEADING_CHARACTERS;
+                                break;
+                        }
                         break;
                     case DOUBLE_QUOTE_ASCII:
                         curr = STRING_LITERAL_SUPPRESS;
@@ -32,31 +45,21 @@ int main() {
                 break;
         
             case STRING_LITERAL_SUPPRESS:
-                if(c == DOUBLE_QUOTE_ASCII) {
+                if(c == DOUBLE_QUOTE_ASCII && d != BACKSLASH_ASCII) {
                     curr = REGULAR_CODE;
                 }
                 break;
         
-            case ONE_SLASH:
+            case EXTENDED_LEADING_CHARACTERS:
                 switch(c) {
                     case '*':
-                        curr = LEADING_STAR;
-                        break;
-                    case FORWARDSLASH_ASCII:
-                        curr = SINGLE_LINE;
-                        break;
-                    default:
-                        curr = REGULAR_CODE;
-                }
-                break;
-        
-            case LEADING_STAR:
-                switch(c) {
-                    case '*':
-                        curr = LEADING_STAR;
+                        curr = EXTENDED_LEADING_CHARACTERS;
                         break;
                     case ' ':
-                        curr = LEADING_STAR;
+                        curr = EXTENDED_LEADING_CHARACTERS;
+                        break;
+                    case '@':
+                        curr = EXTENDED_JAVADOC;
                         break;
                     default:
                         putchar(c);
@@ -65,13 +68,40 @@ int main() {
                 }
                 break;
         
+            case SINGLE_LINE_LEADING_CHARACTERS:
+                switch(c) {
+                    case '*':
+                        curr = SINGLE_LINE_LEADING_CHARACTERS;
+                        break;
+                    case ' ':
+                        curr = SINGLE_LINE_LEADING_CHARACTERS;
+                        break;
+                    case '@':
+                        curr = SINGLE_LINE_JAVADOC;
+                        break;
+                    default:
+                        putchar(c);
+                        curr = SINGLE_LINE;
+                        break;
+                }
+                break;
+                
             case EXTENDED_COMMENT:
                 switch(c) {
-                    case '@':
-                        curr = JAVADOC;
+                    case ' ':
+                        if(d == '@') {
+                            curr = EXTENDED_JAVADOC;
+                        } else {
+                            putchar(c);
+                        }
                         break;
                     case '*':
-                        curr = TRAILING_STAR;
+                        if(d == '/') {
+                            putchar(NEW_LINE_ASCII);
+                            curr = REGULAR_CODE;
+                        } else {
+                            putchar(c);
+                        }
                         break;
                     case BACKSLASH_ASCII:
                         getchar();
@@ -82,28 +112,27 @@ int main() {
                 }
                 break;
         
-            case TRAILING_STAR:
-                switch (c) {
-                    case '*':
-                        curr = TRAILING_STAR;
-                        break;
-                    case FORWARDSLASH_ASCII:
-                        putchar(NEW_LINE_ASCII);
-                        curr = REGULAR_CODE;
-                        break;
-                    default:
+            case EXTENDED_JAVADOC:
+                switch(c) {
+                    case ' ':
                         curr = EXTENDED_COMMENT;
                         break;
+                    case '*':
+                        if (d == '/') {
+                            curr = REGULAR_CODE;
+                        }
+                        break;
                 }
-                break;    
-        
-            case JAVADOC:
-                if(c == ' ') {
-                    curr = EXTENDED_COMMENT;
-                } else {
-                    curr = JAVADOC;
+                
+            case SINGLE_LINE_JAVADOC:
+                switch(c) {
+                    case ' ':
+                        curr = SINGLE_LINE_LEADING_CHARACTERS;
+                        break;
+                    case NEW_LINE_ASCII:
+                        curr = REGULAR_CODE;
+                        break;
                 }
-                break;    
         
             case SINGLE_LINE:
                 switch(c) {
@@ -114,6 +143,12 @@ int main() {
                     case BACKSLASH_ASCII:
                         getchar();
                         break;
+                    case ' ':
+                        if(d == '@') {
+                            curr = SINGLE_LINE_JAVADOC;
+                        } else {
+                            putchar(c);
+                        }
                     default:
                         putchar(c);
                         break;
@@ -121,7 +156,17 @@ int main() {
         }
         
     }
-    
-    
     return 0;
+}
+
+// from Aspnes notes
+int peekchar(void) {
+    int c; // the declaration
+    
+    c = getchar(); // read in the first char
+    if(c != EOF) { // if it's not the end of file
+        ungetc(c, stdin); // put it back lol
+    }
+    
+    return c;
 }

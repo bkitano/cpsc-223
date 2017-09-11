@@ -1,0 +1,20 @@
+/*
+* @author Noah Ritz
+* Here lies a multi line comment
+* Continuing
+*/
+
+int main() {
+	//This is a comment in the main body
+	printf("/*@how do you do ya fuck // 'c' \" ");//Comment after a string literal
+	putchar('/');//Comment after a char literal
+/********
+** and here are four asterisks 	*	*	*	*
+*
+*
+* and here's a fake line break \b\n
+*
+*/
+//The next is a blank space
+//
+}
