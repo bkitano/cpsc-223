@@ -6,6 +6,9 @@
 #define NEW_LINE_ASCII 10
 #define BACKSLASH_ASCII 92
 #define FORWARDSLASH_ASCII 47
+#define HORIZONTAL_TAB_ASCII 9
+
+// failing 7,9,12
 
 typedef enum {
 REGULAR_CODE,
@@ -39,6 +42,7 @@ int main() {
                         break;
                     case DOUBLE_QUOTE_ASCII:
                         curr = STRING_LITERAL;
+                        break;
                 }
                 break;
                 
@@ -52,6 +56,7 @@ int main() {
                         break;
                     default:
                         curr = REGULAR_CODE;
+                        break;
                 }
                 break;
                 
@@ -63,6 +68,12 @@ int main() {
                         } else {
                             curr = SINGLE_LEADING_SPACE;
                         }
+                        break;
+                    case '\n':
+                        curr = REGULAR_CODE;
+                        break;
+                    case HORIZONTAL_TAB_ASCII:
+                        curr = SINGLE_LEADING_SPACE;
                         break;
                     default:
                         putchar(c);
@@ -92,7 +103,6 @@ int main() {
             case STRING_LITERAL:
                 switch(c) {
                     case DOUBLE_QUOTE_ASCII:
-                        putchar(NEW_LINE_ASCII);
                         curr = REGULAR_CODE;
                     }
                 break;
@@ -116,6 +126,8 @@ int main() {
                     case '\n':
                         curr = EXTENDED_LEADING_SPACE;
                         break;
+                    case HORIZONTAL_TAB_ASCII:
+                        curr = EXTENDED_LEADING_SPACE;
                     default:
                         putchar(c);
                         curr = EXTENDED_COMMENT;

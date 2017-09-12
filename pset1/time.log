@@ -1,0 +1,18 @@
+ESTIMATE of time to complete assignment: 11 hours
+
+      Time     Time
+Date  Started  Spent Work completed
+----  -------  ----  --------------
+9/02   7:00pm  2:00  readings, copying code from book into compiler
+9/03   3:45pm  4:00  initial testing without a finite state machine
+9/06   8:00pm  2:00  passing all but one test case
+9/11   3:00pm  3:00  finished debugging; program passes all public tests
+               ----
+               11:00  TOTAL time spent
+
+I discussed my solution with: David Schwartz, Noah Ritz, Clayton Skoda.
+
+Doing this pset without a written down Finite State Machine was essentially
+impossible; taking the time to write out the states was critical. I had trouble
+utilizing the logic of 'peekchar', which is referenced in the book at first, but 
+now see the reason for its importance. 
