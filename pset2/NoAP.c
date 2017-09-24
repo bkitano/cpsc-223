@@ -42,8 +42,21 @@ int main(int argc, char **argv) {
         printf("must_includes[%d]: %d \n", k, must_includes[k]);
     }
     
-    
     // the last arguments are the methods
+    // we know that the next arguments are flags
+    int flags_length = argc - 2 - must_includes_length; 
+    char * flags[flags_length];
+    int k = must_includes_length + 2;
+    
+    while(k < argc) {
+        flags[k - must_includes_length - 2] = argv[k];
+        k++;
+    }
+    
+    for(int i = 0; i < flags_length; i ++) {
+        printf("flag[%d]: %s \n", i, flags[i]);
+    }
+    
     
     return 0;
 }
