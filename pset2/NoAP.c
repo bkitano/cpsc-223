@@ -6,6 +6,7 @@
 bool is_all_digits(char *s);
 void swap(int *xp, int *yp);
 void bubble_sort(int nums[], int n);
+bool arithmetic(int nums[]);
 
 int main(int argc, char **argv) {
     
@@ -67,13 +68,10 @@ int main(int argc, char **argv) {
     }
     
     // end of preprocessing
-    
     // start of algorithms
+    int nums[] = {0, 24, 13};
+    printf("arithmetic: %d \n", arithmetic(nums));
     
-    int test[] = {1, 4, 2};
-    bubble_sort(test, 3);
-    printf("%d %d %d \n", test[0], test[1], test[2]);
-
     return 0;
 }
 
@@ -95,6 +93,24 @@ void bubble_sort(int nums[], int n) {
     }
 }
 
+bool arithmetic(int nums[]) {
+    bubble_sort(nums, 3);
+    printf("sorted: %d %d %d \n", nums[0], nums[1], nums[2]);
+    int sum = 0;
+    int length = 3;
+
+    for (int i = 0; i < length; i ++) {
+        sum += nums[i];
+    }
+    printf("sum: %d \n", sum);
+    printf("middle number: %d \n", nums[1]);
+    
+    if(sum/length == nums[1]) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 // copied from class example arguments.c
 bool is_all_digits(char *s)
