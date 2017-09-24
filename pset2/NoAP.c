@@ -4,6 +4,8 @@
 #include <stdbool.h>
 
 bool is_all_digits(char *s);
+void swap(int *xp, int *yp);
+void bubble_sort(int nums[], int n);
 
 int main(int argc, char **argv) {
     
@@ -15,9 +17,10 @@ int main(int argc, char **argv) {
     // if n not positive, error message
     if(!is_all_digits(n)) {
         printf("NoAP: n must not be negative; was value %s \n", n);
+        return 1;
     } else {
         range = atoi(n);
-        printf("Range: %d \n", range);
+        // printf("Range: %d \n", range);
     }
     
     // the next arguments are the must-haves
@@ -37,9 +40,15 @@ int main(int argc, char **argv) {
             must_includes[j-2] = atoi(argv[j]);
         }
     }
-    
-    for (int k = 0; k < must_includes_length; k ++) {
-        printf("must_includes[%d]: %d \n", k, must_includes[k]);
+
+    // error checking for must_includes:
+    // if any are not in the range 0:(n-1), display error message
+
+    for (int k = 0; k < must_includes_length; k++) {
+        if( must_includes[k] > (range-1) ) {
+            printf("NoAP: integer out of range %d \n", must_includes[k]);
+            return 1;
+        }
     }
     
     // the last arguments are the methods
@@ -57,9 +66,35 @@ int main(int argc, char **argv) {
         printf("flag[%d]: %s \n", i, flags[i]);
     }
     
+    // end of preprocessing
     
+    // start of algorithms
+    
+    int test[] = {1, 4, 2};
+    bubble_sort(test, 3);
+    printf("%d %d %d \n", test[0], test[1], test[2]);
+
     return 0;
 }
+
+void swap(int *xp, int *yp) {
+    int temp = *xp;
+    *xp = *yp;
+    *yp = temp;
+}
+
+// bubble sort
+void bubble_sort(int nums[], int n) {
+    int i,j;
+    for (i = 0; i < n-1; i++) {
+        for (j = 0; j < n-i-1; j++) {
+            if( nums[j] > nums[j+1]) {
+                swap(&nums[j], &nums[j+1]);
+            }
+        }
+    }
+}
+
 
 // copied from class example arguments.c
 bool is_all_digits(char *s)
