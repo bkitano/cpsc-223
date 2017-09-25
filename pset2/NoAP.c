@@ -7,6 +7,7 @@ bool is_all_digits(char *s);
 void swap(int *xp, int *yp);
 void bubble_sort(int nums[], int n);
 bool arithmetic(int nums[]);
+void greedy(int range, int must_includes[]);
 
 int main(int argc, char **argv) {
     
@@ -69,11 +70,34 @@ int main(int argc, char **argv) {
     
     // end of preprocessing
     // start of algorithms
-    int nums[] = {0, 24, 13};
-    printf("arithmetic: %d \n", arithmetic(nums));
+    
+    int test[] = {1,2,3};
+    greedy(5, test);
     
     return 0;
 }
+
+// implement greedy
+void greedy(int range, int must_includes[]){
+    
+    // instantiate an empty int array to store the sequence
+    int sequence[range];
+    
+    // fill it with nonsense
+    for(int i = 0; i < range; i++) {
+        sequence[i] = -1;
+    }
+    
+    // at the end, print all the values
+    printf("-greedy: %d [", range);
+    for (int i = 0; i < range-1; i++) {
+        printf("%d, ", sequence[i]);
+    }
+    printf("%d]\n", sequence[range-1]);
+}
+
+
+
 
 void swap(int *xp, int *yp) {
     int temp = *xp;
@@ -129,3 +153,4 @@ bool is_all_digits(char *s)
       return false;
     }
 }
+
