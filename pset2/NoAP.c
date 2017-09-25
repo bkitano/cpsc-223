@@ -8,6 +8,8 @@ void swap(int *xp, int *yp);
 void bubble_sort(int nums[], int n);
 bool arithmetic(int nums[]);
 void greedy(int range, int must_includes[], int must_includes_length);
+void backward(int range, int must_includes[], int must_includes_length);
+
 
 int main(int argc, char **argv) {
     
@@ -72,7 +74,7 @@ int main(int argc, char **argv) {
     // start of algorithms
     
     int test[] = {2,4,8};
-    greedy(15, test, 3);
+    backward(15, test, 3);
     
     return 0;
 }
@@ -128,13 +130,60 @@ void greedy(int range, int must_includes[], int must_includes_length){
         printf("%d, ", sequence[i]);
     } // end of for
     printf("%d]\n", sequence[sq_index-1]);
-
-    
     
 } // end of greedy
     
+void backward(int range, int must_includes[], int must_includes_length) {
+    // instantiate an empty int array to store the sequence
+    int sequence[range];
     
-
+    // fill it with nonsense
+    for(int i = 0; i < range; i++) {
+        sequence[i] = -1;
+    }
+    
+    // counters that will track where in the arrays we are up to
+    int sq_index = 0;
+    
+    // the first values are the first must includes.
+    for(int i = 0; i < must_includes_length; i++) {
+        sequence[i] = must_includes[i];
+        sq_index++;
+    }
+    
+    
+    for(int guess = range - 1; guess > must_includes[must_includes_length-1] ; guess --) {
+        // iterate through the guesses
+        bool has_arithmetic = false;
+        printf("guess: %d\n", guess);
+        
+        for(int seq1 = 0; seq1 < sq_index - 1; seq1 ++) {
+            // the furthest seq val
+            int seq1_val = sequence[seq1];
+            
+            for (int seq2 = seq1 + 1; seq2 < sq_index; seq2 ++) {
+                int seq2_val = sequence[seq2];
+                
+                int test[] = {seq1_val, seq2_val, guess};
+                has_arithmetic = has_arithmetic || arithmetic(test);
+            }
+        }
+        printf("guess: %d | has_arithmetic: %d\n", guess, has_arithmetic);
+        if(!has_arithmetic) {
+            sequence[sq_index] = guess;
+            sq_index ++;
+        }
+    }
+    
+    bubble_sort(sequence, range);
+    
+    // take the last sq_index values from the array
+    printf("-backward: %d [", sq_index);
+    for(int i = range-sq_index; i < range - 1; i++) {
+        printf("%d, ", sequence[i]);
+    }
+    printf("%d]\n", sequence[range-1]);
+}
 
 void swap(int *xp, int *yp) {
     int temp = *xp;
