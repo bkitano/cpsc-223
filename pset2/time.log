@@ -1,0 +1,21 @@
+Event                       | HHMM | Duration
+-------------------------------------------
+Start                       | 1100 | 
+Reads Must Includes         | 1400 | 3:00
+Working Bubble Sort         | 1700 | 6:00
+Working Arithmetic Checker  | 1950 | 7:00
+Entire Codebase was wrong   | 2300 | 10:10
+Rewrote everything          | 0000 | 11:10
+Greedy working              | 0024 | 11:34
+Backwards Working           | 0041 | 11:51
+Day 2                       | 1400 | ------
+Skip working                | 1515 | 13:00
+Tentative finish            | 1700 | 14:45
+-------------------------------------------
+Total                       |      | 14:45
+
+Biggest Challenge: I read the specs wrong, so I had to throw away a significant
+portion code. I estimate that this would have taken 12 hours had I not made such
+a significant blunder. In addition, I found a lot of mistakes were due to not 
+reading the library function usage instructions, which I will do more carefully
+in the future.

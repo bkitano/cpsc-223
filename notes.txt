@@ -60,7 +60,8 @@ To quit, simply call
 
 The main method
 -----------------
-All C programs must have a function that looks something like this:
+All C programs that readfrom the command line
+must have a function that looks something like this:
 
 int main(int argc, char **argv) {
     // your code
@@ -96,3 +97,12 @@ See page 121 in Aspnes
 Miscellaneous
 ---------------
 use single quetes for int chars
+
+Header Files
+---------------
+#ifndef HEADER_FILE
+#define HEADER_FILE
+
+the entire header file file
+
+#endif
