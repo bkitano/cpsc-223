@@ -89,13 +89,45 @@ void greedy(int range, int must_includes[], int must_includes_length){
     }
     
     // counters that will track where in the arrays we are up to
-    int mi_index = 0;
     int sq_index = 0;
     
-    // the first value in the array is the first value in must_includes
-    sequence[0] = must_includes[0];
-    mi_index ++;
-    sq_index ++;
+    // the first values are the first must includes.
+    for(int i = 0; i < must_includes_length; i++) {
+        sequence[i] = must_includes[i];
+        sq_index++;
+    }
+    
+    
+    for(int guess = must_includes[must_includes_length-1] + 1; guess < range; guess ++) {
+        // iterate through the guesses
+        bool has_arithmetic = false;
+        printf("guess: %d\n", guess);
+        
+        for(int seq1 = 0; seq1 < sq_index - 1; seq1 ++) {
+            // the furthest seq val
+            int seq1_val = sequence[seq1];
+            
+            for (int seq2 = seq1 + 1; seq2 < sq_index; seq2 ++) {
+                int seq2_val = sequence[seq2];
+                
+                int test[] = {seq1_val, seq2_val, guess};
+                has_arithmetic = has_arithmetic || arithmetic(test);
+            }
+        }
+        printf("guess: %d | has_arithmetic: %d\n", guess, has_arithmetic);
+        if(!has_arithmetic) {
+            sequence[sq_index] = guess;
+            sq_index ++;
+        }
+    }
+    
+    for(int i = 0 ; i < range; i++) {
+        printf("sequence[%d]: %d\n", i, sequence[i]);
+    } // end of for
+
+    
+    
+} // end of greedy
     
     
 
