@@ -7,7 +7,7 @@ bool is_all_digits(char *s);
 void swap(int *xp, int *yp);
 void bubble_sort(int nums[], int n);
 bool arithmetic(int nums[]);
-void greedy(int range, int must_includes[]);
+void greedy(int range, int must_includes[], int must_includes_length);
 
 int main(int argc, char **argv) {
     
@@ -71,14 +71,14 @@ int main(int argc, char **argv) {
     // end of preprocessing
     // start of algorithms
     
-    int test[] = {1,2,3};
-    greedy(5, test);
+    int test[] = {2,4,8};
+    greedy(15, test, 3);
     
     return 0;
 }
 
 // implement greedy
-void greedy(int range, int must_includes[]){
+void greedy(int range, int must_includes[], int must_includes_length){
     
     // instantiate an empty int array to store the sequence
     int sequence[range];
@@ -86,6 +86,58 @@ void greedy(int range, int must_includes[]){
     // fill it with nonsense
     for(int i = 0; i < range; i++) {
         sequence[i] = -1;
+    }
+    
+    // counters that will track where in the arrays we are up to
+    int mi_index = 0;
+    int sq_index = 0;
+    
+    // the first value in the array is the first value in must_includes
+    sequence[0] = must_includes[0];
+    mi_index ++;
+    sq_index ++;
+    
+    // if the next number in must_includes == sequence[0] + 1, append it
+    while (mi_index < must_includes_length) { // while there are still values in must_includes
+        if(must_includes[mi_index] == sequence[sq_index - 1] + 1) {
+            // if the current val of must_includes is the current val of sq + 1, 
+            // there will be no space for an arithmetic, so you must append it.
+            sequence[sq_index] = must_includes[mi_index];
+            sq_index ++;
+            mi_index ++;
+        } else {
+            // so there's a gap between the current sequence index and the next must_include
+            // the answer will be inside this range
+
+            // use while loops
+            for( int guess = sequence[sq_index-1] + 1; guess < must_includes[mi_index]; guess++) {
+                
+                // tally over all permutations whether there is an arithmetic progression
+                bool guess_has_arithmetic = false;
+                
+                // for all sequence vals before the current one
+                for (int ext = 0; ext < sq_index; ext ++) {
+                    
+                    int sq_extant = sequence[ext];
+                    
+                    // for all must includes greater than the guess
+                    for (int fut = mi_index; fut < must_includes_length; fut++) {
+                        
+                        int future_vals = must_includes[fut];
+                        
+                        int test[] = {guess, sq_extant, future_vals};
+                        guess_has_arithmetic = guess_has_arithmetic || arithmetic(test);
+                    }
+                }
+                // if the number doesn't have an arithmetic sequence, set the val up
+                if (!guess_has_arithmetic) {
+                    sequence[sq_index] = guess;
+                    sq_index ++;
+                }
+            }
+            sequence[sq_index] = must_includes[mi_index];
+        }
+        mi_index ++;
     }
     
     // at the end, print all the values
