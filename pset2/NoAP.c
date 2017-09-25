@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <stdbool.h>
+#include <string.h>
 
 #include "NoAP.h"
 
@@ -60,15 +61,38 @@ int main(int argc, char **argv) {
         k++;
     }
     
-    for(int i = 0; i < flags_length; i ++) {
-        printf("flag[%d]: %s \n", i, flags[i]);
+    int start = must_includes[must_includes_length-1] + 1;
+    
+    // reads flags correctly
+    // for(int i = 0; i < flags_length; i ++) {
+    //     printf("flags[%d]: %s\n", i, flags[i]);
+    // }
+    
+    // need to use string comprehension to parse flags
+    for(int i = 0; i < flags_length; i++) {
+        if(strcmp(flags[i], "-greedy")) {
+            greedy(range, must_includes, must_includes_length);
+        } 
+        else if (strcmp(flags[i], "-backward")) {
+            backward(range, must_includes, must_includes_length);
+        }
+        else if (strcmp(flags[i], "-skip")) {
+            int first = atoi(flags[i+1]);
+            int step = atoi(flags[i+2]);
+            
+            if(first > range-1 || first < start) {
+                printf("NoAP: invalid first %d\n", first);
+                return 0;
+            } else {
+                if( step < 1 || step > range - start) {
+                    printf("NoAP: invalid step %d\n", step);
+                    return 0;
+                } else {
+                    skip(range, must_includes, must_includes_length, first, step);
+                }
+            }
+        }
     }
-    
-    // end of preprocessing
-    // start of algorithms
-    
-    int test[] = {2,4,8};
-    skip(15, test, 3, 12, 2);
     
     return 0;
 }
@@ -97,7 +121,7 @@ void greedy(int range, int must_includes[], int must_includes_length){
     for(int guess = must_includes[must_includes_length-1] + 1; guess < range; guess ++) {
         // iterate through the guesses
         bool has_arithmetic = false;
-        printf("guess: %d\n", guess);
+        // printf("guess: %d\n", guess);
         
         for(int seq1 = 0; seq1 < sq_index - 1; seq1 ++) {
             // the furthest seq val
@@ -110,7 +134,7 @@ void greedy(int range, int must_includes[], int must_includes_length){
                 has_arithmetic = has_arithmetic || arithmetic(test);
             }
         }
-        printf("guess: %d | has_arithmetic: %d\n", guess, has_arithmetic);
+        // printf("guess: %d | has_arithmetic: %d\n", guess, has_arithmetic);
         if(!has_arithmetic) {
             sequence[sq_index] = guess;
             sq_index ++;
@@ -149,7 +173,7 @@ void backward(int range, int must_includes[], int must_includes_length) {
     for(int guess = range - 1; guess > must_includes[must_includes_length-1] ; guess --) {
         // iterate through the guesses
         bool has_arithmetic = false;
-        printf("guess: %d\n", guess);
+        // printf("guess: %d\n", guess);
         
         for(int seq1 = 0; seq1 < sq_index - 1; seq1 ++) {
             // the furthest seq val
@@ -162,7 +186,7 @@ void backward(int range, int must_includes[], int must_includes_length) {
                 has_arithmetic = has_arithmetic || arithmetic(test);
             }
         }
-        printf("guess: %d | has_arithmetic: %d\n", guess, has_arithmetic);
+        // printf("guess: %d | has_arithmetic: %d\n", guess, has_arithmetic);
         if(!has_arithmetic) {
             sequence[sq_index] = guess;
             sq_index ++;
@@ -280,7 +304,7 @@ void bubble_sort(int nums[], int n) {
 bool arithmetic(int nums[]) {
     bool answer;
     bubble_sort(nums, 3);
-    printf("sorted: %d %d %d \n", nums[0], nums[1], nums[2]);
+    // printf("sorted: %d %d %d \n", nums[0], nums[1], nums[2]);
     double sum = 0;
     double length = 3;
 
@@ -290,20 +314,20 @@ bool arithmetic(int nums[]) {
             return false;
         }
     }
-    printf("sum: %fl \n", sum);
-    printf("middle number: %d \n", nums[1]);
+    // printf("sum: %fl \n", sum);
+    // printf("middle number: %d \n", nums[1]);
     
-    printf("sum/length: %fl \n", sum / length);
+    // printf("sum/length: %fl \n", sum / length);
     if(sum/length == nums[1]) {
         answer = true;
     } else {
         answer = false;
     }
-    printf("arithmetic: %d \n\n", answer);
+    // printf("arithmetic: %d \n\n", answer);
     return(answer);
 }
 
-// copied from class example arguments.c
+// adapted from class example arguments.c
 bool is_all_digits(char *s)
 {
   while (isdigit(*s))
