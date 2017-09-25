@@ -173,22 +173,26 @@ void bubble_sort(int nums[], int n) {
 }
 
 bool arithmetic(int nums[]) {
+    bool answer;
     bubble_sort(nums, 3);
     printf("sorted: %d %d %d \n", nums[0], nums[1], nums[2]);
-    int sum = 0;
-    int length = 3;
+    double sum = 0;
+    double length = 3;
 
     for (int i = 0; i < length; i ++) {
         sum += nums[i];
     }
-    printf("sum: %d \n", sum);
+    printf("sum: %fl \n", sum);
     printf("middle number: %d \n", nums[1]);
     
+    printf("sum/length: %fl \n", sum / length);
     if(sum/length == nums[1]) {
-        return true;
+        answer = true;
     } else {
-        return false;
+        answer = false;
     }
+    printf("arithmetic: %d \n\n", answer);
+    return(answer);
 }
 
 // copied from class example arguments.c
