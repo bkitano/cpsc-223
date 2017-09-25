@@ -121,9 +121,13 @@ void greedy(int range, int must_includes[], int must_includes_length){
         }
     }
     
-    for(int i = 0 ; i < range; i++) {
-        printf("sequence[%d]: %d\n", i, sequence[i]);
+    
+    // print the shit correctly
+    printf("-greedy: %d [", sq_index + 1);
+    for(int i = 0 ; i < sq_index - 1; i++) {
+        printf("%d, ", sequence[i]);
     } // end of for
+    printf("%d]\n", sequence[sq_index-1]);
 
     
     
