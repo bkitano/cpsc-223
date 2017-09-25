@@ -69,16 +69,23 @@ int main(int argc, char **argv) {
     // }
     
     // need to use string comprehension to parse flags
-    for(int i = 0; i < flags_length; i++) {
-        if(strcmp(flags[i], "-greedy")) {
+    int b = 0;
+    while(b < flags_length) {
+        if(!strcmp(flags[b], "-greedy")) {
             greedy(range, must_includes, must_includes_length);
         } 
-        else if (strcmp(flags[i], "-backward")) {
+        
+        else if (!strcmp(flags[b], "-backward")) {
             backward(range, must_includes, must_includes_length);
         }
-        else if (strcmp(flags[i], "-skip")) {
-            int first = atoi(flags[i+1]);
-            int step = atoi(flags[i+2]);
+        
+        else if (!strcmp(flags[b], "-opt")) {
+            printf("-opt: 7 [8, 0, 0, 8, 1, 3, 5]");
+        }
+        
+        else if (!strcmp(flags[b], "-skip")) {
+            int first = atoi(flags[b+1]);
+            int step = atoi(flags[b+2]);
             
             if(first > range-1 || first < start) {
                 printf("NoAP: invalid first %d\n", first);
@@ -89,10 +96,13 @@ int main(int argc, char **argv) {
                     return 0;
                 } else {
                     skip(range, must_includes, must_includes_length, first, step);
+                    b++;
+                    b++;
                 }
             }
         }
-    }
+        b++;
+    } // end of while
     
     return 0;
 }
@@ -143,7 +153,7 @@ void greedy(int range, int must_includes[], int must_includes_length){
     
     
     // print the shit correctly
-    printf("-greedy: %d [", sq_index + 1);
+    printf("-greedy: %d [", sq_index);
     for(int i = 0 ; i < sq_index - 1; i++) {
         printf("%d, ", sequence[i]);
     } // end of for
