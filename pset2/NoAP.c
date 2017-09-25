@@ -9,7 +9,8 @@ void bubble_sort(int nums[], int n);
 bool arithmetic(int nums[]);
 void greedy(int range, int must_includes[], int must_includes_length);
 void backward(int range, int must_includes[], int must_includes_length);
-
+void skip(int range, int must_includes[], int must_includes_length, int first, int step);
+bool is_in(int array[], int size, int number);
 
 int main(int argc, char **argv) {
     
@@ -74,7 +75,7 @@ int main(int argc, char **argv) {
     // start of algorithms
     
     int test[] = {2,4,8};
-    backward(15, test, 3);
+    skip(15, test, 3, 12, 2);
     
     return 0;
 }
@@ -185,6 +186,85 @@ void backward(int range, int must_includes[], int must_includes_length) {
     printf("%d]\n", sequence[range-1]);
 }
 
+// skip
+void skip(int range, int must_includes[], int must_includes_length, int first, int step) {
+    // same initial steps to fill the array
+    
+    // instantiate an empty int array to store the sequence
+    int sequence[range];
+    
+    // fill it with nonsense
+    for(int i = 0; i < range; i++) {
+        sequence[i] = -1;
+    }
+    
+    // counters that will track where in the arrays we are up to
+    int sq_index = 0;
+    
+    // the first values are the first must includes.
+    for(int i = 0; i < must_includes_length; i++) {
+        sequence[i] = must_includes[i];
+        sq_index++;
+    }
+    
+    // make an array to store the guesses we've tried
+    int gslength = range-must_includes[must_includes_length]-1;
+    int guesses_seen[gslength];
+    for(int i = 0; i < gslength; i++) {
+        guesses_seen[i] = -1;
+    }
+    int gs_index = 0;
+    
+    int guess = first;
+    while(!is_in(guesses_seen, gslength, guess)) {
+        bool has_arithmetic = false;
+        
+        for(int seq1 = 0; seq1 < sq_index - 1; seq1++) {
+            int left = sequence[seq1];
+            for (int seq2 = seq1 + 1; seq2 < sq_index; seq2++ ){
+                int right = sequence[seq2];
+                
+                int test[] = {left, right, guess};
+                has_arithmetic = has_arithmetic || arithmetic(test);
+            }
+            
+        }
+        
+        if(!has_arithmetic) {
+            sequence[sq_index + 1] = guess;
+            sq_index++;
+        }
+        
+        // add the guess to the guesses seen array
+        guesses_seen[gs_index] = guess;
+        gs_index++;
+        
+        guess += step;
+        if(guess > range-1) {
+            guess = guess - range + must_includes[must_includes_length-1] + 1;
+        }
+    }
+    
+    bubble_sort(sequence, range);
+    
+    // print it correctly
+    // take the last sq_index values from the array
+    printf("-skip %d %d: %d [", first, step, sq_index);
+    for(int i = range-sq_index; i < range - 1; i++) {
+        printf("%d, ", sequence[i]);
+    }
+    printf("%d]\n", sequence[range-1]);
+    
+}
+
+bool is_in(int array[], int size, int number) {
+    bool in = false;
+    for(int i = 0; i < size; i++) {
+        in = in || (number == array[i]);
+    }
+    return in;
+}
+
 void swap(int *xp, int *yp) {
     int temp = *xp;
     *xp = *yp;
@@ -213,6 +293,9 @@ bool arithmetic(int nums[]) {
 
     for (int i = 0; i < length; i ++) {
         sum += nums[i];
+        if(nums[i] == -1) {
+            return false;
+        }
     }
     printf("sum: %fl \n", sum);
     printf("middle number: %d \n", nums[1]);

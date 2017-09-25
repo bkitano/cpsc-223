@@ -1,0 +1,14 @@
+flag[0]: a 
+flag[1]: b 
+flag[2]: c 
+flag[3]: d 
+flag[4]: e 
+flag[5]: f 
+flag[6]: g 
+flag[7]: h 
+flag[8]: i 
+flag[9]: j 
+flag[10]: 44 
+flag[11]: 33 
+flag[12]: 22 
+2 in [2,4,8]? 1
