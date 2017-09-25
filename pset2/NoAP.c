@@ -139,6 +139,9 @@ void greedy(int range, int must_includes[], int must_includes_length){
         }
         mi_index ++;
     }
+    // okay, now we have to handle everything beyond the included values until the range
+    printf("mi_index: %d \n", mi_index);
+    printf("sq_index: %d \n", sq_index);
     
     // at the end, print all the values
     printf("-greedy: %d [", range);
