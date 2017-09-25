@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
         return 1;
     } else {
         range = atoi(n);
-        // printf("Range: %d \n", range);
+        printf("Range: %d \n", range);
     }
     
     // the next arguments are the must-haves
@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
         for (int j = 2; j < must_includes_length + 2; j++) {
             must_includes[j-2] = atoi(argv[j]);
         }
-    }
+    } 
 
     // error checking for must_includes:
     // if any are not in the range 0:(n-1), display error message
@@ -67,8 +67,13 @@ int main(int argc, char **argv) {
     // for(int i = 0; i < flags_length; i ++) {
     //     printf("flags[%d]: %s\n", i, flags[i]);
     // }
-    
+    int empty[1] = {0};
+
     // need to use string comprehension to parse flags
+    if(must_includes_length == 0) {
+        must_includes_length = 1;
+        *must_includes = *empty;
+    }
     int b = 0;
     while(b < flags_length) {
         if(!strcmp(flags[b], "-greedy")) {
