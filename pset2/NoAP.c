@@ -19,7 +19,6 @@ int main(int argc, char **argv) {
         return 1;
     } else {
         range = atoi(n);
-        printf("Range: %d \n", range);
     }
     
     // the next arguments are the must-haves
