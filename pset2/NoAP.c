@@ -221,7 +221,7 @@ void backward(int range, int must_includes[], int must_includes_length, bool mus
         for(int guess = range - 1; guess > must_includes[must_includes_length-1] ; guess --) {
             // iterate through the guesses
             bool has_arithmetic = false;
-            printf("guess: %d\n", guess);
+            // printf("guess: %d\n", guess);
             
             for(int seq1 = 0; seq1 < sq_index - 1; seq1 ++) {
                 // the furthest seq val
@@ -232,10 +232,10 @@ void backward(int range, int must_includes[], int must_includes_length, bool mus
                     
                     int test[] = {seq1_val, seq2_val, guess};
                     has_arithmetic = has_arithmetic || arithmetic(test);
-                    printf("test: [%d %d %d] | has_arithmetic: %d\n", seq1_val, seq2_val, guess, arithmetic(test));
+                    // printf("test: [%d %d %d] | has_arithmetic: %d\n", seq1_val, seq2_val, guess, arithmetic(test));
                 } // end of for
             } // end of for
-            printf("guess: %d | has_arithmetic: %d\n", guess, has_arithmetic);
+            // printf("guess: %d | has_arithmetic: %d\n", guess, has_arithmetic);
             if(!has_arithmetic) {
                 sequence[sq_index] = guess;
                 sq_index ++;
@@ -247,7 +247,7 @@ void backward(int range, int must_includes[], int must_includes_length, bool mus
             for(int guess = range - 1; guess > 0; guess --) {
             // iterate through the guesses
             bool has_arithmetic = false;
-            printf("guess: %d\n", guess);
+            // printf("guess: %d\n", guess);
             
             for(int seq1 = 0; seq1 < sq_index - 1; seq1 ++) {
                 // the furthest seq val
@@ -258,10 +258,10 @@ void backward(int range, int must_includes[], int must_includes_length, bool mus
                     
                     int test[] = {seq1_val, seq2_val, guess};
                     has_arithmetic = has_arithmetic || arithmetic(test);
-                    printf("test: [%d %d %d] | has_arithmetic: %d\n", seq1_val, seq2_val, guess, arithmetic(test));
+                    // printf("test: [%d %d %d] | has_arithmetic: %d\n", seq1_val, seq2_val, guess, arithmetic(test));
                 }
             }
-            printf("guess: %d | has_arithmetic: %d\n", guess, has_arithmetic);
+            // printf("guess: %d | has_arithmetic: %d\n", guess, has_arithmetic);
             if(!has_arithmetic) {
                 sequence[sq_index] = guess;
                 sq_index ++;
@@ -312,7 +312,7 @@ void skip(int range, int must_includes[], int must_includes_length, bool must_in
         int guess = first;
         
         while(!is_in(guesses_seen, gslength, guess)) {
-            printf("guess: %d \n", guess);
+            // printf("guess: %d \n", guess);
             bool has_arithmetic = false;
             
             for(int seq1 = 0; seq1 < sq_index - 1; seq1++) {
@@ -322,7 +322,7 @@ void skip(int range, int must_includes[], int must_includes_length, bool must_in
                     
                     int test[] = {left, right, guess};
                     has_arithmetic = has_arithmetic || arithmetic(test);
-                    printf("test: [%d %d %d] | has_arithmetic: %d\n", left, right, guess, arithmetic(test));
+                    // printf("test: [%d %d %d] | has_arithmetic: %d\n", left, right, guess, arithmetic(test));
 
                 }
                 
@@ -334,11 +334,11 @@ void skip(int range, int must_includes[], int must_includes_length, bool must_in
             }
             
             // print the sequence
-            printf("Sequence: [");
-            for(int i = 0; i < range; i++) {
-                printf("%d ", sequence[i]);
-            }
-            printf("]\n");
+            // printf("Sequence: [");
+            // for(int i = 0; i < range; i++) {
+            //     printf("%d ", sequence[i]);
+            // }
+            // printf("]\n");
             
             
             // add the guess to the guesses seen array
@@ -364,7 +364,7 @@ void skip(int range, int must_includes[], int must_includes_length, bool must_in
         
         while(!is_in(guesses_seen, gslength, guess)) {
             bool has_arithmetic = false;
-            printf("guess: %d\n", guess);
+            // printf("guess: %d\n", guess);
             
             for(int seq1 = 0; seq1 < sq_index-1; seq1++) {
                 int left = sequence[seq1];
@@ -373,7 +373,7 @@ void skip(int range, int must_includes[], int must_includes_length, bool must_in
                     
                     int test[] = {left, right, guess};
                     has_arithmetic = has_arithmetic || arithmetic(test);
-                    printf("test: [%d %d %d] | has_arithmetic: %d\n", left, right, guess, arithmetic(test));
+                    // printf("test: [%d %d %d] | has_arithmetic: %d\n", left, right, guess, arithmetic(test));
 
                 }
                 
@@ -385,11 +385,11 @@ void skip(int range, int must_includes[], int must_includes_length, bool must_in
             }
             
             // print the sequence
-            printf("Sequence: [");
-            for(int i = 0; i < range; i++) {
-                printf("%d ", sequence[i]);
-            }
-            printf("]\n");
+            // printf("Sequence: [");
+            // for(int i = 0; i < range; i++) {
+                // printf("%d ", sequence[i]);
+            // }
+            // printf("]\n");
             
             // add the guess to the guesses seen array
             guesses_seen[gs_index] = guess;

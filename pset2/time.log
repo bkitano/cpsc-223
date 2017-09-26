@@ -14,8 +14,9 @@ Backwards Working           | 0041 | 11:51
 Day 2                       | 1400 | ------
 Skip working                | 1515 | 13:00
 Tentative finish            | 1700 | 14:45
+Failed and fixed test cases | 2100 | 16:15
 -------------------------------------------
-Total                       |      | 14:45
+Total                       |      | 16:15
 
 Biggest Challenge: I read the specs wrong, so I had to throw away a significant
 portion code. I estimate that this would have taken 12 hours had I not made such
