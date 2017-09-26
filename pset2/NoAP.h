@@ -7,7 +7,7 @@ void bubble_sort(int nums[], int n);
 bool arithmetic(int nums[]);
 void greedy(int range, int must_includes[], int must_includes_length, bool must_includes_check);
 void backward(int range, int must_includes[], int must_includes_length, bool must_includes_check);
-void skip(int range, int must_includes[], int must_includes_length, int first, int step);
+void skip(int range, int must_includes[], int must_includes_length, bool must_includes_check, int first, int step);
 bool is_in(int array[], int size, int number);
 
 
