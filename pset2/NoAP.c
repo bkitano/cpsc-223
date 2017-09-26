@@ -39,6 +39,10 @@ int main(int argc, char **argv) {
             must_includes[j-2] = atoi(argv[j]);
         }
     } 
+    bool must_includes_check = true;
+    if (must_includes_length == 0) {
+        must_includes_check = false;
+    }
 
     // error checking for must_includes:
     // if any are not in the range 0:(n-1), display error message
@@ -67,21 +71,24 @@ int main(int argc, char **argv) {
     // for(int i = 0; i < flags_length; i ++) {
     //     printf("flags[%d]: %s\n", i, flags[i]);
     // }
-    int empty[1] = {0};
+    // int empty[1] = {0};
 
     // need to use string comprehension to parse flags
-    if(must_includes_length == 0) {
-        must_includes_length = 1;
-        *must_includes = *empty;
-    }
+    // quick and dirty, not working
+    // if(must_includes_length == 0) {
+    //     must_includes_length = 1;
+    //     *must_includes = *empty;
+    //     start = 0;
+    // }
+    
     int b = 0;
     while(b < flags_length) {
         if(!strcmp(flags[b], "-greedy")) {
-            greedy(range, must_includes, must_includes_length);
+            greedy(range, must_includes, must_includes_length, must_includes_check);
         } 
         
         else if (!strcmp(flags[b], "-backward")) {
-            backward(range, must_includes, must_includes_length);
+            backward(range, must_includes, must_includes_length, must_includes_check);
         }
         
         else if (!strcmp(flags[b], "-opt")) {
@@ -113,7 +120,7 @@ int main(int argc, char **argv) {
 }
 
 // implement greedy
-void greedy(int range, int must_includes[], int must_includes_length){
+void greedy(int range, int must_includes[], int must_includes_length, bool must_includes_check){
     
     // instantiate an empty int array to store the sequence
     int sequence[range];
@@ -126,33 +133,60 @@ void greedy(int range, int must_includes[], int must_includes_length){
     // counters that will track where in the arrays we are up to
     int sq_index = 0;
     
-    // the first values are the first must includes.
-    for(int i = 0; i < must_includes_length; i++) {
-        sequence[i] = must_includes[i];
-        sq_index++;
-    }
-    
-    
-    for(int guess = must_includes[must_includes_length-1] + 1; guess < range; guess ++) {
-        // iterate through the guesses
-        bool has_arithmetic = false;
-        // printf("guess: %d\n", guess);
+    if(must_includes_check) {
+        // the first values are the first must includes.
+        for(int i = 0; i < must_includes_length; i++) {
+            sequence[i] = must_includes[i];
+            sq_index++;
+        } // end of for
         
-        for(int seq1 = 0; seq1 < sq_index - 1; seq1 ++) {
-            // the furthest seq val
-            int seq1_val = sequence[seq1];
+        
+        for(int guess = must_includes[must_includes_length-1] + 1; guess < range; guess ++) {
+            // iterate through the guesses
+            bool has_arithmetic = false;
+            // printf("guess: %d\n", guess);
             
-            for (int seq2 = seq1 + 1; seq2 < sq_index; seq2 ++) {
-                int seq2_val = sequence[seq2];
+            for(int seq1 = 0; seq1 < sq_index - 1; seq1 ++) {
+                // the furthest seq val
+                int seq1_val = sequence[seq1];
                 
-                int test[] = {seq1_val, seq2_val, guess};
-                has_arithmetic = has_arithmetic || arithmetic(test);
+                for (int seq2 = seq1 + 1; seq2 < sq_index; seq2 ++) {
+                    int seq2_val = sequence[seq2];
+                    
+                    int test[] = {seq1_val, seq2_val, guess};
+                    has_arithmetic = has_arithmetic || arithmetic(test);
+                } // end of for
+            } // end of for
+            
+            // printf("guess: %d | has_arithmetic: %d\n", guess, has_arithmetic);
+            if(!has_arithmetic) {
+                sequence[sq_index] = guess;
+                sq_index ++;
+            } // end of if
+        } // end of for 
+        
+        } else {
+            for(int guess = 0; guess < range; guess ++) {
+            // iterate through the guesses
+            bool has_arithmetic = false;
+            // printf("guess: %d\n", guess);
+            
+            for(int seq1 = 0; seq1 < sq_index - 1; seq1 ++) {
+                // the furthest seq val
+                int seq1_val = sequence[seq1];
+                
+                for (int seq2 = seq1 + 1; seq2 < sq_index; seq2 ++) {
+                    int seq2_val = sequence[seq2];
+                    
+                    int test[] = {seq1_val, seq2_val, guess};
+                    has_arithmetic = has_arithmetic || arithmetic(test);
+                }
             }
-        }
-        // printf("guess: %d | has_arithmetic: %d\n", guess, has_arithmetic);
-        if(!has_arithmetic) {
-            sequence[sq_index] = guess;
-            sq_index ++;
+            // printf("guess: %d | has_arithmetic: %d\n", guess, has_arithmetic);
+            if(!has_arithmetic) {
+                sequence[sq_index] = guess;
+                sq_index ++;
+            }
         }
     }
     
@@ -166,7 +200,7 @@ void greedy(int range, int must_includes[], int must_includes_length){
     
 } // end of greedy
     
-void backward(int range, int must_includes[], int must_includes_length) {
+void backward(int range, int must_includes[], int must_includes_length, bool must_includes_check) {
     // instantiate an empty int array to store the sequence
     int sequence[range];
     
@@ -178,33 +212,62 @@ void backward(int range, int must_includes[], int must_includes_length) {
     // counters that will track where in the arrays we are up to
     int sq_index = 0;
     
-    // the first values are the first must includes.
-    for(int i = 0; i < must_includes_length; i++) {
-        sequence[i] = must_includes[i];
-        sq_index++;
-    }
-    
-    
-    for(int guess = range - 1; guess > must_includes[must_includes_length-1] ; guess --) {
-        // iterate through the guesses
-        bool has_arithmetic = false;
-        // printf("guess: %d\n", guess);
+    if(must_includes_check) {
+        // the first values are the first must includes.
+        for(int i = 0; i < must_includes_length; i++) {
+            sequence[i] = must_includes[i];
+            sq_index++;
+        } // end of if
         
-        for(int seq1 = 0; seq1 < sq_index - 1; seq1 ++) {
-            // the furthest seq val
-            int seq1_val = sequence[seq1];
+        
+        for(int guess = range - 1; guess > must_includes[must_includes_length-1] ; guess --) {
+            // iterate through the guesses
+            bool has_arithmetic = false;
+            printf("guess: %d\n", guess);
             
-            for (int seq2 = seq1 + 1; seq2 < sq_index; seq2 ++) {
-                int seq2_val = sequence[seq2];
+            for(int seq1 = 0; seq1 < sq_index - 1; seq1 ++) {
+                // the furthest seq val
+                int seq1_val = sequence[seq1];
                 
-                int test[] = {seq1_val, seq2_val, guess};
-                has_arithmetic = has_arithmetic || arithmetic(test);
+                for (int seq2 = seq1 + 1; seq2 < sq_index; seq2 ++) {
+                    int seq2_val = sequence[seq2];
+                    
+                    int test[] = {seq1_val, seq2_val, guess};
+                    has_arithmetic = has_arithmetic || arithmetic(test);
+                    printf("test: [%d %d %d] | has_arithmetic: %d\n", seq1_val, seq2_val, guess, arithmetic(test));
+                } // end of for
+            } // end of for
+            printf("guess: %d | has_arithmetic: %d\n", guess, has_arithmetic);
+            if(!has_arithmetic) {
+                sequence[sq_index] = guess;
+                sq_index ++;
+            } //end of if
+        } //end of for
+    
+    } // end of must includes check
+    else {
+            for(int guess = range - 1; guess > 0; guess --) {
+            // iterate through the guesses
+            bool has_arithmetic = false;
+            printf("guess: %d\n", guess);
+            
+            for(int seq1 = 0; seq1 < sq_index - 1; seq1 ++) {
+                // the furthest seq val
+                int seq1_val = sequence[seq1];
+                
+                for (int seq2 = seq1 + 1; seq2 < sq_index; seq2 ++) {
+                    int seq2_val = sequence[seq2];
+                    
+                    int test[] = {seq1_val, seq2_val, guess};
+                    has_arithmetic = has_arithmetic || arithmetic(test);
+                    printf("test: [%d %d %d] | has_arithmetic: %d\n", seq1_val, seq2_val, guess, arithmetic(test));
+                }
             }
-        }
-        // printf("guess: %d | has_arithmetic: %d\n", guess, has_arithmetic);
-        if(!has_arithmetic) {
-            sequence[sq_index] = guess;
-            sq_index ++;
+            printf("guess: %d | has_arithmetic: %d\n", guess, has_arithmetic);
+            if(!has_arithmetic) {
+                sequence[sq_index] = guess;
+                sq_index ++;
+            }
         }
     }
     
