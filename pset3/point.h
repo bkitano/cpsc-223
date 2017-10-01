@@ -15,8 +15,6 @@ typedef struct _point
  * @param p1 a valid point, non-NULL
  * @param p2 a valid point, non-NULL
  * @return the distance between those points
- * 
- * $ done for us
  */
 double point_distance(const point *p1, const point *p2);
 

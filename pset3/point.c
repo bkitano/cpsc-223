@@ -33,14 +33,3 @@ double point_distance(const point *p1, const point *p2)
 {
   return sqrt(pow(p1->x - p2->x, 2) + pow(p1->y - p2->y, 2));
 }
-
-int main(int argc, char **argv) {
-  
-  point a = {3.0, 4.0};
-  point b = {5.0, 6.0};
-  
-  float ans = point_distance(&a, &b);
-
-  printf("dst: %f\n", ans);
-  
-}

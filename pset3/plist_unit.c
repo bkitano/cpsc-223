@@ -5,7 +5,6 @@
 
 int compare_x(const point *p1, const point *p2);
 
-// are these here just so we output without warnings of unused variables?
 void use_int(int);
 void use_bool(bool);
 
