@@ -1,0 +1,42 @@
+Recursive Algorithm:
+1. Take all points, sort them by x coordinate from least to greatest.
+- point[] sorted_list
+
+2. Find the middle, break up listfloato two parts
+- point[] left_sorted_list
+- point[] right_sorted_list
+
+3. Create two lists from each half: one sorted by x and one sorted by y.
+- point[] x_left
+- point[] x_right
+- point[] y_left
+- point[] y_right
+
+Continue until there are sublists of 2 or 3 elements.
+How to recurse down? 
+min(d) = min_left(d-1) || min_right(d-1) || min_band(d-1)
+
+4. In each 3-element sublist, brute force to find the closest pairs, and 
+store their distances.
+- point[] x_left
+- point[] x_right
+- point[] y_left
+- point[] y_right
+-float brute_force_distance(point[] x_left, int size)
+-float x_distance
+-float y_distance
+-float band_width = (x_distance < y_distance) ? x_distance : y_distance
+
+5. Take the middle of the list, create a band with width band_width,
+and a list of all the points in that band, aka with x-coordinate between
+(list_middle - band_width) < x < (list_middle + band_width)
+-float band_width
+-float list_middle
+- point[] band
+- *band_allocator(point[] list, int size, float list_middle, float band_width)
+
+6. Order the band in terms of y coordiantes, and brute force the smallest
+distance. It appears to be O(n^2), but is really O(n). If any distances are 
+less than the band_width, then return that. Else, return band_width.
+- float strip_distance(point[] band, int size, float d)
+
