@@ -7,16 +7,6 @@
 #include "point.h"
 #include "plist.h"
 
-typedef enum {
-  INIT_WHITE,
-  X,
-  X_WHITE,
-  Y,
-  Y_WHITE,
-  INCREMENT,
-  INC_WHITE
-} state;
-
 // The functions below are *suggestions* and as such may be incompletely
 // or overly specified.  Those functions that have the skeleton of a body
 // provided may be incomplete with sections that you must add.
