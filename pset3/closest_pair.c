@@ -7,6 +7,16 @@
 #include "point.h"
 #include "plist.h"
 
+typedef enum {
+  INIT_WHITE,
+  X,
+  X_WHITE,
+  Y,
+  Y_WHITE,
+  INCREMENT,
+  INC_WHITE
+} state;
+
 // The functions below are *suggestions* and as such may be incompletely
 // or overly specified.  Those functions that have the skeleton of a body
 // provided may be incomplete with sections that you must add.
@@ -19,7 +29,20 @@
  * @return a negative number if p1 comes before p2, positive if p1 comes
  * before p2, and 0 if they are the same
  */
-int point_compare_x(const point *p1, const point *p2);
+int point_compare_x(const point *p1, const point *p2) {
+  double x1 = p1->x;
+  double x2 = p2->x;
+  double diff = x1 - x2;
+  
+  if(diff > 0) {
+    return 1;
+  } else if (diff == 0) {
+    return 0;
+  } else {
+    return -1;
+  }
+  
+}
 
 /**
  * Compares the two given points based on y-coordinate.
@@ -29,7 +52,19 @@ int point_compare_x(const point *p1, const point *p2);
  * @return a negative number if p1 comes before p2, positive if p1 comes
  * before p2, and 0 if they are the same
  */
-int point_compare_y(const point *p1, const point *p2);
+int point_compare_y(const point *p1, const point *p2) {
+  double y1 = p1->y;
+  double y2 = p2->y;
+  double diff = y1 - y2;
+  
+  if(diff > 0) {
+    return 1;
+  } else if (diff == 0) {
+    return 0;
+  } else {
+    return -1;
+  }
+}
 
 /**
  * Reads point from the given stream and adds them to the given list.
@@ -38,7 +73,9 @@ int point_compare_y(const point *p1, const point *p2);
  * @param l a pointer to a list
  * @param n a non-negative integer
  */
-void read_points(FILE *stream, plist *l, int n);
+void read_points(FILE *stream, plist *l, int n) {
+  // fscanf
+}
 
 /**
  * Copies the points from the source list to the destination list
@@ -151,7 +188,7 @@ int main(int argc, char **argv)
       return 1;
     }
 
-  // read n
+  // read n, the number of points
   int n;
   fscanf(stdin, "%d", &n);
 
