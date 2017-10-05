@@ -21,6 +21,12 @@ int main(int argc, char **argv) {
         
         fscanf(stdin, "%lf %lf \n", &x, &y);
         
-        printf("%lf, %lf \n", x, y);
+        point t;
+        t.x = x;
+        t.y = y;
+        
+        point_fprintf(stdout, "%.3f\n", &t);
+        
+        // printf("%lf, %lf \n", x, y);
     }
 }
