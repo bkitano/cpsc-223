@@ -124,7 +124,14 @@ bool plist_contains(const plist *l, const point *p) {
  * @param fmt a format specifier string, non-NULL
  * @param l a pointer to a list, non-NULL
  */
-void plist_fprintf(FILE *stream, const char *fmt, const plist *l);
+void plist_fprintf(FILE *stream, const char *fmt, const plist *l) {
+    
+    for(int i = 0; i < l->size; i++) {
+        point * points = l->points;
+        point point = points[i];
+        point_fprintf(stream, fmt, &point);
+    }
+}
 
 /**
  * Sorts the given list using the given comparator.
@@ -135,4 +142,7 @@ void plist_fprintf(FILE *stream, const char *fmt, const plist *l);
  * positive number to indicate the second point comes before the
  * first, and zero if the have the same ordinal value.
  */
-void plist_sort(plist *l, int (*compare)(const point*, const point*));
+void plist_sort(plist *l, int (*compare)(const point*, const point*)) {
+    
+    qsort(l->points, l->size, sizeof(point), compare);
+}

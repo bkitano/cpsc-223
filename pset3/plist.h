@@ -6,11 +6,12 @@
 
 #include "point.h"
 
+struct plist;
 typedef struct plist {
-    int size; // how many elements are in
-    int capacity; // how many elements it can take
-    double distance; // the min distance in the array
-    point * points; // a pointer to a list array
+    int size;
+    int capacity;
+    double distance;
+    point * points;
 } plist;
 
 /**
@@ -21,8 +22,7 @@ typedef struct plist {
 plist *plist_create();
 
 /**
- * Destroys the given list.  The space occupied by the list and all
- * its elements is released.
+ * Destroys the given list.  The list is invalid after it has been destroyed.
  *
  * @param l a pointer to a list, non-NULL
  */
@@ -50,7 +50,7 @@ bool plist_add_end(plist *l, const point *p);
  * given point.  There is no effect if the index is not valid.
  *
  * @param l a pointer to a list, non-NULL
- * @param i an integer
+ * @param i an index into l
  * @param p a pointer to a point, non-NULL
  */
 void plist_get(const plist *l, int i, point *p);
@@ -65,14 +65,9 @@ void plist_get(const plist *l, int i, point *p);
 bool plist_contains(const plist *l, const point *p);
 
 /**
- * Prints the given list to the given stream using the given format
- * for each point.  If there is a newline at the end of the format
- * specifier then that newline is printed once at the end of the list.
- * The list will be enclosed in square brackets and each point in the
- * list will be output in the format printed by
- * <code>point_fprintf</code> when passed the format specifier with
- * the trailing newline removed.  Points will be separated by a comma
- * and a single space.
+ * Prints the given list to the given stream using the given format for
+ * each point.  If there is a newline at the end of the format specifier
+ * then that newline is printed once at the end of the list.
  *
  * @param stream a pointer to astream, non-NULL
  * @param fmt a format specifier string, non-NULL
@@ -83,7 +78,7 @@ void plist_fprintf(FILE *stream, const char *fmt, const plist *l);
 /**
  * Sorts the given list using the given comparator.
  *
- * @param l a pointer to a list, non-NULL
+ * @param l a pointer to a list
  * @param compare a pointer to a function that returns a negative
  * number to indicate the first point comes before the second, a
  * positive number to indicate the second point comes before the
