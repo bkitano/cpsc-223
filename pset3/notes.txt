@@ -39,4 +39,3 @@ and a list of all the points in that band, aka with x-coordinate between
 distance. It appears to be O(n^2), but is really O(n). If any distances are 
 less than the band_width, then return that. Else, return band_width.
 - float strip_distance(point[] band, int size, float d)
-

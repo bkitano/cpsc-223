@@ -4,10 +4,14 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-struct point;
-struct plist;
+#include "point.h"
 
-typedef struct plist plist;
+typedef struct plist {
+    int size; // how many elements are in
+    int capacity; // how many elements it can take
+    double distance; // the min distance in the array
+    point * points; // a pointer to a list array
+} plist;
 
 /**
  * Creates an empty list of points.
