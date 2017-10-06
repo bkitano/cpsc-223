@@ -64,7 +64,19 @@ int point_compare_y(const point *p1, const point *p2) {
  * @param n a non-negative integer
  */
 void read_points(FILE *stream, plist *l, int n) {
-  // fscanf
+  for(int i = 0; i < n; i++) {
+    
+    double x;
+    double y;
+    
+    fscanf(stream, "%lf %lf \n", &x, &y);
+    
+    point t;
+    t.x = x;
+    t.y = y;
+    
+    
+  }
 }
 
 /**

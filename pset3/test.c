@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 #include "point.h"
 #include "plist.h"
@@ -25,8 +26,14 @@ int main(int argc, char **argv) {
         t.x = x;
         t.y = y;
         
-        point_fprintf(stdout, "%.3f\n", &t);
+        // not adding correctly
+        printf("%lf %lf \n", t.x, t.y);
         
-        // printf("%lf, %lf \n", x, y);
+        bool success = plist_add_end(p, &t);
+        printf("%d\n", success);
     }
+    
+    plist_fprintf(stdout, "%.3f\n", p);
+    
+
 }

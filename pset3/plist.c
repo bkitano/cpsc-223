@@ -66,12 +66,9 @@ bool plist_add_end(plist *l, const point *p) {
         }
     }
         
-    else if (l->size < l->capacity) {
-        l->points[l->size] = *p;
-        l->size++;
-        return true;
-    }
-    return false;
+    l->points[l->size] = *p;    
+    l->size++;
+    return true;
 }
 
 /**
