@@ -51,5 +51,5 @@ plist->points is a pointer to an array of points, not of point pointers.
 when you try to access a point in the list, use:
 
 :: point * points = l->points; // get the pointer 
-:: point point = points[i]; // get the point, which is a pointer
+:: point point = points[i]; // get the point
 

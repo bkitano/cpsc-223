@@ -6,12 +6,13 @@
 
 #include "point.h"
 #include "plist.h"
+#include "closest_pair.h"
 
 // The functions below are *suggestions* and as such may be incompletely
 // or overly specified.  Those functions that have the skeleton of a body
 // provided may be incomplete with sections that you must add.
 
-/**
+/** WORKING, TESTED
  * Compares the two given points based on x-coordinate.
  *
  * @param p1 a pointer to a point, non-NULL
@@ -34,7 +35,7 @@ int point_compare_x(const point *p1, const point *p2) {
   
 }
 
-/**
+/** WORKING, TESTED
  * Compares the two given points based on y-coordinate.
  *
  * @param p1 a pointer to a point, non-NULL
@@ -75,18 +76,24 @@ void read_points(FILE *stream, plist *l, int n) {
     t.x = x;
     t.y = y;
     
-    
+    plist_add_end(l, &t);
   }
 }
 
-/**
+/** WORKING, TESTED
  * Copies the points from the source list to the destination list
  * in the order they appear in the destination list.
  *
  * @param dest a pointer to a list, non-NULL
  * @param source a pointer to a list, non-NULL
  */
-void copy_list(plist *dest, const plist* source);
+void copy_list(plist *dest, const plist* source) {
+  for (int i = 0; i < plist_size(source); i++) {
+    
+    point p = source->points[i];
+    plist_add_end(dest, &p);
+  }
+}
 
 /**
  * Returns the closest pair of points among those on the given list.
@@ -99,7 +106,7 @@ void copy_list(plist *dest, const plist* source);
  * @param p2 a pointer to a point, non-NULL
  * @param d a pointer to a double, non-NULL
  */
-void closest_pair(const plist *list_x, const plist *list_y, point *p1, point *p2, double *d);
+// void closest_pair(const plist *list_x, const plist *list_y, point *p1, point *p2, double *d) { }
 
 /**
  * Returns the closest pair of points among those on the given list.
@@ -112,7 +119,45 @@ void closest_pair(const plist *list_x, const plist *list_y, point *p1, point *p2
  * @param p2 a pointer to a point, non-NULL
  * @param d a pointer to a double, non-NULL
  */
-void closest_pair_brute_force(const plist *l, point *p1, point *p2, double *d);
+ 
+ // have a feeling this is going to empty write
+void closest_pair_brute_force(const plist *l, point *p1, point *p2, double *d) {
+  
+  // tally the minimum distance
+  double min = INFINITY;
+  
+  for(int i = 0; i < plist_size(l) - 1; i++) {
+
+    point * a = malloc(sizeof(point));
+    
+    plist_get(l, i, a);
+    
+    for(int j = i + 1; j < plist_size(l); j++) {
+      
+      point * b = malloc(sizeof(point));
+    
+      plist_get(l, j, b);
+      
+      double distance;
+      distance = point_distance(a, b);
+      if(distance < min) {
+        
+        *p1 = *a;
+        *p2 = *b;
+        min = distance;
+        
+        //
+      }
+      free(b);
+    }
+    free(a);
+    
+  }
+  
+  // here, i'm setting the value which d points to as min, thus preserving the value of min beyond the 
+  // scope of the function.
+  *d = min;
+}
 
 /**
  * Splits the given list by adding the leftmost half of the points
@@ -124,7 +169,26 @@ void closest_pair_brute_force(const plist *l, point *p1, point *p2, double *d);
  * @param left a pointer to a list, non-NULL
  * @param right a pointer to a list, non-NULL
  */
-void split_list_x(const plist *l, plist *left, plist *right);
+void split_list_x(const plist *l, plist *left, plist *right) {
+  // l is already sorted !
+  int size = plist_size(l);
+  
+  int tally = size;
+  
+  for(int i = 0 ; i < size / 2; i++) {
+    point * a;
+    plist_get(l, i, a);
+    plist_add_end(left, a);
+    tally--;
+  }
+  
+  for(int i = tally; i < size; i++) {
+    point * a;
+    plist_get(l, i, a);
+    plist_add_end(right, a);
+  }
+  
+}
 
 /**
  * Splits the given list by adding the leftmost half of the points
@@ -143,7 +207,22 @@ void split_list_x(const plist *l, plist *left, plist *right);
  * @param end a pointer to a list, non-NULL
  */
 void split_list_y(const plist *l, const plist *x_left, const plist *x_right,
-		  plist *y_left, plist *y_right);
+		  plist *y_left, plist *y_right) {
+		    
+		    // TODO: THIS IS BRUTEFORCED
+		    plist * temp_x_left;
+		    copy_list(temp_x_left, x_left);
+		    
+		    plist * temp_x_right;
+		    copy_list(temp_x_right, x_right);
+		    
+		    plist_sort(temp_x_left, point_compare_y);
+		    plist_sort(temp_x_right, point_compare_y);
+		    
+		    y_left = temp_x_left;
+		    y_right = temp_x_right;
+		    
+		  }
 
 /**
  * Adds the points in the first given list with x-coordinates in the given
@@ -154,7 +233,14 @@ void split_list_y(const plist *l, const plist *x_left, const plist *x_right,
  * @param left a real number
  * @param right a real number greater than or equal to left
  */
-void make_middle(const plist *list_y, plist *middle, double left, double right);
+void make_middle(const plist *list_y, plist *middle, double left, double right) {
+   // list_y is sorted by y coordinate
+   for (int i = left; i < right; i++) {
+     point * a;
+     plist_get(list_y, i, a);
+     plist_add_end(middle, a);
+   }
+}
 
 /**
  * Searches the given list for a pair of points closer than d units.
@@ -166,8 +252,72 @@ void make_middle(const plist *list_y, plist *middle, double left, double right);
  * @param p2 a pointer to a point, non-NULL
  * @param d a pointer to a positive real number, non-NULL
  */
-void search_middle(const plist *middle, point *p1, point *p2, double *d);
+void search_middle(const plist *middle, point *p1, point *p2, double *d) {
+  
+  double min = INFINITY;
+  
+  for(int i = 0; i < plist_size(middle) - 1; i++) {
+    
+    point * a;
+    plist_get(middle, i, a);
+    for(int j= i + 1; j < plist_size(middle); j++) {
+      point * b;
+      plist_get(middle, i, b);
+      
+      double distance = point_distance(a,b);
+      if(distance < min) {
+        min = distance;
+        p1 = a;
+        p2 = b;
+      }
+    }
+  }
+  
+  *d = min;
+}
 
+void closest_pair(const plist *list_x, const plist *list_y, point *p1, point *p2, double *d)
+{
+  int n = plist_size(list_x);
+    
+  if (n <= 3)
+    {
+      closest_pair_brute_force(list_x, p1, p2, d);
+      return;
+    }
+
+  // make left/right lists
+  plist *x_left, *x_right, *y_left, *y_right;
+  
+  // populate left/right lists
+  split_list_x(list_x, x_left, x_right);
+  split_list_y(list_y, x_left, x_right, y_left, y_right);
+  
+  // recursively find closest pair in two halves and keep the closer of those
+  point p1_left, p2_left;
+  double d_left;
+  closest_pair(x_left, y_left, &p1_left, &p2_left, &d_left);
+  
+  point p1_right, p2_right;
+  double d_right;
+  closest_pair(x_right, y_right, &p1_right, &p2_right, &d_right);
+
+  // determine which pair is closer together
+  
+  // create the list of points in the middle
+  double mid;
+  plist *middle;
+  
+  // populate that list
+  make_middle(list_y, middle, mid - *d, mid + *d);
+
+  // search the list of points in middle for a closer pair
+  search_middle(middle, p1, p2, d);
+
+  // clean up
+}
+
+/* TODO: unblock
 int main(int argc, char **argv)
 {
   // create empty lists
@@ -227,43 +377,4 @@ int main(int argc, char **argv)
 }
 
 
-void closest_pair(const plist *list_x, const plist *list_y, point *p1, point *p2, double *d)
-{
-  int n = plist_size(list_x);
-    
-  if (n <= 3)
-    {
-      closest_pair_brute_force(list_x, p1, p2, d);
-      return;
-    }
-
-  // make left/right lists
-  plist *x_left, *x_right, *y_left, *y_right;
-  
-  // populate left/right lists
-  split_list_x(list_x, x_left, x_right);
-  split_list_y(list_y, x_left, x_right, y_left, y_right);
-  
-  // recursively find closest pair in two halves and keep the closer of those
-  point p1_left, p2_left;
-  double d_left;
-  closest_pair(x_left, y_left, &p1_left, &p2_left, &d_left);
-  
-  point p1_right, p2_right;
-  double d_right;
-  closest_pair(x_right, y_right, &p1_right, &p2_right, &d_right);
-
-  // determine which pair is closer together
-  
-  // create the list of points in the middle
-  double mid;
-  plist *middle;
-  
-  // populate that list
-  make_middle(list_y, middle, mid - *d, mid + *d);
-
-  // search the list of points in middle for a closer pair
-  search_middle(middle, p1, p2, d);
-
-  // clean up
-}
+*/

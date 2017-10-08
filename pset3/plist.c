@@ -81,8 +81,7 @@ bool plist_add_end(plist *l, const point *p) {
  */
 void plist_get(const plist *l, int i, point *p) {
     if(i < l->size) {
-        point * points = l->points;
-        p = &points[i];
+        *p = l->points[i];
     }
 }
 
@@ -122,6 +121,16 @@ bool plist_contains(const plist *l, const point *p) {
  * @param l a pointer to a list, non-NULL
  */
 void plist_fprintf(FILE *stream, const char *fmt, const plist *l) {
+    
+    // if there's a newline at the end of the format specifier
+    
+    // printf("%s \n", fmt);
+    
+    // print once at the end of the list
+    
+    // enclose list in square brackets
+    
+    // points separated by comma and new space
     
     for(int i = 0; i < l->size; i++) {
         point * points = l->points;

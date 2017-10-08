@@ -1,11 +1,10 @@
 
 
-# obviously things go ahead of this
 Plist_Unit: plist_unit.c point.c plist.c
-	c99 -Wall -pedantic -o Plist_Unit plist_unit.c point.c plist.c -lm
+	c99 -Wall -g3 -pedantic -o $@ $^ -lm
 	
 Closest_Pair: closest_pair.c point.c plist.c
-	c99 -Wall -pedantic -o $@ $^ -lm
+	c99 -Wall -g3 -pedantic -o $@ $^ -lm
 	
-Test: test.c point.c plist.c
-	c99 -Wall -pedantic -o $@ $^ -lm
+Test: test.c point.c plist.c closest_pair.c
+	c99 -Wall -g3 -pedantic -o $@ $^ -lm
