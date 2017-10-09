@@ -202,7 +202,7 @@ void split_list_y(const plist *l, const plist *x_left, const plist *x_right,
 
 		  }
 
-/**
+/** TESTED 10.08.17:2327
  * Adds the points in the first given list with x-coordinates in the given
  * range to the second list in order of increasing y-coordinate
  *
@@ -212,11 +212,17 @@ void split_list_y(const plist *l, const plist *x_left, const plist *x_right,
  * @param right a real number greater than or equal to left
  */
 void make_middle(const plist *list_y, plist *middle, double left, double right) {
-   // list_y is sorted by y coordinate
-   for (int i = left; i < right; i++) {
-    
-     plist_add_end(middle, &list_y->points[i]);
-   }
+
+  // x coordinates between left:right inclusive
+  // add to middle
+  
+  for (int i = 0; i < plist_size(list_y); i++) {
+    point t;
+    plist_get(list_y, i, &t);
+    if(t.x >= left && t.x <= right) {
+      plist_add_end(middle, &t);
+    }
+  }
 }
 
 /** TESTED 10.08.17:2140
@@ -271,7 +277,7 @@ void closest_pair(const plist *list_x, const plist *list_y, point *p1, point *p2
 {
   int n = plist_size(list_x);
     
-  if (n <= 3)
+  if (n <= 3) // working
     {
       closest_pair_brute_force(list_x, p1, p2, d);
       return;
@@ -307,15 +313,18 @@ void closest_pair(const plist *list_x, const plist *list_y, point *p1, point *p2
 
   // clean up
 }
-
+/**
+ * Reads everything correctly, sorts correctly
+ * 
+ **/
+ 
+ /*
 int main(int argc, char **argv)
 {
   // create empty lists
-  printf("1\n");
   plist *list_x = plist_create();
   plist *list_y = plist_create();
 
-  printf("2\n");
   if (list_x == NULL || list_y == NULL)
     {
       if (list_x != NULL)
@@ -331,40 +340,32 @@ int main(int argc, char **argv)
       printf("%s: could not allocate lists\n", argv[0]);
       return 1;
     }
-  printf("3\n");
   
   // read n, the number of points
   int n;
   fscanf(stdin, "%d", &n);
-  printf("4\n");
   
   // read into one list
   read_points(stdin, list_x, n);
-  printf("5\n");
   
   // sort list
   plist_sort(list_x, point_compare_x);
-  printf("6\n");
 
   // check for distinctness
   
   // make list_y a copy of list_x
   copy_list(list_y, list_x);
-  printf("7\n");
   
   if (plist_size(list_y) == n)
     {
       // sort the y-list
       plist_sort(list_y, point_compare_y);
-      printf("8\n");
       
-      /*
       point p1, p2;
       double d;
       
       closest_pair(list_x, list_y, &p1, &p2, &d);
       printf("(%f, %f)-(%f, %f)=%f\n", p1.x, p1.y, p2.x, p2.y, d);
-      */
     }
   else
     {
@@ -372,7 +373,7 @@ int main(int argc, char **argv)
       fprintf(stdout, "%s: failed to read points\n", argv[0]);
     }
   
-  printf("9\n");
   plist_destroy(list_x);
   plist_destroy(list_y);
 }
+*/
