@@ -6,6 +6,12 @@
 
 #define LIST_INITIAL_SIZE 2
 
+struct plist {
+    int size;
+    int capacity;
+    point * points;
+};
+
 /**
  * Creates an empty list of points.
  * 

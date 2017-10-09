@@ -336,7 +336,6 @@ void closest_pair(const plist *list_x, const plist *list_y, point *p1, point *p2
 
   // search the list of points in middle for a closer pair
   search_middle(middle, p1, p2, d);
-
   // clean up
 }
 /**
@@ -385,7 +384,6 @@ int main(int argc, char **argv)
     {
       // sort the y-list
       plist_sort(list_y, point_compare_y);
-      
       point p1, p2;
       double d;
       

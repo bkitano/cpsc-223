@@ -6,12 +6,7 @@
 
 #include "point.h"
 
-struct plist;
-typedef struct plist {
-    int size;
-    int capacity;
-    point * points;
-} plist;
+typedef struct plist plist;
 
 /**
  * Creates an empty list of points.
