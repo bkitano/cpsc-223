@@ -21,7 +21,14 @@
  * before p2, and 0 if they are the same
  */
 int point_compare_x(const point *p1, const point *p2) {
-  return (p1->x - p2->x);
+  double t = (p1->x - p2->x);
+  if (t < 0) {
+    return -1;
+  } else if (t > 0) {
+    return 1;
+  } else {
+    return 0;
+  }
 }
 
 /** WORKING, TESTED
@@ -33,7 +40,14 @@ int point_compare_x(const point *p1, const point *p2) {
  * before p2, and 0 if they are the same
  */
 int point_compare_y(const point *p1, const point *p2) {
-  return (p1->y - p2->y);
+  double t = (p1->y - p2->y);
+  if (t < 0) {
+    return -1;
+  } else if (t > 0) {
+    return 1;
+  } else {
+    return 0;
+  }
 }
 
 /**
@@ -189,7 +203,6 @@ void split_list_y(const plist *l, const plist *x_left, const plist *x_right,
 		    
 		    
 		    point mm = {midx, midy};
-		    point_fprintf(stdout, "%.3f\n", &mm);
 		    
 		    for(int i = 0; i < plist_size(l); i++)  {
 		      
@@ -333,7 +346,6 @@ void closest_pair(const plist *list_x, const plist *list_y, point *p1, point *p2
  * 
  **/
  
- /*
 int main(int argc, char **argv)
 {
   // create empty lists
@@ -394,4 +406,3 @@ int main(int argc, char **argv)
   plist_destroy(list_x);
   plist_destroy(list_y);
 }
-*/

@@ -175,15 +175,20 @@ int main(int argc, char **argv) {
 
     split_list_y(list_y, x_left, x_right, y_left, y_right);
     
-    printf("x_left: %d\n", plist_size(x_left));
+    printf("####\nx_list: \n####\n");
+    plist_fprintf(stdout, "%.3f\n", list_x);
+    printf("####\ny_list: \n####\n");
+    plist_fprintf(stdout, "%.3f\n", list_y);
+    
+    printf("####\nx_left: %d\n####\n", plist_size(x_left));
     plist_fprintf(stdout, "%.3f\n", x_left);
-    printf("y_left: %d\n", plist_size(y_left));
+    printf("####\ny_left: %d\n####\n", plist_size(y_left));
     plist_fprintf(stdout, "%.3f\n", y_left);
     printf("\n");
 
-    printf("x_right: %d\n", plist_size(x_right));
+    printf("####\nx_right: %d\n####\n", plist_size(x_right));
     plist_fprintf(stdout, "%.3f\n", x_right);
-    printf("y_right: %d\n", plist_size(y_right));
+    printf("####\ny_right: %d\n####\n", plist_size(y_right));
     plist_fprintf(stdout, "%.3f\n", y_right);
     printf("\n");
     
@@ -193,7 +198,7 @@ int main(int argc, char **argv) {
         plist_get(x_right, i, &t);
         match = match && plist_contains(y_right, &t);
         if (!match) {
-            printf("POINT NOT FOUND: ");
+            printf("POINT NOT FOUND: Original x_right index: %d Point: ", i);
             point_fprintf(stdout, "%.3f\n", &t);
             break;
         }
