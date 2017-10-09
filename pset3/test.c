@@ -148,6 +148,6 @@ int main(int argc, char **argv) {
     // should get 6 outputs
     
     plist_fprintf(stdout, "%.3f\n", middle);
-    * /
+    */
 
 }

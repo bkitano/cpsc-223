@@ -237,7 +237,7 @@ void make_middle(const plist *list_y, plist *middle, double left, double right) 
  */
 void search_middle(const plist *middle, point *p1, point *p2, double *d) {
   
-  double min = INFINITY;
+  double min = *d;
   
   for(int i = 0; i < plist_size(middle) - 1; i++) {
     
@@ -284,7 +284,10 @@ void closest_pair(const plist *list_x, const plist *list_y, point *p1, point *p2
     }
 
   // make left/right lists
-  plist *x_left, *x_right, *y_left, *y_right;
+  plist * x_left = plist_create();
+  plist * x_right = plist_create();
+  plist * y_left = plist_create();
+  plist * y_right = plist_create();
   
   // populate left/right lists
   split_list_x(list_x, x_left, x_right);
@@ -300,10 +303,18 @@ void closest_pair(const plist *list_x, const plist *list_y, point *p1, point *p2
   closest_pair(x_right, y_right, &p1_right, &p2_right, &d_right);
 
   // determine which pair is closer together
+  *d = (d_left <= d_right ? d_left : d_right);
   
   // create the list of points in the middle
   double mid;
-  plist *middle;
+  point x_left_end;
+  plist_get(x_left, plist_size(x_left)-1, &x_left_end);
+  point x_right_beginning;
+  plist_get(x_right, plist_size(x_right)-1, &x_right_beginning);  
+  mid = (x_left_end.x + x_right_beginning.x) / 2.0;
+
+
+  plist *middle = plist_create();
   
   // populate that list
   make_middle(list_y, middle, mid - *d, mid + *d);
@@ -318,7 +329,6 @@ void closest_pair(const plist *list_x, const plist *list_y, point *p1, point *p2
  * 
  **/
  
- /*
 int main(int argc, char **argv)
 {
   // create empty lists
@@ -376,4 +386,3 @@ int main(int argc, char **argv)
   plist_destroy(list_x);
   plist_destroy(list_y);
 }
-*/

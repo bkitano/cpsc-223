@@ -55,7 +55,7 @@ bool plist_add_end(plist *l, const point *p) {
         
         // make plist bigger
         point * larger;
-        int largerCap = (l->capacity * 2 > LIST_INITIAL_SIZE ? l->capacity * 2 : LIST_INITIAL_SIZE);
+        int largerCap = l->capacity * 2;
         larger = (point*) realloc(l->points, largerCap * sizeof(point));
         
         if (larger != NULL) {
