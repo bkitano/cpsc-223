@@ -21,15 +21,7 @@
  * before p2, and 0 if they are the same
  */
 int point_compare_x(const point *p1, const point *p2) {
-  
-  if(p1->x - p2->x > 0) {
-    return 1;
-  } else if (p1->x - p2->x == 0) {
-    return 0;
-  } else {
-    return -1;
-  }
-  
+  return (p1->x - p2->x);
 }
 
 /** WORKING, TESTED

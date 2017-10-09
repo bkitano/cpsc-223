@@ -1,8 +1,6 @@
-#define __CLOSEST_PAIR__
 #ifndef __CLOSEST_PAIR__
+#define __CLOSEST_PAIR__
 
-#include "point.h"
-#include "plist.h"
 
 /**
  * Compares the two given points based on x-coordinate.
