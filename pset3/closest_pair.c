@@ -136,7 +136,7 @@ void split_list_x(const plist *l, plist *left, plist *right) {
   int size = plist_size(l);
   
   int i;
-  for(i = 0 ; i < (size -1) / 2; i++) {
+  for(i = 0 ; i < size / 2; i++) {
     
     point temp1;
     plist_get(l, i, &temp1);
@@ -176,30 +176,35 @@ void split_list_x(const plist *l, plist *left, plist *right) {
 void split_list_y(const plist *l, const plist *x_left, const plist *x_right,
 		  plist *y_left, plist *y_right) {
 		    
-		    int size = plist_size(l);
+		    int size_left = plist_size(x_left);
+		    point ml, mr;
+		    plist_get(x_left, plist_size(x_left) - 1, &ml);
+		    plist_get(x_right, 0, &mr);
+		    double midx = .5*(ml.x + mr.x);
 		    
-		    point mid;
-		    plist_get(l, (size-1) / 2, &mid);
+		    point yl, yr;
+		    plist_get(l, ( plist_size(l)-1 ) / 2, &yl);
+		    plist_get(l, plist_size(l) / 2, &yr);
+		    double midy = .5*(yl.y + yr.y);
 		    
-		    for(int i = 0; i < size; i++) {
+		    
+		    point mm = {midx, midy};
+		    point_fprintf(stdout, "%.3f\n", &mm);
+		    
+		    for(int i = 0; i < plist_size(l); i++)  {
 		      
 		      point t;
+		      plist_get(l, i, &t);
 		      
-		      // O(1)
-		      plist_get(l,i,&t);
-		      
-		      if(t.x < mid.x) {
-		        
-		        // O(1)
+		      if(t.x < midx && plist_size(y_left) < size_left) {
+		        plist_add_end(y_left, &t);
+		      } else if (t.x == midx && t.y < midy) {
 		        plist_add_end(y_left, &t);
 		      } else {
-		        
-		        // O(1)
 		        plist_add_end(y_right, &t);
 		      }
-		      
-		    }
 
+		    }
 		  }
 
 /** TESTED 10.08.17:2327
@@ -313,7 +318,6 @@ void closest_pair(const plist *list_x, const plist *list_y, point *p1, point *p2
   plist_get(x_right, plist_size(x_right)-1, &x_right_beginning);  
   mid = (x_left_end.x + x_right_beginning.x) / 2.0;
 
-
   plist *middle = plist_create();
   
   // populate that list
@@ -329,6 +333,7 @@ void closest_pair(const plist *list_x, const plist *list_y, point *p1, point *p2
  * 
  **/
  
+ /*
 int main(int argc, char **argv)
 {
   // create empty lists
@@ -358,6 +363,9 @@ int main(int argc, char **argv)
   // read into one list
   read_points(stdin, list_x, n);
   
+  plist_fprintf(stdout, "%.3f\n", list_x);
+  printf("%d\n", list_x->capacity);
+
   // sort list
   plist_sort(list_x, point_compare_x);
 
@@ -386,3 +394,4 @@ int main(int argc, char **argv)
   plist_destroy(list_x);
   plist_destroy(list_y);
 }
+*/

@@ -149,5 +149,55 @@ int main(int argc, char **argv) {
     
     plist_fprintf(stdout, "%.3f\n", middle);
     */
+    
+    // super long brute force test
+    // make middle test
+    
+    plist * list_x = plist_create();
+    plist * list_y = plist_create();
+    
+    int n;
+    fscanf(stdin, "%d", &n);
+    
+    read_points(stdin, list_x, n);
+    plist_sort(list_x, point_compare_x);
+    
+    copy_list(list_y, list_x);
+    plist_sort(list_y, point_compare_y);
+    
+    plist * x_left = plist_create();
+    plist * x_right = plist_create();
+    
+    split_list_x(list_x, x_left, x_right);
+    
+    plist * y_left = plist_create();
+    plist * y_right = plist_create();
+
+    split_list_y(list_y, x_left, x_right, y_left, y_right);
+    
+    printf("x_left: %d\n", plist_size(x_left));
+    plist_fprintf(stdout, "%.3f\n", x_left);
+    printf("y_left: %d\n", plist_size(y_left));
+    plist_fprintf(stdout, "%.3f\n", y_left);
+    printf("\n");
+
+    printf("x_right: %d\n", plist_size(x_right));
+    plist_fprintf(stdout, "%.3f\n", x_right);
+    printf("y_right: %d\n", plist_size(y_right));
+    plist_fprintf(stdout, "%.3f\n", y_right);
+    printf("\n");
+    
+    bool match = true;
+    for(int i = 0; i < plist_size(x_right); i++) {
+        point t;
+        plist_get(x_right, i, &t);
+        match = match && plist_contains(y_right, &t);
+        if (!match) {
+            printf("POINT NOT FOUND: ");
+            point_fprintf(stdout, "%.3f\n", &t);
+            break;
+        }
+    }
+    printf("matches: %d\n", match);
 
 }
