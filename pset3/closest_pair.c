@@ -21,13 +21,10 @@
  * before p2, and 0 if they are the same
  */
 int point_compare_x(const point *p1, const point *p2) {
-  double x1 = p1->x;
-  double x2 = p2->x;
-  double diff = x1 - x2;
   
-  if(diff > 0) {
+  if(p1->x - p2->x > 0) {
     return 1;
-  } else if (diff == 0) {
+  } else if (p1->x - p2->x == 0) {
     return 0;
   } else {
     return -1;
@@ -88,6 +85,8 @@ void read_points(FILE *stream, plist *l, int n) {
  * @param source a pointer to a list, non-NULL
  */
 void copy_list(plist *dest, const plist* source) {
+  
+  // TODO: what if the thing we are copying to is not the right size
   for (int i = 0; i < plist_size(source); i++) {
     
     point p = source->points[i];
@@ -108,7 +107,7 @@ void copy_list(plist *dest, const plist* source) {
  */
 // void closest_pair(const plist *list_x, const plist *list_y, point *p1, point *p2, double *d) { }
 
-/**
+/** WORKING, TESTED
  * Returns the closest pair of points among those on the given list.
  * The closest pair are returned in p1 and p2 and their distance is
  * returned in d.  This implementation uses the Theta(n^2) brute force
@@ -128,34 +127,22 @@ void closest_pair_brute_force(const plist *l, point *p1, point *p2, double *d) {
   
   for(int i = 0; i < plist_size(l) - 1; i++) {
 
-    point * a = malloc(sizeof(point));
-    
-    plist_get(l, i, a);
-    
     for(int j = i + 1; j < plist_size(l); j++) {
       
-      point * b = malloc(sizeof(point));
-    
-      plist_get(l, j, b);
-      
       double distance;
-      distance = point_distance(a, b);
+      
+      distance = point_distance(&l->points[i], &l->points[j]);
+      
       if(distance < min) {
         
-        *p1 = *a;
-        *p2 = *b;
+        *p1 = l->points[i];
+        *p2 = l->points[j];
         min = distance;
         
-        //
       }
-      free(b);
     }
-    free(a);
-    
   }
   
-  // here, i'm setting the value which d points to as min, thus preserving the value of min beyond the 
-  // scope of the function.
   *d = min;
 }
 
@@ -173,19 +160,17 @@ void split_list_x(const plist *l, plist *left, plist *right) {
   // l is already sorted !
   int size = plist_size(l);
   
-  int tally = size;
-  
-  for(int i = 0 ; i < size / 2; i++) {
-    point * a;
-    plist_get(l, i, a);
-    plist_add_end(left, a);
-    tally--;
+  int i;
+  for(i = 0 ; i < size / 2; i++) {
+    
+    plist_add_end(left, &l->points[i]);
+    
   }
   
-  for(int i = tally; i < size; i++) {
-    point * a;
-    plist_get(l, i, a);
-    plist_add_end(right, a);
+  for(; i < size; i++) {
+
+    plist_add_end(right, &l->points[i]);
+    
   }
   
 }
@@ -210,10 +195,10 @@ void split_list_y(const plist *l, const plist *x_left, const plist *x_right,
 		  plist *y_left, plist *y_right) {
 		    
 		    // TODO: THIS IS BRUTEFORCED
-		    plist * temp_x_left;
+		    plist * temp_x_left = plist_create();
 		    copy_list(temp_x_left, x_left);
 		    
-		    plist * temp_x_right;
+		    plist * temp_x_right = plist_create();
 		    copy_list(temp_x_right, x_right);
 		    
 		    plist_sort(temp_x_left, point_compare_y);
@@ -236,9 +221,8 @@ void split_list_y(const plist *l, const plist *x_left, const plist *x_right,
 void make_middle(const plist *list_y, plist *middle, double left, double right) {
    // list_y is sorted by y coordinate
    for (int i = left; i < right; i++) {
-     point * a;
-     plist_get(list_y, i, a);
-     plist_add_end(middle, a);
+    
+     plist_add_end(middle, &list_y->points[i]);
    }
 }
 
@@ -258,17 +242,14 @@ void search_middle(const plist *middle, point *p1, point *p2, double *d) {
   
   for(int i = 0; i < plist_size(middle) - 1; i++) {
     
-    point * a;
-    plist_get(middle, i, a);
+    
     for(int j= i + 1; j < plist_size(middle); j++) {
-      point * b;
-      plist_get(middle, i, b);
       
-      double distance = point_distance(a,b);
+      double distance = point_distance(&middle->points[i], &middle->points[j]);
       if(distance < min) {
         min = distance;
-        p1 = a;
-        p2 = b;
+        *p1 = middle->points[i];
+        *p2 = middle->points[j];
       }
     }
   }
@@ -276,6 +257,7 @@ void search_middle(const plist *middle, point *p1, point *p2, double *d) {
   *d = min;
 }
 
+/*
 void closest_pair(const plist *list_x, const plist *list_y, point *p1, point *p2, double *d)
 {
   int n = plist_size(list_x);
@@ -316,6 +298,7 @@ void closest_pair(const plist *list_x, const plist *list_y, point *p1, point *p2
 
   // clean up
 }
+*/
 
 /* TODO: unblock
 int main(int argc, char **argv)

@@ -14,7 +14,6 @@
  */
 int point_compare_x(const point *p1, const point *p2);
 
-
 /**
  * Compares the two given points based on y-coordinate.
  *

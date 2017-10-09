@@ -36,16 +36,26 @@ int main(int argc, char **argv) {
     plist_fprintf(stdout, "%.3f\n", p);
     */
     
+    
     point a = {1, 1};
     point b = {-1, 2};
     point c = {0, -4};
+    point dasdf = {3, 5};
+    point noah = {7, 9};
     
+    // order x: [{-1,2}{0,-4}{1,1}{3,5}]
+    // order y: {{0,-4}{1,1}{-1,2}{3,5}}
+
     plist * w = plist_create();
     
     plist_add_end(w, &a);
     plist_add_end(w, &b);
     plist_add_end(w, &c);
+    plist_add_end(w, &dasdf);
+    plist_add_end(w, &noah);
     
+    /*
+    // brute force test
     point p1;
     point p2;
     double d;
@@ -55,7 +65,24 @@ int main(int argc, char **argv) {
     point_fprintf(stdout, "%.3f\n", &p1);
     point_fprintf(stdout, "%.3f\n", &p2);
     printf("%.3f\n", d);
+    */
     
+    /*
+    plist_sort(w, point_compare_x);
+    
+    plist * left = plist_create();
+    plist * right = plist_create();
+    
+    split_list_x(w, left, right);
+    
+    plist_fprintf(stdout, "w: %.3f\n", w);
+    plist_fprintf(stdout, "l: %.3f\n", left);
+    plist_fprintf(stdout, "r: %.3f\n", right);
+    */
+    
+    plist_sort(w, point_compare_x);
+    plist_fprintf(stdout, "w: %.3f\n", w);
+
     
     return 1;
 
