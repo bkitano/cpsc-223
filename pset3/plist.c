@@ -13,7 +13,6 @@
  */
 plist *plist_create() {
     plist * clist = (plist *) malloc(sizeof(plist));
-    clist->distance = 0;
     clist->size = 0;
     clist->points = malloc(sizeof(point) * LIST_INITIAL_SIZE);
     clist->capacity = LIST_INITIAL_SIZE;
@@ -55,8 +54,9 @@ bool plist_add_end(plist *l, const point *p) {
     if (l->size == l->capacity) {
         
         // make plist bigger
+        point * larger;
         int largerCap = (l->capacity * 2 > LIST_INITIAL_SIZE ? l->capacity * 2 : LIST_INITIAL_SIZE);
-        point *larger = realloc(l->points, largerCap * sizeof(point));
+        larger = (point*) realloc(l->points, largerCap * sizeof(point));
         
         if (larger != NULL) {
             l->points = larger;
@@ -65,9 +65,8 @@ bool plist_add_end(plist *l, const point *p) {
             return false;
         }
     }
-        
     l->points[l->size] = *p;    
-    l->size++;
+    l->size ++;
     return true;
 }
 
@@ -150,5 +149,5 @@ void plist_fprintf(FILE *stream, const char *fmt, const plist *l) {
  */
 void plist_sort(plist *l, int (*compare)(const point*, const point*)) {
     
-    qsort(l->points, l->size, sizeof(point), compare);
+    qsort(l->points, l->size, sizeof(point), (int(*) (const void*, const void*))compare);
 }

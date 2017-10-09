@@ -31,7 +31,7 @@ int main(int argc, char **argv)
 
   plist_get(pts, 1, &p3);
 
-  plist_sort(pts, point_compare_x);
+  plist_sort(pts, compare_x);
 
   plist_fprintf(stdout, "%.3f\n", pts);
 

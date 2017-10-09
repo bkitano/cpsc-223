@@ -54,8 +54,9 @@ int main(int argc, char **argv) {
     plist_add_end(w, &dasdf);
     plist_add_end(w, &noah);
     
-    /*
+    /* TESTED 10.08.18:2130
     // brute force test
+    
     point p1;
     point p2;
     double d;
@@ -67,7 +68,9 @@ int main(int argc, char **argv) {
     printf("%.3f\n", d);
     */
     
-    /*
+    /* TESTED 10.08.17:2133
+    // split_list_x test
+    
     plist_sort(w, point_compare_x);
     
     plist * left = plist_create();
@@ -80,10 +83,40 @@ int main(int argc, char **argv) {
     plist_fprintf(stdout, "r: %.3f\n", right);
     */
     
-    plist_sort(w, point_compare_x);
-    plist_fprintf(stdout, "w: %.3f\n", w);
-
+    /* TESTED 10.08.17:2136
+    // copy_list test
     
+    plist * v = plist_create();
+    copy_list(v, w);
+    plist_fprintf(stdout, "%.3f\n", v);
+    */
+    
+    /* TESTED 10.08.17:2140
+    // search_middle test
+    
+    point p1;
+    point p2;
+    double d;
+    
+    search_middle(w, &p1, &p2, &d);
+    
+    point_fprintf(stdout, "%.3f\n", &p1);
+    point_fprintf(stdout, "%.3f\n", &p2);
+    printf("%.3f\n", d);
+    */
+    
+    // read_points test
+    plist * v = plist_create();
+    
+    int n;
+    fscanf(stdin, "%d", &n);
+    
+    v->size = n;
+    
+    
+    read_points(stdin, v, n);
+    
+    plist_fprintf(stdout, "%.3f\n", v);
     return 1;
 
 }

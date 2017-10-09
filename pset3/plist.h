@@ -10,7 +10,6 @@ struct plist;
 typedef struct plist {
     int size;
     int capacity;
-    double distance;
     point * points;
 } plist;
 
