@@ -170,7 +170,7 @@ void split_list_x(const plist *l, plist *left, plist *right) {
   
 }
 
-/**
+/** TESTED 10.9.17:02:38 
  * Splits the given list by adding the leftmost half of the points
  * in order of increasing y-coordinate to the end of y_left_y and the
  * rightmost half of the points in order of increasing y-coordinate
@@ -201,8 +201,6 @@ void split_list_y(const plist *l, const plist *x_left, const plist *x_right,
 		    plist_get(l, plist_size(l) / 2, &yr);
 		    double midy = .5*(yl.y + yr.y);
 		    
-		    
-		    point mm = {midx, midy};
 		    
 		    for(int i = 0; i < plist_size(l); i++)  {
 		      
@@ -328,8 +326,8 @@ void closest_pair(const plist *list_x, const plist *list_y, point *p1, point *p2
   point x_left_end;
   plist_get(x_left, plist_size(x_left)-1, &x_left_end);
   point x_right_beginning;
-  plist_get(x_right, plist_size(x_right)-1, &x_right_beginning);  
-  mid = (x_left_end.x + x_right_beginning.x) / 2.0;
+  plist_get(x_right, 0, &x_right_beginning);  
+  mid = .5*(x_left_end.x + x_right_beginning.x);
 
   plist *middle = plist_create();
   
@@ -375,9 +373,6 @@ int main(int argc, char **argv)
   // read into one list
   read_points(stdin, list_x, n);
   
-  plist_fprintf(stdout, "%.3f\n", list_x);
-  printf("%d\n", list_x->capacity);
-
   // sort list
   plist_sort(list_x, point_compare_x);
 
