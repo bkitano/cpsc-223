@@ -94,7 +94,7 @@ int main(int argc, char **argv) {
     plist_fprintf(stdout, "%.3f\n", v);
     */
     
-    /* TESTED 10.08.17:2140
+    // /* TESTED 10.08.17:2140
     // search_middle test
     
     point p1;
@@ -106,7 +106,7 @@ int main(int argc, char **argv) {
     point_fprintf(stdout, "%.3f\n", &p1);
     point_fprintf(stdout, "%.3f\n", &p2);
     printf("%.3f\n", d);
-    */
+    // */
     
     /* TESTED 10.08.17:2305
     // read_points test
@@ -152,7 +152,7 @@ int main(int argc, char **argv) {
     
     // super long brute force test
     // make middle test
-    
+    /*
     plist * list_x = plist_create();
     plist * list_y = plist_create();
     
@@ -204,5 +204,5 @@ int main(int argc, char **argv) {
         }
     }
     printf("matches: %d\n", match);
-
+*/
 }

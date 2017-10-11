@@ -73,6 +73,8 @@ bool plist_add_end(plist *l, const point *p) {
     }
     l->points[l->size] = *p;    
     l->size ++;
+    
+    
     return true;
 }
 
