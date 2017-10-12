@@ -131,24 +131,16 @@ bool plist_contains(const plist *l, const point *p) {
 void plist_fprintf(FILE *stream, const char *fmt, const plist *l) {
     
     // if there's a newline at the end of the format specifier
+    int len = strlen(fmt);
+    char newfmt[len + 1];
+    strcpy(newfmt, fmt);
     bool newline = false;
-    int length = strlen(fmt);
-    char newfmt[length];
-    
-    int j;
-    
-    for(int i = 0; i < length; i++) {
-        char c = fmt[i];
-        if (c == '\n') {
-            newline = true;
-        } else {
-            newfmt[i] = fmt[i];
-            j++;
-        }
-    }
-    
-    newfmt[j+1] = '\0'; 
-    
+    if (newfmt[len - 1] == '\n')
+      {
+        newfmt[len - 1] = '\0';
+        newline = true;
+        len--;
+      }
     
     // print once at the end of the list
     

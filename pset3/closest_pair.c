@@ -6,7 +6,7 @@
 
 #include "point.h"
 #include "plist.h"
-#include "closest_pair.h"
+// #include "closest_pair.h"
 
 // The functions below are *suggestions* and as such may be incompletely
 // or overly specified.  Those functions that have the skeleton of a body
@@ -481,4 +481,4 @@ int main(int argc, char **argv)
   plist_destroy(list_y);
 }
 
-// */
+// */ asdf
