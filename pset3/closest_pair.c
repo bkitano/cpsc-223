@@ -144,9 +144,25 @@ void closest_pair_brute_force(const plist *l, point *p1, point *p2, double *d) {
           *p1 = temp2;
           *p2 = temp1;
         }
-        
+      } 
+      
+      // if the distances are the same, go with the smaller coordinate
+      else if (distance == min) {
+        if(temp1.x < p1->x) {
+          *p1 = temp1;
+          *p2 = temp2;
+        } else if (temp1.x == p1->x) {
+            if(temp1.y < p1->y) {
+              *p1 = temp1;
+              *p2 = temp2;
+          } else {
+              *p1 = temp2;
+              *p2 = temp1;
+          }
+        } 
       }
-    }
+      
+    } // end of big if
   }
   *d = min;
   
@@ -284,27 +300,45 @@ void search_middle(const plist *middle, point *p1, point *p2, double *d) {
         
       double distance = point_distance(&temp1, &temp2);
         
-      if(distance < min) {
+       if(distance < min) {
+        
         min = distance;
         
+        // checking the coordinates
         if(temp1.x < temp2.x) {
           *p1 = temp1;
           *p2 = temp2;
         } else if (temp1.x == temp2.x) {
-          if(temp1.y < temp2.y) {
-            *p1 = temp1;
-            *p2 = temp2;
+            if(temp1.y < temp2.y) {
+              *p1 = temp1;
+              *p2 = temp2;
           } else {
-            *p1 = temp2;
-            *p2 = temp1;
+              *p1 = temp2;
+              *p2 = temp1;
           }
         } else {
           *p1 = temp2;
           *p2 = temp1;
         }
-          
+      } 
+      
+      // if the distances are the same, go with the smaller coordinate
+      else if (distance == min) {
+        if(temp1.x < p1->x) {
+          *p1 = temp1;
+          *p2 = temp2;
+        } else if (temp1.x == p1->x) {
+            if(temp1.y < p1->y) {
+              *p1 = temp1;
+              *p2 = temp2;
+          } else {
+              *p1 = temp2;
+              *p2 = temp1;
+          }
+        } 
       }
-    }
+      
+    } // end of big if
   }
   
   *d = min;

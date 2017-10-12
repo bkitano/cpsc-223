@@ -62,7 +62,9 @@ bool plist_contains(const plist *l, const point *p);
 /**
  * Prints the given list to the given stream using the given format for
  * each point.  If there is a newline at the end of the format specifier
- * then that newline is printed once at the end of the list.
+ * then that newline is printed only once at the end of the list.  The
+ * contents of the list are enclosed in [] and each item is separated by
+ * a comma and a single space.
  *
  * @param stream a pointer to astream, non-NULL
  * @param fmt a format specifier string, non-NULL
