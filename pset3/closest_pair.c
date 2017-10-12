@@ -108,9 +108,9 @@ void copy_list(plist *dest, const plist* source) {
  
  // have a feeling this is going to empty write
 void closest_pair_brute_force(const plist *l, point *p1, point *p2, double *d) {
-  printf("bf input: p1: %.3f, %.3f; p2: %.3f, %.3f; d: %.3f\n", p1->x, p1->y, p2->x, p2->y, *d);
-  printf("bf plist:\n");
-  plist_fprintf(stdout, "%.3f\n", l);
+  // printf("bf input: p1: %.3f, %.3f; p2: %.3f, %.3f; d: %.3f\n", p1->x, p1->y, p2->x, p2->y, *d);
+  // printf("bf plist:\n");
+  // plist_fprintf(stdout, "%.3f\n", l);
   
   // tally the minimum distance
   double min = INFINITY;
@@ -121,12 +121,16 @@ void closest_pair_brute_force(const plist *l, point *p1, point *p2, double *d) {
     plist_get(l, i, &temp1);
     
     for(int j = i + 1; j < plist_size(l); j++) {
+      
       point temp2;
       plist_get(l, j, &temp2); 
     
       double distance = point_distance(&temp1, &temp2);
       
       if(distance < min) {
+        
+        min = distance;
+        
         if(temp1.x < temp2.x) {
           *p1 = temp1;
           *p2 = temp2;
@@ -134,15 +138,14 @@ void closest_pair_brute_force(const plist *l, point *p1, point *p2, double *d) {
           *p1 = temp2;
           *p2 = temp1;
         }
-        min = distance;
         
       }
     }
   }
   *d = min;
   
-  printf("bf output: p1: %.3f, %.3f; p2: %.3f, %.3f; d: %.3f\n", p1->x, p1->y, p2->x, p2->y, *d);
-  printf("\n");
+  // printf("bf output: p1: %.3f, %.3f; p2: %.3f, %.3f; d: %.3f\n", p1->x, p1->y, p2->x, p2->y, *d);
+  // printf("\n");
 
 }
 
@@ -239,9 +242,9 @@ void split_list_y(const plist *l, const plist *x_left, const plist *x_right,
  */
 void make_middle(const plist *list_y, plist *middle, double left, double right) {
   
-  printf("make middle left: %.3f, right: %.3f\n", left, right);
-  printf("make middle list:\n");
-  plist_fprintf(stdout, "%3.f\n", list_y);
+  // printf("make middle left: %.3f, right: %.3f\n", left, right);
+  // printf("make middle list:\n");
+  // plist_fprintf(stdout, "%3.f\n", list_y);
 
 
   // x coordinates between left:right inclusive
@@ -255,9 +258,9 @@ void make_middle(const plist *list_y, plist *middle, double left, double right) 
     }
   }
   
-  printf("middle output: %d elements\n", plist_size(middle));
-  plist_fprintf(stdout, "%.3f\n", middle);
-  printf("\n");
+  // printf("middle output: %d elements\n", plist_size(middle));
+  // plist_fprintf(stdout, "%.3f\n", middle);
+  // printf("\n");
 }
 
 /** TESTED 10.08.17:2140
@@ -272,15 +275,16 @@ void make_middle(const plist *list_y, plist *middle, double left, double right) 
  */
 void search_middle(const plist *middle, point *p1, point *p2, double *d) {
   
-  printf("sm point input: p1: %.3f, %.3f; p2: %.3f, %.3f; d: %.3f\n", p1->x, p1->y, p2->x, p2->y, *d);
+  // printf("sm point input: p1: %.3f, %.3f; p2: %.3f, %.3f; d: %.3f\n", p1->x, p1->y, p2->x, p2->y, *d);
 
   // TODO: WHAT IF THE MIDDLE IS EMPTY
-  if(plist_size(middle) == 0) {
-    printf("\n");
-    return;
-  }
-  printf("sm input:\n");
-  plist_fprintf(stdout, "%.3f\n", middle);
+  // if(plist_size(middle) == 0) {
+  //   printf("\n");
+  //   return;
+  // }
+  
+  // printf("sm input:\n");
+  // plist_fprintf(stdout, "%.3f\n", middle);
   
   double min = *d;
   
@@ -291,29 +295,30 @@ void search_middle(const plist *middle, point *p1, point *p2, double *d) {
     
     for(int j= i + 1; j < plist_size(middle); j++) {
       
-    point temp2;
-    plist_get(middle, j, &temp2);
-      
-    double distance = point_distance(&temp1, &temp2);
-      
-    if(distance < min) {
-      min = distance;
-      
-      if(temp1.x < temp2.x) {
-        *p1 = temp1;
-        *p2 = temp2;
-        } else {
-        *p1 = temp2;
-        *p2 = temp1;
-        }
+      point temp2;
+      plist_get(middle, j, &temp2);
         
-      }
+      double distance = point_distance(&temp1, &temp2);
+        
+      if(distance < min) {
+        min = distance;
+        
+        if(temp1.x < temp2.x) {
+          *p1 = temp1;
+          *p2 = temp2;
+          } else {
+          *p1 = temp2;
+          *p2 = temp1;
+          }
+          
+        }
     }
   }
+  
   *d = min;
   
-    printf("sm output: p1: %.3f, %.3f; p2: %.3f, %.3f; d: %.3f\n", p1->x, p1->y, p2->x, p2->y, *d);
-    printf("\n");
+    // printf("sm output: p1: %.3f, %.3f; p2: %.3f, %.3f; d: %.3f\n", p1->x, p1->y, p2->x, p2->y, *d);
+    // printf("\n");
   
 }
 
@@ -350,16 +355,23 @@ void closest_pair(const plist *list_x, const plist *list_y, point *p1, point *p2
   split_list_y(list_y, x_left, x_right, y_left, y_right);
   
   // recursively find closest pair in two halves and keep the closer of those
-  point p1_left, p2_left;
+  point p1_left;
+  point p2_left;
   double d_left;
   closest_pair(x_left, y_left, &p1_left, &p2_left, &d_left);
   
-  point p1_right, p2_right;
+  point p1_right;
+  point p2_right;
   double d_right;
   closest_pair(x_right, y_right, &p1_right, &p2_right, &d_right);
 
   // determine which pair is closer together
   *d = (d_left <= d_right ? d_left : d_right);
+  p1->x = (d_left <= d_right ? p1_left.x : p1_right.x);
+  p1->y = (d_left <= d_right ? p1_left.y : p1_right.y);
+  p2->x = (d_left <= d_right ? p2_left.x : p2_right.x);
+  p2->y = (d_left <= d_right ? p2_left.y : p2_right.y);
+  
   
   // create the list of points in the middle
   double mid;
@@ -429,8 +441,9 @@ int main(int argc, char **argv)
     {
       // sort the y-list
       plist_sort(list_y, point_compare_y);
-      point p1, p2;
-      double d;
+      point p1 = {10,1};
+      point p2 = {0,0};
+      double d = 0;
 
       closest_pair(list_x, list_y, &p1, &p2, &d);
       printf("(%f, %f)-(%f, %f)=%f\n", p1.x, p1.y, p2.x, p2.y, d);

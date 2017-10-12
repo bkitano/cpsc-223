@@ -71,20 +71,43 @@ int main(int argc, char **argv) {
     printf("%.3f\n", d);
     */
     
-    /* TESTED 10.08.17:2133
+    // /* TESTED 10.08.17:2133
     // split_list_x test
+    plist * list_x = plist_create();
+    plist * list_y = plist_create();
     
-    plist_sort(w, point_compare_x);
+    int n;
+    fscanf(stdin, "%d", &n);
     
-    plist * left = plist_create();
-    plist * right = plist_create();
+    read_points(stdin, list_x, n);
     
-    split_list_x(w, left, right);
+    plist_sort(list_x, point_compare_x);
     
-    plist_fprintf(stdout, "w: %.3f\n", w);
-    plist_fprintf(stdout, "l: %.3f\n", left);
-    plist_fprintf(stdout, "r: %.3f\n", right);
-    */
+    copy_list(list_y, list_x);
+    plist_sort(list_y, point_compare_y);
+    
+    plist * x_left = plist_create();
+    plist * x_right = plist_create();
+    
+    plist * y_right = plist_create();
+    plist * y_left = plist_create();
+    
+    split_list_x(list_x, x_left, x_right);
+    
+    split_list_y(list_y, x_left, x_right, y_left, y_right);
+    
+    plist_fprintf(stdout, "w: %.3f\n", list_x);
+    plist_fprintf(stdout, "l: %.3f\n", x_left);
+    plist_fprintf(stdout, "r: %.3f\n", x_right);
+    printf("\n\n");
+    
+    
+    plist_fprintf(stdout, "w: %.3f\n", list_y);
+    plist_fprintf(stdout, "l: %.3f\n", y_left);
+    plist_fprintf(stdout, "r: %.3f\n", y_right);
+    printf("\n\n");
+    
+    // */
     
     /* TESTED 10.08.17:2136
     // copy_list test
@@ -124,7 +147,7 @@ int main(int argc, char **argv) {
     return 1;
     */
     
-    // /* 
+    /* 
     // make middle test
     
     plist * list_x = plist_create();
@@ -148,7 +171,7 @@ int main(int argc, char **argv) {
     // should get 6 outputs
     
     // plist_fprintf(stdout, "%.3f\n", middle);
-    // */
+    */
     
     // super long brute force test
     // make middle test
