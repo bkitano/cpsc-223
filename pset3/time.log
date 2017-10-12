@@ -1,0 +1,104 @@
+Octiber 12, 2017
+finished i dont care
+bkitano committed 3 minutes ago
+1 hr 15 mins
+
+got rid of leaks
+bkitano committed 2 hours ago
+1 hr 27 mins
+ Commits on Oct 11, 2017
+
+found a hidden seg fault
+bkitano committed 23 hours ago
+1 hr 5 mins
+ Commits on Oct 9, 2017
+
+fixed header file
+bkitano committed 4 days ago
+29 mins
+
+passing first test case
+bkitano committed 4 days ago
+17 mins
+
+not sure what noah did but
+bkitano committed 4 days ago
+17 mins
+
+Working on linear time
+bkitano committed 4 days ago
+2 hrs
+
+no seg errors haha nice still shit though
+bkitano committed 4 days ago
+38 mins
+ Commits on Oct 8, 2017
+
+middle working
+bkitano committed 4 days ago
+37 mins
+
+the problem is in closest_pair function yay
+bkitano committed 4 days ago
+1 hr 45 mins
+
+fixed the header bug
+bkitano committed 4 days ago
+24 mins
+
+removed the uninitialized warnings
+bkitano committed 4 days ago
+1 hr 5 mins
+
+some closest pairs functions passing self made tests
+bkitano committed 4 days ago
+3 hrs 42 mins
+ Commits on Oct 5, 2017
+
+adds to the plist correctly; fixed some lazy bugs
+bkitano committed 7 days ago
+25 mins
+
+okay point things are working nice
+bkitano committed 7 days ago
+6 mins
+
+testing with fscanf works ish
+bkitano committed 7 days ago
+31 mins
+
+learning fscanf
+bkitano committed 8 days ago
+1 hr 8 mins
+ Commits on Oct 4, 2017
+
+stuck on qsort compilation warning; moving on to closest_pairs.c functions'
+bkitano committed 8 days ago
+53 mins
+
+i know how to compile and the functions I have written are not creating errors
+bkitano committed 8 days ago
+2 hrs 32 mins
+ Commits on Oct 1, 2017
+
+yah don't change the files given
+bkitano committed 11 days ago
+13 mins
+
+partially understanding the skeleton files
+bkitano committed 12 days ago
+2 hrs 5 mins
+
+TOTAL time: 22 hours, 54 minutes
+
+Paragraph:
+making sure we know where every step occurs was difficult, but doing the rubber duck
+analysis did help. David and I luckily had the same error, so finding the location
+was easier with two people rather than one. I think pointers are very interesting to work
+with, and found allocation and moving things around to be fun and tricky.
+
+
+Who i discussed with:
+David Schwartz
+Noah Ritz
+

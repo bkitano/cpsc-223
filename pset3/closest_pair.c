@@ -365,7 +365,7 @@ void closest_pair(const plist *list_x, const plist *list_y, point *p1, point *p2
   double d_right;
   closest_pair(x_right, y_right, &p1_right, &p2_right, &d_right);
 
-  // determine which pair is closer together
+  // determine which pair is closer together, and keep track of it.
   *d = (d_left <= d_right ? d_left : d_right);
   p1->x = (d_left <= d_right ? p1_left.x : p1_right.x);
   p1->y = (d_left <= d_right ? p1_left.y : p1_right.y);

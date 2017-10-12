@@ -6,6 +6,7 @@
 
 #include "point.h"
 
+struct plist;
 typedef struct plist plist;
 
 /**

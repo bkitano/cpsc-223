@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "point.h"
 #include "plist.h"
@@ -130,19 +131,42 @@ bool plist_contains(const plist *l, const point *p) {
 void plist_fprintf(FILE *stream, const char *fmt, const plist *l) {
     
     // if there's a newline at the end of the format specifier
+    bool newline = false;
+    int length = strlen(fmt);
+    char newfmt[length];
     
-    // printf("%s \n", fmt);
+    int j;
+    
+    for(int i = 0; i < length; i++) {
+        char c = fmt[i];
+        if (c == '\n') {
+            newline = true;
+        } else {
+            newfmt[i] = fmt[i];
+            j++;
+        }
+    }
+    
+    newfmt[j+1] = '\0'; 
+    
     
     // print once at the end of the list
     
     // enclose list in square brackets
     
     // points separated by comma and new space
-    
+    printf("[");
     for(int i = 0; i < l->size; i++) {
         point * points = l->points;
         point point = points[i];
-        point_fprintf(stream, fmt, &point);
+        point_fprintf(stream, newfmt, &point);
+        if(i != l->size - 1) {
+            printf(", ");
+        }
+    }
+    printf("]");
+    if(newline) {
+        printf("\n");
     }
 }
 
