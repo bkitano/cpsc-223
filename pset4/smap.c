@@ -5,6 +5,8 @@
 
 #include "smap.h"
 
+#define SMAP_INITIAL_CAPACITY 3
+
 /**
  * An implementation of a map of strings as an unsorted fixed-size array.
  * This implementation will not meet the requirements of Assignment #4 and
@@ -26,8 +28,6 @@ struct smap
   int (*hash)(const char *);
   entry *table;
 };
-
-#define SMAP_INITIAL_CAPACITY 100
 
 int smap_table_find_key(const entry *table, const char *key, int (*hash)(const char *), int size, int capacity);
 void smap_embiggen(smap *m);
@@ -147,34 +147,77 @@ bool smap_put(smap *m, const char *key, int *value) {
 
 void smap_embiggen(smap *m) {
   
+  printf("old table:\n");
+  for(int i = 0; i < m->capacity; i++) {
+    entry j = m->table[i];
+    printf("key: %s, index: %d\n", j.key, i);
+  }
+  
+  printf("Stage 1: entering embiggen\n");
+  
   // double the capacity, make a temp table of that size
   int larger_capacity = 2 * m->capacity;
-  entry * larger_table = (entry *) realloc(m->table, sizeof(entry) * larger_capacity);
+  int old_capacity = m->capacity;
+  m->capacity = larger_capacity;
+  
+  // create a new, larger table
+  entry * larger_table = (entry *) malloc(sizeof(entry) * larger_capacity);
+  printf("larger_table: %p\n", (void *) larger_table);
+  
+  // create a way to reference the old table
+  entry * old_table = m->table;
+  printf("old_table: %p\n", (void *) old_table);
+
+  // switch the table over to the empty new table
+  m->table = larger_table;
+  m->size = 0;
+  printf("m->table: %p\n", (void *) m->table);
+  
+  printf("Stage 2: just doubled the capacity to %d and malloc'd\n", larger_capacity);
   
   // rehash and reindex every value in the old table
-  for (int old_index = 0; old_index < m->capacity; old_index++) {
+  for (int old_index = 0; old_index < old_capacity; old_index++) {
     
-    entry old_entry = larger_table[old_index];
+    printf("Stage 3: inside the for loop to rehash, old_index = %d\n", old_index);
+    
+    entry old_entry = old_table[old_index];
+    printf("Stage 4: just accessed old_entry (%s) with index %d in the old table \n", old_entry.key, old_index);
+    printf("check: is this slot filled? %d\n", old_entry.filled);
     
     // if there was an entry here
     if(old_entry.filled) {
       
       // rehash it
       int new_index = m->hash(old_entry.key) % larger_capacity;
+      printf("Stage 5: there's a value here, so I smap_put = %d\n", new_index);
       
       // put it in the correct spot
-      larger_table[new_index].key = old_entry.key;
-      larger_table[new_index].value = old_entry.value;
-      larger_table[new_index].filled = true;
+      smap_put(m, old_entry.key, old_entry.value);
+      
+      // need to clear the old stuff, but what if you're overwriting? need a dummy table.
+      // now, since we write to a new empty table, we don't need to clear the old one.
+      // instead, we free the memory?
+
+      printf("Stage 6: since there was something there, I put the old entry in the correct spot\n");
     } else {
       larger_table[old_index].filled = false;
+      printf("Stage 7: since there was nothing there, I reset the filled values to false\n");
     }
     
   }
   
+  printf("Stage 8: finished iterating through all the values\n");
   // switch the pointers
-  m->table = larger_table;
-  m->capacity = larger_capacity;
+
+  printf("Stage 10: finished, exiting\n");
+  
+  printf("new table:\n");
+  for(int i = 0; i < m->capacity; i++) {
+    entry j = m->table[i];
+    printf("key: %s, index: %d\n", j.key, i);
+  }
+  
+  printf("\n");
 }
 
 bool smap_contains_key(const smap *m, const char *key) {
@@ -244,4 +287,23 @@ int hash(const char * word) {
     
     return (38183 * sum);
 }
+
+/*
+int main(int argc, char **argv) {
+  smap * m = smap_create(hash);
+  
+  for (int i = 1; i < argc; i++) {
+    
+    int * j = malloc(sizeof(int));
+    *j = i;
+    smap_put(m, argv[i], j);
+    
+  }
+  
+  // clearing
+  printf("%d\n", smap_size(m));
+
+  return 1;
+}
+*/
 

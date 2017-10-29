@@ -1,16 +1,726 @@
-What happens to a dream deferred?
+old table:
+key: (null), index: 0
+key: (null), index: 1
+key: a, index: 2
+Stage 1: entering embiggen
+larger_table: 0x8e10e0
+old_table: 0x8e1030
+m->table: 0x8e10e0
+Stage 2: just doubled the capacity to 6 and malloc'd
+Stage 3: inside the for loop to rehash, old_index = 0
+Stage 4: just accessed old_entry ((null)) with index 0 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 1
+Stage 4: just accessed old_entry ((null)) with index 1 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 2
+Stage 4: just accessed old_entry (a) with index 2 in the old table 
+check: is this slot filled? 1
+Stage 5: there's a value here, so I smap_put = 5
+Stage 6: since there was something there, I put the old entry in the correct spot
+Stage 8: finished iterating through all the values
+Stage 10: finished, exiting
+new table:
+key: (null), index: 0
+key: (null), index: 1
+key: (null), index: 2
+key: (null), index: 3
+key: (null), index: 4
+key: a, index: 5
 
-      Does it dry up
-      like a raisin in the sun?
-      Or fester like a sore—
-      And then run?
-      Does it stink like rotten meat?
-      Or crust and sugar over—
-      like a syrupy sweet?
+old table:
+key: (null), index: 0
+key: (null), index: 1
+key: (null), index: 2
+key: (null), index: 3
+key: b, index: 4
+key: a, index: 5
+Stage 1: entering embiggen
+larger_table: 0x8e11e0
+old_table: 0x8e10e0
+m->table: 0x8e11e0
+Stage 2: just doubled the capacity to 12 and malloc'd
+Stage 3: inside the for loop to rehash, old_index = 0
+Stage 4: just accessed old_entry ((null)) with index 0 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 1
+Stage 4: just accessed old_entry ((null)) with index 1 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 2
+Stage 4: just accessed old_entry ((null)) with index 2 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 3
+Stage 4: just accessed old_entry ((null)) with index 3 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 4
+Stage 4: just accessed old_entry (b) with index 4 in the old table 
+check: is this slot filled? 1
+Stage 5: there's a value here, so I smap_put = 10
+Stage 6: since there was something there, I put the old entry in the correct spot
+Stage 3: inside the for loop to rehash, old_index = 5
+Stage 4: just accessed old_entry (a) with index 5 in the old table 
+check: is this slot filled? 1
+Stage 5: there's a value here, so I smap_put = 11
+Stage 6: since there was something there, I put the old entry in the correct spot
+Stage 8: finished iterating through all the values
+Stage 10: finished, exiting
+new table:
+key: (null), index: 0
+key: (null), index: 1
+key: (null), index: 2
+key: (null), index: 3
+key: (null), index: 4
+key: (null), index: 5
+key: (null), index: 6
+key: (null), index: 7
+key: (null), index: 8
+key: (null), index: 9
+key: b, index: 10
+key: a, index: 11
 
-      Maybe it just sags
-      like a heavy load.
+old table:
+key: (null), index: 0
+key: (null), index: 1
+key: (null), index: 2
+key: (null), index: 3
+key: (null), index: 4
+key: (null), index: 5
+key: (null), index: 6
+key: (null), index: 7
+key: (null), index: 8
+key: c, index: 9
+key: b, index: 10
+key: a, index: 11
+Stage 1: entering embiggen
+larger_table: 0x8e1390
+old_table: 0x8e11e0
+m->table: 0x8e1390
+Stage 2: just doubled the capacity to 24 and malloc'd
+Stage 3: inside the for loop to rehash, old_index = 0
+Stage 4: just accessed old_entry ((null)) with index 0 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 1
+Stage 4: just accessed old_entry ((null)) with index 1 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 2
+Stage 4: just accessed old_entry ((null)) with index 2 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 3
+Stage 4: just accessed old_entry ((null)) with index 3 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 4
+Stage 4: just accessed old_entry ((null)) with index 4 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 5
+Stage 4: just accessed old_entry ((null)) with index 5 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 6
+Stage 4: just accessed old_entry ((null)) with index 6 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 7
+Stage 4: just accessed old_entry ((null)) with index 7 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 8
+Stage 4: just accessed old_entry ((null)) with index 8 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 9
+Stage 4: just accessed old_entry (c) with index 9 in the old table 
+check: is this slot filled? 1
+Stage 5: there's a value here, so I smap_put = 21
+Stage 6: since there was something there, I put the old entry in the correct spot
+Stage 3: inside the for loop to rehash, old_index = 10
+Stage 4: just accessed old_entry (b) with index 10 in the old table 
+check: is this slot filled? 1
+Stage 5: there's a value here, so I smap_put = 22
+Stage 6: since there was something there, I put the old entry in the correct spot
+Stage 3: inside the for loop to rehash, old_index = 11
+Stage 4: just accessed old_entry (a) with index 11 in the old table 
+check: is this slot filled? 1
+Stage 5: there's a value here, so I smap_put = 23
+Stage 6: since there was something there, I put the old entry in the correct spot
+Stage 8: finished iterating through all the values
+Stage 10: finished, exiting
+new table:
+key: (null), index: 0
+key: (null), index: 1
+key: (null), index: 2
+key: (null), index: 3
+key: (null), index: 4
+key: (null), index: 5
+key: (null), index: 6
+key: (null), index: 7
+key: (null), index: 8
+key: (null), index: 9
+key: (null), index: 10
+key: (null), index: 11
+key: (null), index: 12
+key: (null), index: 13
+key: (null), index: 14
+key: (null), index: 15
+key: (null), index: 16
+key: (null), index: 17
+key: (null), index: 18
+key: (null), index: 19
+key: (null), index: 20
+key: c, index: 21
+key: b, index: 22
+key: a, index: 23
 
-      Or does it explode?
+old table:
+key: (null), index: 0
+key: (null), index: 1
+key: (null), index: 2
+key: (null), index: 3
+key: (null), index: 4
+key: (null), index: 5
+key: (null), index: 6
+key: (null), index: 7
+key: (null), index: 8
+key: (null), index: 9
+key: (null), index: 10
+key: (null), index: 11
+key: (null), index: 12
+key: (null), index: 13
+key: (null), index: 14
+key: (null), index: 15
+key: (null), index: 16
+key: (null), index: 17
+key: f, index: 18
+key: e, index: 19
+key: d, index: 20
+key: c, index: 21
+key: b, index: 22
+key: a, index: 23
+Stage 1: entering embiggen
+larger_table: 0x8e1700
+old_table: 0x8e1390
+m->table: 0x8e1700
+Stage 2: just doubled the capacity to 48 and malloc'd
+Stage 3: inside the for loop to rehash, old_index = 0
+Stage 4: just accessed old_entry ((null)) with index 0 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 1
+Stage 4: just accessed old_entry ((null)) with index 1 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 2
+Stage 4: just accessed old_entry ((null)) with index 2 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 3
+Stage 4: just accessed old_entry ((null)) with index 3 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 4
+Stage 4: just accessed old_entry ((null)) with index 4 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 5
+Stage 4: just accessed old_entry ((null)) with index 5 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 6
+Stage 4: just accessed old_entry ((null)) with index 6 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 7
+Stage 4: just accessed old_entry ((null)) with index 7 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 8
+Stage 4: just accessed old_entry ((null)) with index 8 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 9
+Stage 4: just accessed old_entry ((null)) with index 9 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 10
+Stage 4: just accessed old_entry ((null)) with index 10 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 11
+Stage 4: just accessed old_entry ((null)) with index 11 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 12
+Stage 4: just accessed old_entry ((null)) with index 12 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 13
+Stage 4: just accessed old_entry ((null)) with index 13 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 14
+Stage 4: just accessed old_entry ((null)) with index 14 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 15
+Stage 4: just accessed old_entry ((null)) with index 15 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 16
+Stage 4: just accessed old_entry ((null)) with index 16 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 17
+Stage 4: just accessed old_entry ((null)) with index 17 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 18
+Stage 4: just accessed old_entry (f) with index 18 in the old table 
+check: is this slot filled? 1
+Stage 5: there's a value here, so I smap_put = 42
+Stage 6: since there was something there, I put the old entry in the correct spot
+Stage 3: inside the for loop to rehash, old_index = 19
+Stage 4: just accessed old_entry (e) with index 19 in the old table 
+check: is this slot filled? 1
+Stage 5: there's a value here, so I smap_put = 19
+Stage 6: since there was something there, I put the old entry in the correct spot
+Stage 3: inside the for loop to rehash, old_index = 20
+Stage 4: just accessed old_entry (d) with index 20 in the old table 
+check: is this slot filled? 1
+Stage 5: there's a value here, so I smap_put = 44
+Stage 6: since there was something there, I put the old entry in the correct spot
+Stage 3: inside the for loop to rehash, old_index = 21
+Stage 4: just accessed old_entry (c) with index 21 in the old table 
+check: is this slot filled? 1
+Stage 5: there's a value here, so I smap_put = 21
+Stage 6: since there was something there, I put the old entry in the correct spot
+Stage 3: inside the for loop to rehash, old_index = 22
+Stage 4: just accessed old_entry (b) with index 22 in the old table 
+check: is this slot filled? 1
+Stage 5: there's a value here, so I smap_put = 46
+Stage 6: since there was something there, I put the old entry in the correct spot
+Stage 3: inside the for loop to rehash, old_index = 23
+Stage 4: just accessed old_entry (a) with index 23 in the old table 
+check: is this slot filled? 1
+Stage 5: there's a value here, so I smap_put = 23
+Stage 6: since there was something there, I put the old entry in the correct spot
+Stage 8: finished iterating through all the values
+Stage 10: finished, exiting
+new table:
+key: (null), index: 0
+key: (null), index: 1
+key: (null), index: 2
+key: (null), index: 3
+key: (null), index: 4
+key: (null), index: 5
+key: (null), index: 6
+key: (null), index: 7
+key: (null), index: 8
+key: (null), index: 9
+key: (null), index: 10
+key: (null), index: 11
+key: (null), index: 12
+key: (null), index: 13
+key: (null), index: 14
+key: (null), index: 15
+key: (null), index: 16
+key: (null), index: 17
+key: (null), index: 18
+key: e, index: 19
+key: (null), index: 20
+key: c, index: 21
+key: (null), index: 22
+key: a, index: 23
+key: (null), index: 24
+key: (null), index: 25
+key: (null), index: 26
+key: (null), index: 27
+key: (null), index: 28
+key: (null), index: 29
+key: (null), index: 30
+key: (null), index: 31
+key: (null), index: 32
+key: (null), index: 33
+key: (null), index: 34
+key: (null), index: 35
+key: (null), index: 36
+key: (null), index: 37
+key: (null), index: 38
+key: (null), index: 39
+key: (null), index: 40
+key: (null), index: 41
+key: f, index: 42
+key: (null), index: 43
+key: d, index: 44
+key: (null), index: 45
+key: b, index: 46
+key: (null), index: 47
 
--contains explode
+old table:
+key: (null), index: 0
+key: w, index: 1
+key: (null), index: 2
+key: u, index: 3
+key: (null), index: 4
+key: (null), index: 5
+key: (null), index: 6
+key: q, index: 7
+key: (null), index: 8
+key: (null), index: 9
+key: (null), index: 10
+key: (null), index: 11
+key: (null), index: 12
+key: (null), index: 13
+key: (null), index: 14
+key: (null), index: 15
+key: (null), index: 16
+key: (null), index: 17
+key: (null), index: 18
+key: e, index: 19
+key: (null), index: 20
+key: c, index: 21
+key: (null), index: 22
+key: a, index: 23
+key: (null), index: 24
+key: (null), index: 25
+key: (null), index: 26
+key: (null), index: 27
+key: t, index: 28
+key: (null), index: 29
+key: r, index: 30
+key: (null), index: 31
+key: (null), index: 32
+key: (null), index: 33
+key: (null), index: 34
+key: (null), index: 35
+key: (null), index: 36
+key: (null), index: 37
+key: (null), index: 38
+key: (null), index: 39
+key: (null), index: 40
+key: (null), index: 41
+key: f, index: 42
+key: (null), index: 43
+key: d, index: 44
+key: (null), index: 45
+key: b, index: 46
+key: y, index: 47
+Stage 1: entering embiggen
+larger_table: 0x8e1e30
+old_table: 0x8e1700
+m->table: 0x8e1e30
+Stage 2: just doubled the capacity to 96 and malloc'd
+Stage 3: inside the for loop to rehash, old_index = 0
+Stage 4: just accessed old_entry ((null)) with index 0 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 1
+Stage 4: just accessed old_entry (w) with index 1 in the old table 
+check: is this slot filled? 1
+Stage 5: there's a value here, so I smap_put = 1
+Stage 6: since there was something there, I put the old entry in the correct spot
+Stage 3: inside the for loop to rehash, old_index = 2
+Stage 4: just accessed old_entry ((null)) with index 2 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 3
+Stage 4: just accessed old_entry (u) with index 3 in the old table 
+check: is this slot filled? 1
+Stage 5: there's a value here, so I smap_put = 51
+Stage 6: since there was something there, I put the old entry in the correct spot
+Stage 3: inside the for loop to rehash, old_index = 4
+Stage 4: just accessed old_entry ((null)) with index 4 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 5
+Stage 4: just accessed old_entry ((null)) with index 5 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 6
+Stage 4: just accessed old_entry ((null)) with index 6 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 7
+Stage 4: just accessed old_entry (q) with index 7 in the old table 
+check: is this slot filled? 1
+Stage 5: there's a value here, so I smap_put = 55
+Stage 6: since there was something there, I put the old entry in the correct spot
+Stage 3: inside the for loop to rehash, old_index = 8
+Stage 4: just accessed old_entry ((null)) with index 8 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 9
+Stage 4: just accessed old_entry ((null)) with index 9 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 10
+Stage 4: just accessed old_entry ((null)) with index 10 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 11
+Stage 4: just accessed old_entry ((null)) with index 11 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 12
+Stage 4: just accessed old_entry ((null)) with index 12 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 13
+Stage 4: just accessed old_entry ((null)) with index 13 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 14
+Stage 4: just accessed old_entry ((null)) with index 14 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 15
+Stage 4: just accessed old_entry ((null)) with index 15 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 16
+Stage 4: just accessed old_entry ((null)) with index 16 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 17
+Stage 4: just accessed old_entry ((null)) with index 17 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 18
+Stage 4: just accessed old_entry ((null)) with index 18 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 19
+Stage 4: just accessed old_entry (e) with index 19 in the old table 
+check: is this slot filled? 1
+Stage 5: there's a value here, so I smap_put = 67
+Stage 6: since there was something there, I put the old entry in the correct spot
+Stage 3: inside the for loop to rehash, old_index = 20
+Stage 4: just accessed old_entry ((null)) with index 20 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 21
+Stage 4: just accessed old_entry (c) with index 21 in the old table 
+check: is this slot filled? 1
+Stage 5: there's a value here, so I smap_put = 21
+Stage 6: since there was something there, I put the old entry in the correct spot
+Stage 3: inside the for loop to rehash, old_index = 22
+Stage 4: just accessed old_entry ((null)) with index 22 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 23
+Stage 4: just accessed old_entry (a) with index 23 in the old table 
+check: is this slot filled? 1
+Stage 5: there's a value here, so I smap_put = 71
+Stage 6: since there was something there, I put the old entry in the correct spot
+Stage 3: inside the for loop to rehash, old_index = 24
+Stage 4: just accessed old_entry ((null)) with index 24 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 25
+Stage 4: just accessed old_entry ((null)) with index 25 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 26
+Stage 4: just accessed old_entry ((null)) with index 26 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 27
+Stage 4: just accessed old_entry ((null)) with index 27 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 28
+Stage 4: just accessed old_entry (t) with index 28 in the old table 
+check: is this slot filled? 1
+Stage 5: there's a value here, so I smap_put = 76
+Stage 6: since there was something there, I put the old entry in the correct spot
+Stage 3: inside the for loop to rehash, old_index = 29
+Stage 4: just accessed old_entry ((null)) with index 29 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 30
+Stage 4: just accessed old_entry (r) with index 30 in the old table 
+check: is this slot filled? 1
+Stage 5: there's a value here, so I smap_put = 30
+Stage 6: since there was something there, I put the old entry in the correct spot
+Stage 3: inside the for loop to rehash, old_index = 31
+Stage 4: just accessed old_entry ((null)) with index 31 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 32
+Stage 4: just accessed old_entry ((null)) with index 32 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 33
+Stage 4: just accessed old_entry ((null)) with index 33 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 34
+Stage 4: just accessed old_entry ((null)) with index 34 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 35
+Stage 4: just accessed old_entry ((null)) with index 35 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 36
+Stage 4: just accessed old_entry ((null)) with index 36 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 37
+Stage 4: just accessed old_entry ((null)) with index 37 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 38
+Stage 4: just accessed old_entry ((null)) with index 38 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 39
+Stage 4: just accessed old_entry ((null)) with index 39 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 40
+Stage 4: just accessed old_entry ((null)) with index 40 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 41
+Stage 4: just accessed old_entry ((null)) with index 41 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 42
+Stage 4: just accessed old_entry (f) with index 42 in the old table 
+check: is this slot filled? 1
+Stage 5: there's a value here, so I smap_put = 42
+Stage 6: since there was something there, I put the old entry in the correct spot
+Stage 3: inside the for loop to rehash, old_index = 43
+Stage 4: just accessed old_entry ((null)) with index 43 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 44
+Stage 4: just accessed old_entry (d) with index 44 in the old table 
+check: is this slot filled? 1
+Stage 5: there's a value here, so I smap_put = 92
+Stage 6: since there was something there, I put the old entry in the correct spot
+Stage 3: inside the for loop to rehash, old_index = 45
+Stage 4: just accessed old_entry ((null)) with index 45 in the old table 
+check: is this slot filled? 0
+Stage 7: since there was nothing there, I reset the filled values to false
+Stage 3: inside the for loop to rehash, old_index = 46
+Stage 4: just accessed old_entry (b) with index 46 in the old table 
+check: is this slot filled? 1
+Stage 5: there's a value here, so I smap_put = 46
+Stage 6: since there was something there, I put the old entry in the correct spot
+Stage 3: inside the for loop to rehash, old_index = 47
+Stage 4: just accessed old_entry (y) with index 47 in the old table 
+check: is this slot filled? 1
+Stage 5: there's a value here, so I smap_put = 47
+Stage 6: since there was something there, I put the old entry in the correct spot
+Stage 8: finished iterating through all the values
+Stage 10: finished, exiting
+new table:
+key: (null), index: 0
+key: w, index: 1
+key: (null), index: 2
+key: (null), index: 3
+key: (null), index: 4
+key: (null), index: 5
+key: (null), index: 6
+key: (null), index: 7
+key: (null), index: 8
+key: (null), index: 9
+key: (null), index: 10
+key: (null), index: 11
+key: (null), index: 12
+key: (null), index: 13
+key: (null), index: 14
+key: (null), index: 15
+key: (null), index: 16
+key: (null), index: 17
+key: (null), index: 18
+key: (null), index: 19
+key: (null), index: 20
+key: c, index: 21
+key: (null), index: 22
+key: (null), index: 23
+key: (null), index: 24
+key: (null), index: 25
+key: (null), index: 26
+key: (null), index: 27
+key: (null), index: 28
+key: (null), index: 29
+key: r, index: 30
+key: (null), index: 31
+key: (null), index: 32
+key: (null), index: 33
+key: (null), index: 34
+key: (null), index: 35
+key: (null), index: 36
+key: (null), index: 37
+key: (null), index: 38
+key: (null), index: 39
+key: (null), index: 40
+key: (null), index: 41
+key: f, index: 42
+key: (null), index: 43
+key: (null), index: 44
+key: (null), index: 45
+key: b, index: 46
+key: y, index: 47
+key: (null), index: 48
+key: (null), index: 49
+key: (null), index: 50
+key: u, index: 51
+key: (null), index: 52
+key: (null), index: 53
+key: (null), index: 54
+key: q, index: 55
+key: (null), index: 56
+key: (null), index: 57
+key: (null), index: 58
+key: (null), index: 59
+key: (null), index: 60
+key: (null), index: 61
+key: (null), index: 62
+key: (null), index: 63
+key: (null), index: 64
+key: (null), index: 65
+key: (null), index: 66
+key: e, index: 67
+key: (null), index: 68
+key: (null), index: 69
+key: (null), index: 70
+key: a, index: 71
+key: (null), index: 72
+key: (null), index: 73
+key: (null), index: 74
+key: (null), index: 75
+key: t, index: 76
+key: (null), index: 77
+key: (null), index: 78
+key: (null), index: 79
+key: (null), index: 80
+key: (null), index: 81
+key: (null), index: 82
+key: (null), index: 83
+key: (null), index: 84
+key: (null), index: 85
+key: (null), index: 86
+key: (null), index: 87
+key: (null), index: 88
+key: (null), index: 89
+key: (null), index: 90
+key: (null), index: 91
+key: d, index: 92
+key: (null), index: 93
+key: (null), index: 94
+key: (null), index: 95
+
+39

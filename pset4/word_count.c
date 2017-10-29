@@ -24,30 +24,34 @@ int really_bad_string_hash(const char *key);
 int main(int argc, char **argv)
 {
   smap *counts = smap_create(really_bad_string_hash);
-  if (counts == NULL) {
+  if (counts == NULL)
+    {
       return 1;
-  }
+    }
 
   int a = 1;
-  
-  while (a < argc && strcmp(argv[a], "-contains") != 0) {
-    int *old_count = smap_get(counts, argv[a]);
-    
-    if (old_count == NULL) {
+  while (a < argc && strcmp(argv[a], "-contains") != 0)
+    {
+      int *old_count = smap_get(counts, argv[a]);
+      if (old_count == NULL)
+	{
 	  // word was not present
-  	  int *one = malloc(sizeof(int));
-  	  *one = 1;
+	  int *one = malloc(sizeof(int));
+	  *one = 1;
 
-  	  if (!smap_put(counts, argv[a], one)) {
+	  if (!smap_put(counts, argv[a], one))
+	    {
 	      free(one);
 	    }
-    } else {
-  	  // word was already present
-  	  *old_count = *old_count + 1;
-  	  smap_put(counts, argv[a], old_count);
-	  }
-	  a++;
-  } //end of while
+	}
+      else
+	{
+	  // word was already present
+	  *old_count = *old_count + 1;
+	  smap_put(counts, argv[a], old_count);
+	}
+      a++;
+    }
 
   printf("=== Counts ===\n");
   smap_for_each(counts, print_entry);
