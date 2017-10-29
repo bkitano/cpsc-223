@@ -1,6 +1,12 @@
 CC = gcc
 CFLAGS = -std=c99 -Wall -g3 -pedantic
 
+Cooccur: cooccur.o smap.o
+	${CC} ${CCFLAGS} -o $@ $^
+	
+cooccur.o: cooccur.c smap.h
+	${CC} ${CCFLAGS} -c $^
+
 SmapTest: smap.o
 	${CC} ${CCFLAGS} -o $@ $^
 
