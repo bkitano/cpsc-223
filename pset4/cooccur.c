@@ -189,7 +189,23 @@ char **cooccur_read_context(cooccurrence_matrix *mat, FILE *stream, int *n) {
  * @param word a string, non-NULL
  * @return an array of doubles; it is the caller's responsibility to deallocate that array
  */
-double *cooccur_get_vector(cooccurrence_matrix *mat, const char *word);
+double *cooccur_get_vector(cooccurrence_matrix *mat, const char *word) {
+    // get the row
+    int * row = smap_get(mat->table, word);
+    
+    // cast all the entries as doubles
+    double * drow = malloc(sizeof(double) * mat->n);
+    
+    int sum = 0;
+    for(int i = 0; i < mat->n; i++) {
+        sum += row[i];
+    }
+    for(int i = 0; i < mat->n; i++) {
+        drow[i] = (double) row[i] / (double) sum;
+    }
+    
+    return drow;
+}
 
 /**
  * Destroys the given matrix.
@@ -246,11 +262,30 @@ int hash(const char * word) {
 
 int main(int argc, char **argv) {
     
-    char *key[2] = {"sun", "shine"};
+    char **keywords = malloc(sizeof(char *) * (argc-1));
     
-    cooccurrence_matrix * c = cooccur_create(key, 2);
+    if(keywords != NULL) {
+        
+        for(int i = 1; i < argc; i++) {
+            
+            char * copy = malloc(strlen(argv[i]) + 1);
+            
+            if(copy != NULL) {
+                strcpy(copy, argv[i]);
+                keywords[i-1] = copy;
+            }
+        }
+        
+        for(int i = 0; i < (argc - 1); i++) {
+            printf("%s\n", keywords[i]);
+            free(keywords[i]);
+        }
+        free(keywords);
+    }
     
-    /*
+    // cooccurrence_matrix * c = cooccur_create(keywords, 2);
+    
+    /* // update test
     char *context[4] = {"ghjk", "qwer", "asdf", "qwer"};
     
     cooccur_update(c, context, 4);
@@ -274,6 +309,7 @@ int main(int argc, char **argv) {
     }
     */
     
+    /* // read_context test
     printf("stage a\n");
     int n;
     char **context = cooccur_read_context(c, stdin, &n);
@@ -290,8 +326,9 @@ int main(int argc, char **argv) {
         free(context[i]);
     }
     free(context);
+    */
     
-    cooccur_destroy(c);
+    // cooccur_destroy(c);
 
     return 1;
 }
