@@ -272,10 +272,10 @@ int main(int argc, char **argv) {
     
     if(keywords != NULL) {
         
+        // WORKS
         for(int i = 1; i < argc; i++) {
             
             char * copy = malloc(strlen(argv[i]) + 1);
-            
             if(copy != NULL) {
                 strcpy(copy, argv[i]);
                 keywords[i-1] = copy;
@@ -286,31 +286,64 @@ int main(int argc, char **argv) {
         // create a cooccurrence_matrix
         cooccurrence_matrix * c = cooccur_create(keywords, n);
         
+        /*
+        // check if it instantiated properly
+        for(int i = 0; i < c->n; i ++) {
+            
+            // check to make sure indexing and ordered access works WORKS
+            printf("keyword %s to index %d\n", c->keywords[i], *smap_get(c->keyword_indexer, c->keywords[i]));
+            printf("index %d to keyword %s\n ", i, c->keywords[i]);
+            
+            
+            
+            // check to make sure everything has an array WORKS
+            printf("%s vector at instantiation: [", c->keywords[i]);
+            int * vector = smap_get(c->table, c->keywords[i]);
+            for(int j=0; j < n; j++) {
+                printf("%d ", vector[j]);
+            }
+            printf("]\n");
+            
+            
+        }
+        printf("n: %d\n", c->n);
+        */
+        
         // create initial context
         int context_size = 0;
         char ** context = cooccur_read_context(c, stdin, &context_size);
+        printf("Stage 8\n");
         
         while(context != NULL) {
             cooccur_update(c, context, context_size);
+            printf("Stage 9\n");
             
             // free previous context
             for(int i = 0; i < context_size; i++) {
                 free(context[i]);
+                printf("Stage 10\n");
             }
             free(context);
-                
+            printf("Stage 11\n");
             // reset for new context    
             context_size = 0;
             context = cooccur_read_context(c, stdin, &context_size);
+            printf("Stage 12\n");
         }
         
+        // print out the heading
         printf("\t");
         for(int i = 0; i < c->n-1; i++) {
             printf("%s | ", c->keywords[i]);
         }
         printf("%s\n", c->keywords[c->n-1]);
         
+        printf("Stage 13\n");
+        
+        // access the first row SEGFAULT
         double * t = cooccur_get_vector(c, "shine");
+        printf("Stage 14\n");
+        
         printf("%s: [", "shine");
         for (int i = 0; i < c->n - 1; i++) {
             printf("%lf, ", t[i]);
@@ -318,7 +351,7 @@ int main(int argc, char **argv) {
         printf("%lf", t[c->n - 1]);
         printf("]\n");
         
-        free(t);
+        // free(t);
         
         // free cooccurrence_matrix
         cooccur_destroy(c);
@@ -330,50 +363,5 @@ int main(int argc, char **argv) {
         free(keywords);
     }
     
-    /* // update test
-    char *context[4] = {"ghjk", "qwer", "asdf", "qwer"};
-    
-    cooccur_update(c, context, 4);
-    
-    printf("context: ");
-    for( int i = 0; i < 4; i++) {
-        printf("%s, ", context[i] );
-    }
-    printf("\n");
-    
-    for(int i = 0; i < c->n; i++) {
-        // check the row of the first keyword
-        int * row_0 = smap_get(c->table, c->keywords[i]);
-        
-        printf("%s: [", c->keywords[i]);
-        for(int j = 0; j < c->n; j++) {
-            printf("%d, ", row_0[j]);
-        }
-        printf("]\n");
-        
-    }
-    */
-    
-    /* // read_context test
-    printf("stage a\n");
-    int n;
-    char **context = cooccur_read_context(c, stdin, &n);
-    
-    printf("stage b\n");
-    for(int i = 0; i < n; i++) {
-        printf("%s\n", context[i]);
-    }
-    
-    printf("stage c\n");
-    
-    // be sure to free context
-    for(int i = 0; i < n; i++) {
-        free(context[i]);
-    }
-    free(context);
-    */
-    
-    // cooccur_destroy(c);
-
     return 1;
 }
