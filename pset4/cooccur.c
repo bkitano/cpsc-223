@@ -107,7 +107,71 @@ void cooccur_update(cooccurrence_matrix *mat, char **context, int n) {
  * @return an array of unique non-NULL strings containing all the keywords read;
  * the caller is responsible for deallocating the array and the strings it contains
  */
-char **cooccur_read_context(cooccurrence_matrix *mat, FILE *stream, int *n);
+char **cooccur_read_context(cooccurrence_matrix *mat, FILE *stream, int *n) {
+    
+    // create an array to store the contexts
+    char **keywords_appeared = malloc( (sizeof(char *)) * mat->n);
+        if(keywords_appeared != NULL) {
+        // create a smap to ensure there are no duplicates
+            smap * local = smap_create(hash);
+            if(local != NULL) {
+                // get the first line from the stream
+                int max_buffer = 1000;
+                char * line = malloc(sizeof(char) * max_buffer + 1);
+                
+                if(line != NULL) {
+                    fgets(line, max_buffer, stream);
+                    strtok(line, "\n"); // strip the new line character
+                
+                    printf("%s\n", line);
+                    
+                    // a token
+                    char * token;
+                    
+                    // get the first token
+                    token = strtok(line, " ");
+                    
+                    // set the size to 0
+                    *n = 0;
+                
+                    while(token != NULL) { // while it's not a null pointer
+                    
+                        // if it's a keyword and it's not already in the array
+                        if(smap_contains_key(mat->table, token) && !smap_contains_key(local, token)) {
+                            
+                            char * copy = malloc(strlen(token) + 1);
+                            if(copy != NULL) {
+                                // make a safe copy
+                                strcpy(copy, token);
+                    
+                                // make a dummy val to store as the value in the smap
+                                int * dummy = malloc(sizeof(int));
+                                *dummy = 1;
+                                
+                                // insert it into the local smap
+                                smap_put(local, token, dummy);
+                            
+                                // put it in the array
+                                keywords_appeared[*n] = copy;
+                                // increment the size
+                                (*n)++;
+                            } // end of if copy
+                        } // end of smap checks
+                        token = strtok(NULL, " "); // move on to the next token
+                    } // end of while token
+                
+                    free(line);
+                } // end of null line    
+            
+                for(int i = 0; i < *n; i++) {
+                    free(smap_get(local, keywords_appeared[i])); // free the dummies
+                } // end of for
+                
+                smap_destroy(local);
+            } // end of null local
+        }
+    return keywords_appeared;
+}
 
 /**
  * Returns the vector (row) for the given word in the given matrix.
@@ -182,10 +246,11 @@ int hash(const char * word) {
 
 int main(int argc, char **argv) {
     
-    char *key[4] = {"asdf", "ghjk", "qwer", "yuio"};
+    char *key[2] = {"sun", "shine"};
     
-    cooccurrence_matrix * c = cooccur_create(key, 4);
+    cooccurrence_matrix * c = cooccur_create(key, 2);
     
+    /*
     char *context[4] = {"ghjk", "qwer", "asdf", "qwer"};
     
     cooccur_update(c, context, 4);
@@ -207,8 +272,26 @@ int main(int argc, char **argv) {
         printf("]\n");
         
     }
+    */
+    
+    printf("stage a\n");
+    int n;
+    char **context = cooccur_read_context(c, stdin, &n);
+    
+    printf("stage b\n");
+    for(int i = 0; i < n; i++) {
+        printf("%s\n", context[i]);
+    }
+    
+    printf("stage c\n");
+    
+    // be sure to free context
+    for(int i = 0; i < n; i++) {
+        free(context[i]);
+    }
+    free(context);
     
     cooccur_destroy(c);
-    
+
     return 1;
 }

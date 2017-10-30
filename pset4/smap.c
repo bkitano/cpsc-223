@@ -68,7 +68,7 @@ int smap_size(const smap *m)
  * @return the index of key in table, or the index of the empty slot to put it in if it is not present
  */
 
-// TESTED, working as of 2219 LEAKS
+// TESTED, working as of 2219
 int smap_table_find_key(const entry *table, const char *key, int (*hash)(const char *), int size, int capacity) {
   // sequential search for key
   int index = hash(key) % capacity;

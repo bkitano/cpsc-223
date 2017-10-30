@@ -23,16 +23,18 @@ int hash(const char * word) {
     return (99991 * sum);
 }
 
+/*
 void keywords_seen(char **keywords_seen, int (*hash)(const char *s), int n_keywords_total, char *line, int *n) {
     char *token;
     smap * local = smap_create(hash);
     
-    /* get the first token */
+    //  get the first token 
     token = strtok(line, " ");
     
     *n = 0;
     
-    /* walk through other tokens */
+    
+    // walk through other tokens 
     while( token != NULL ) {
         // printf( " %s\n", token );
         
@@ -53,7 +55,9 @@ void keywords_seen(char **keywords_seen, int (*hash)(const char *s), int n_keywo
     
     smap_destroy(local);
 }
+*/
 
+/*
 int main(int argc, char **argv) {
     
     char str[80] = "a b a a c d e f g g h i a f a";
@@ -64,4 +68,47 @@ int main(int argc, char **argv) {
     keywords_seen(keywords, hash, n_keywords_total, str, &keywords_length);
     
     return 0;
+}*/
+/*
+int main(int argc, char **argv) {
+    
+    printf("%s\n", argv[1]);
+    
+    int max_buffer = 100;
+    char * line = malloc(sizeof(char) * max_buffer);
+    
+    fgets(line, max_buffer, stdin);
+    
+    while(fgets(line, max_buffer, stdin) != NULL) {
+        // printf("%s\n", line);
+        
+        char *token;
+        
+        // get the first token
+        token = strtok(line, " ");
+        
+        // walk through the other tokens
+        while(token != NULL) {
+            printf( "%s\n", token);
+            
+            token = strtok(NULL, " ");
+        }
+    }
+    */
+    /*
+    char *token;
+    
+    //  get the first token 
+    token = strtok(line, " ");
+    
+    // walk through other tokens 
+    while( token != NULL ) {
+        printf( " %s\n", token );
+        
+        token = strtok(NULL, " ");
+    }
+    */
+    /*
+    return 0;
 }
+*/
