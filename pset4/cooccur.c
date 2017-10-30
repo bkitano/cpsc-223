@@ -79,7 +79,21 @@ cooccurrence_matrix *cooccur_create(char *key[], int n) {
  * for that matrix, non-NULL
  * @param n the size of that array
  */
-void cooccur_update(cooccurrence_matrix *mat, char **context, int n);
+void cooccur_update(cooccurrence_matrix *mat, char **context, int n) {
+    for(int i = 0; i < n; i++) {
+        
+        // get the current word and its vector
+        char * current_word = context[i];
+        int * current_row = smap_get(mat->table, current_word);
+        
+        for(int j = 0; j < n; j++) {
+            // get the index we should increment
+            int word_index = *smap_get(mat->keyword_indexer, context[j]);
+            current_row[word_index] += 1;
+        }
+        
+    }
+}
 
 /**
  * Reads keywords from the given matrix from the current line of the given stream.
@@ -171,6 +185,28 @@ int main(int argc, char **argv) {
     char *key[4] = {"asdf", "ghjk", "qwer", "yuio"};
     
     cooccurrence_matrix * c = cooccur_create(key, 4);
+    
+    char *context[4] = {"ghjk", "qwer", "asdf", "qwer"};
+    
+    cooccur_update(c, context, 4);
+    
+    printf("context: ");
+    for( int i = 0; i < 4; i++) {
+        printf("%s, ", context[i] );
+    }
+    printf("\n");
+    
+    for(int i = 0; i < c->n; i++) {
+        // check the row of the first keyword
+        int * row_0 = smap_get(c->table, c->keywords[i]);
+        
+        printf("%s: [", c->keywords[i]);
+        for(int j = 0; j < c->n; j++) {
+            printf("%d, ", row_0[j]);
+        }
+        printf("]\n");
+        
+    }
     
     cooccur_destroy(c);
     
