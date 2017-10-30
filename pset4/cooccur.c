@@ -6,6 +6,7 @@
 #include "cooccur.h"
 #include "smap.h"
 
+// space complexity: O(n^2): n + 1 + n^2 + n^2
 struct cooccurrence_matrix {
     char ** keywords;
     int n; // number of keywords
@@ -24,48 +25,54 @@ int hash(const char * word);
  * @return a pointer to a new cooccurrence matrix; the caller is responsible for
  * destroying the matrix
  */
- 
+
+// O(n^2)
 cooccurrence_matrix *cooccur_create(char *key[], int n) {
-    
-    // make space for the struct
+
+    // make space for the struct O(1)
     cooccurrence_matrix * c = malloc(sizeof(cooccurrence_matrix));
-    
-    // make space to store the keywords
+
+    // make space to store the keywords O(1)
     c->keywords = (char **) malloc(sizeof(char *) * n);
-    
-    // make the keyword_indexer dictionary
+
+    // make the keyword_indexer dictionary O(1)
     c->keyword_indexer = smap_create(hash);
     
+    // O(n) total
+    c->n = 0;
     for(int i = 0; i < n; i++) {
         
-        int * keyword_index = malloc(sizeof(int));
-        *keyword_index = i;
-        
-        // make space to store a single keyword
-        char *copy = malloc(strlen(key[i]) + 1);
-        strcpy(copy, key[i]);
-        
-        c->keywords[i] = copy;  
-        
-        // insert the keyword and its ordered index into the keyword_indexer
-        smap_put(c->keyword_indexer, c->keywords[i], keyword_index);
+        // check for duplicate keys
+        if(!smap_contains_key(c->keyword_indexer, key[i])) {
+            
+            // make a copy to store a the keyword
+            char *copy = malloc(strlen(key[i]) + 1); //O(1)
+            strcpy(copy, key[i]); // O(1)
+            
+            // create an int to store the index
+            int * keyword_index = malloc(sizeof(int)); //O(1)
+            *keyword_index = c->n;
+            (c->n)++;
+
+            c->keywords[*keyword_index] = copy;  // O(1)
+            smap_put(c->keyword_indexer, copy, keyword_index); // O(1)
+        }
     }
     
-    c->n = n;
-    
     // malloc'ing here to create the smap
-    c->table = smap_create(hash);
-    
-    // add the keywords 
-    for(int i = 0; i < n; i++) {
+    c->table = smap_create(hash); // O(1)
+    // add the keywords O(n^2)
+    for(int i = 0; i < c->n; i++) {
         
         // initialize a row filled with n 0's
-        int * row = malloc(sizeof(int) * n);
-        for(int j = 0; j < n; j++) {
-            row[j] = 0;
+        int * row = malloc(sizeof(int) * c->n);
+        // O(n)
+        if(row != NULL) {
+            for(int j = 0; j < c->n; j++) {
+                row[j] = 0;
+            }
         }
-        
-        smap_put(c->table, c->keywords[i], row);
+        smap_put(c->table, c->keywords[i], row); // O(1)
     }
     return c;
 }
@@ -79,16 +86,21 @@ cooccurrence_matrix *cooccur_create(char *key[], int n) {
  * for that matrix, non-NULL
  * @param n the size of that array
  */
+
+// O(n^2)
 void cooccur_update(cooccurrence_matrix *mat, char **context, int n) {
+    
+    // O(n^2)
     for(int i = 0; i < n; i++) {
         
         // get the current word and its vector
         char * current_word = context[i];
-        int * current_row = smap_get(mat->table, current_word);
+        int * current_row = smap_get(mat->table, current_word); // O(1)
         
+        // O(n)
         for(int j = 0; j < n; j++) {
             // get the index we should increment
-            int word_index = *smap_get(mat->keyword_indexer, context[j]);
+            int word_index = *smap_get(mat->keyword_indexer, context[j]);  // O(1)
             current_row[word_index] += 1;
         }
         
@@ -108,11 +120,11 @@ void cooccur_update(cooccurrence_matrix *mat, char **context, int n) {
  * the caller is responsible for deallocating the array and the strings it contains
  */
  
-// TODO: handle EOF
+// 
 char **cooccur_read_context(cooccurrence_matrix *mat, FILE *stream, int *n) {
     
     // create an array to store the contexts
-    char **keywords_appeared = malloc( (sizeof(char *)) * mat->n);
+    char **keywords_appeared = malloc( (sizeof(char *)) * mat->n); // O(1)
         if(keywords_appeared != NULL) {
         // create a smap to ensure there are no duplicates
             smap * local = smap_create(hash);
@@ -276,7 +288,6 @@ int main(int argc, char **argv) {
     
     if(keywords != NULL) {
         
-        // WORKS
         for(int i = 1; i < argc; i++) {
             
             char * copy = malloc(strlen(argv[i]) + 1);

@@ -42,7 +42,7 @@ smap *smap_create(int (*h)(const char *s))
       result->size = 0;
       result->hash = h;
       result->table = malloc(sizeof(entry) * SMAP_INITIAL_CAPACITY);
-      for(int i = 0; i < SMAP_INITIAL_CAPACITY; i++) {
+      for(int i = 0; i < SMAP_INITIAL_CAPACITY; i++) { // O(1) since initial capacity is a constant
         result->table[i].filled = false;
       }
       result->capacity = (result->table != NULL ? SMAP_INITIAL_CAPACITY : 0);
@@ -68,15 +68,15 @@ int smap_size(const smap *m)
  * @return the index of key in table, or the index of the empty slot to put it in if it is not present
  */
 
-// TESTED, working as of 2219
+// TESTED, working as of 2219 O(1)
 int smap_table_find_key(const entry *table, const char *key, int (*hash)(const char *), int size, int capacity) {
   // sequential search for key
-  int index = hash(key) % capacity;
+  int index = hash(key) % capacity; // O(1)
   
   if(table[index].filled) {
     
     // if the key is in that table
-    if(!strcmp( table[index].key, key )) {
+    if(!strcmp( table[index].key, key )) { // assuming strcmp O(1)
       return index;
     } else { 
       
@@ -84,7 +84,10 @@ int smap_table_find_key(const entry *table, const char *key, int (*hash)(const c
       // keep going until you find an open address
       
       int test = index;
-      while (table[test].filled == true) {
+      while (table[test].filled == true) { 
+        /** O(c) where c is number of gaps until next filled, 
+         * which worst case is n/2 but average case is ~ 1
+         */
         
         // if you've found the key
         if(!strcmp(table[test].key, key)) {
@@ -106,12 +109,16 @@ int smap_table_find_key(const entry *table, const char *key, int (*hash)(const c
     return index;
 }
 
+// O(1)
 bool smap_put(smap *m, const char *key, int *value) {
   
   if (m != NULL) {
     
       if (m->size == m->capacity / 2) {
-    	  smap_embiggen(m);
+    	  smap_embiggen(m); 
+    	  /** smap_embiggen(m) takes O(n) but you only do 
+    	   * it after n/2 insertions, so O(1) amortized
+    	   */ 
     	}
     
       int index = smap_table_find_key(m->table, key, m->hash, m->size, m->capacity);
@@ -130,7 +137,7 @@ bool smap_put(smap *m, const char *key, int *value) {
 	  
     	  // make a copy of the new key
     	  char *copy = malloc(strlen(key) + 1);
-    	  strcpy(copy, key);
+    	  strcpy(copy, key); // assuming O(1)
   	  
     	  if (copy != NULL) {
   	      m->table[index].key = copy;
@@ -148,6 +155,7 @@ bool smap_put(smap *m, const char *key, int *value) {
   }
 }
 
+// O(n)
 void smap_embiggen(smap *m) {
   
   // double the capacity, make a temp table of that size
@@ -185,6 +193,7 @@ void smap_embiggen(smap *m) {
   free(old_table);
 }
 
+// O(1)
 bool smap_contains_key(const smap *m, const char *key) {
 
   // if find_key is empty, then 
@@ -197,11 +206,11 @@ bool smap_contains_key(const smap *m, const char *key) {
   
 }
 
+// O(1)
 int *smap_get(smap *m, const char *key) {
   
   int index = smap_table_find_key(m->table, key, m->hash, m->size, m->capacity);
   
-  //LEAK
   if ( m->table[index].filled ) {
     return m->table[index].value;
   } else {
@@ -209,6 +218,7 @@ int *smap_get(smap *m, const char *key) {
   }
 }
 
+// O(n)
 void smap_for_each(smap *m, void (*f)(const char *, int *)) {
   for (int i = 0; i < m->capacity; i++) {
     if(m->table[i].filled) {
@@ -217,6 +227,7 @@ void smap_for_each(smap *m, void (*f)(const char *, int *)) {
   }
 } 
 
+// O(n)
 void smap_for_each_r(smap *m, void (*f)(const char *, int *, void *), void *arg) {
   for (int i = 0; i < m->capacity; i++) {
     if(m->table[i].filled) {
@@ -225,6 +236,7 @@ void smap_for_each_r(smap *m, void (*f)(const char *, int *, void *), void *arg)
   }
 }  
 
+// O(n)
 void smap_destroy(smap *m) {
   // free all the copies of the keys we made
   for (int i = 0; i < m->capacity; i++) {
@@ -239,41 +251,3 @@ void smap_destroy(smap *m) {
   // free the smap struct
   free(m);
 }
-
-/*
-int hash(const char * word) {
-    
-    int l = strlen(word);
-    
-    // forces the hash to run in constant time
-    if(l > 200) {
-        l = 200;
-    }
-    
-    int sum = 0;
-    for(int i = 0; i < l; i++) {
-        sum += word[i];
-    }
-    
-    return (38183 * sum);
-}
-
-
-int main(int argc, char **argv) {
-  smap * m = smap_create(hash);
-  
-  for (int i = 1; i < argc; i++) {
-    
-    int * j = malloc(sizeof(int));
-    *j = i;
-    smap_put(m, argv[i], j);
-    
-  }
-  
-  // clearing
-  printf("%d\n", smap_size(m));
-
-  return 1;
-}
-*/
-
