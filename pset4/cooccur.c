@@ -1,14 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
+#include "cooccur.h"
 #include "smap.h"
 
 struct cooccurrence_matrix {
-    smap * matrix;
     char ** keywords;
     int n; // number of keywords
+    smap * table; // pointer to smap
 };
+
+int hash(const char * word);
 
 /**
  * Creates a cooccurrence matrix that counts cooccurrences of the given keywords
@@ -19,11 +23,41 @@ struct cooccurrence_matrix {
  * @return a pointer to a new cooccurrence matrix; the caller is responsible for
  * destroying the matrix
  */
+ 
 cooccurrence_matrix *cooccur_create(char *key[], int n) {
-    cooccurrence_matrix * mat = malloc(sizeof(cooccurrence_matrix));
-    mat->keywords = key;
-    mat->n = n;
-    return mat;
+    
+    // make space for the struct
+    cooccurrence_matrix * c = malloc(sizeof(cooccurrence_matrix));
+    
+    // make space to store the keywords
+    c->keywords = (char **) malloc(sizeof(char *) * n);
+    
+    for(int i = 0; i < n; i++) {
+        
+        // make space to store a single keyword
+        char *copy = malloc(strlen(key[i]) + 1);
+        strcpy(copy, key[i]);
+        
+        c->keywords[i] = copy;  
+    }
+    
+    c->n = n;
+    
+    // malloc'ing here to create the smap
+    c->table = smap_create(hash);
+    
+    // add the keywords 
+    for(int i = 0; i < n; i++) {
+        
+        // initialize a row filled with n 0's
+        int * row = malloc(sizeof(int) * n);
+        for(int j = 0; j < n; j++) {
+            row[j] = 0;
+        }
+        
+        smap_put(c->table, c->keywords[i], row);
+    }
+    return c;
 }
 
 /**
@@ -74,13 +108,48 @@ double *cooccur_get_vector(cooccurrence_matrix *mat, const char *word);
  * 
  * @param mat a pointer to a cooccurrence matrix, non-NULL
  */
-void cooccur_destroy(cooccurrence_matrix *mat);
+void cooccur_destroy(cooccurrence_matrix *mat) {
+    
+    for(int i = 0; i < mat->n; i++) {
+        free(smap_get(mat->table, mat->keywords[i]));
+        free(mat->keywords[i]);
+    }
+    
+    // free the smap
+    smap_destroy(mat->table);
 
+    
+    free(mat->keywords);
+    
+    free(mat);
+
+}
+
+int hash(const char * word) {
+    
+    int l = strlen(word);
+    
+    // forces the hash to run in constant time
+    if(l > 200) {
+        l = 200;
+    }
+    
+    int sum = 0;
+    for(int i = 0; i < l; i++) {
+        sum += word[i];
+    }
+    
+    return (38183 * sum);
+}
 
 
 int main(int argc, char **argv) {
     
+    char *key[4] = {"asdf", "ghjk", "qwer", "yuio"};
     
+    cooccurrence_matrix * c = cooccur_create(key, 4);
+    
+    cooccur_destroy(c);
     
     return 1;
 }
