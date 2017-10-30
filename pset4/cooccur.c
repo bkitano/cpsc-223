@@ -107,6 +107,8 @@ void cooccur_update(cooccurrence_matrix *mat, char **context, int n) {
  * @return an array of unique non-NULL strings containing all the keywords read;
  * the caller is responsible for deallocating the array and the strings it contains
  */
+ 
+// TODO: handle EOF
 char **cooccur_read_context(cooccurrence_matrix *mat, FILE *stream, int *n) {
     
     // create an array to store the contexts
@@ -120,11 +122,14 @@ char **cooccur_read_context(cooccurrence_matrix *mat, FILE *stream, int *n) {
                 char * line = malloc(sizeof(char) * max_buffer + 1);
                 
                 if(line != NULL) {
-                    fgets(line, max_buffer, stream);
+                    if( fgets(line, max_buffer, stream) == NULL ) {
+                        smap_destroy(local);
+                        free(line);
+                        free(keywords_appeared);
+                        return NULL;
+                    }
                     strtok(line, "\n"); // strip the new line character
                 
-                    printf("%s\n", line);
-                    
                     // a token
                     char * token;
                     
@@ -263,6 +268,7 @@ int hash(const char * word) {
 int main(int argc, char **argv) {
     
     char **keywords = malloc(sizeof(char *) * (argc-1));
+    int n = 0;
     
     if(keywords != NULL) {
         
@@ -273,17 +279,56 @@ int main(int argc, char **argv) {
             if(copy != NULL) {
                 strcpy(copy, argv[i]);
                 keywords[i-1] = copy;
+                n++;
             }
         }
         
+        // create a cooccurrence_matrix
+        cooccurrence_matrix * c = cooccur_create(keywords, n);
+        
+        // create initial context
+        int context_size = 0;
+        char ** context = cooccur_read_context(c, stdin, &context_size);
+        
+        while(context != NULL) {
+            cooccur_update(c, context, context_size);
+            
+            // free previous context
+            for(int i = 0; i < context_size; i++) {
+                free(context[i]);
+            }
+            free(context);
+                
+            // reset for new context    
+            context_size = 0;
+            context = cooccur_read_context(c, stdin, &context_size);
+        }
+        
+        printf("\t");
+        for(int i = 0; i < c->n-1; i++) {
+            printf("%s | ", c->keywords[i]);
+        }
+        printf("%s\n", c->keywords[c->n-1]);
+        
+        double * t = cooccur_get_vector(c, "shine");
+        printf("%s: [", "shine");
+        for (int i = 0; i < c->n - 1; i++) {
+            printf("%lf, ", t[i]);
+        }
+        printf("%lf", t[c->n - 1]);
+        printf("]\n");
+        
+        free(t);
+        
+        // free cooccurrence_matrix
+        cooccur_destroy(c);
+        
+        // freeing keywords
         for(int i = 0; i < (argc - 1); i++) {
-            printf("%s\n", keywords[i]);
             free(keywords[i]);
         }
         free(keywords);
     }
-    
-    // cooccurrence_matrix * c = cooccur_create(keywords, 2);
     
     /* // update test
     char *context[4] = {"ghjk", "qwer", "asdf", "qwer"};
