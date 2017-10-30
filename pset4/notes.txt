@@ -14,22 +14,21 @@ cooccurrence_matrix *cooccur_create(char *key[], int n);
 
 General structure of it should be:
 
-each row is an smap
-the table itself is an array of smaps (you know the order of the rows)
+smap (you know the order of the columns because it's given to you)
         
-        word_1 word_2 ... word_n
-        ________________________
-word_1 |
+         word_1 word_2 ... word_n
+         ________________________
+word_1 | [     ,      ,   ,      ]
 
-word_2 |
+word_2 | [     ,      ,   ,      ]
 
-.      |
+.      | [     ,      ,   ,      ]
 
-.      |
+.      | [     ,      ,   ,      ]
 
-.      |
+.      | [     ,      ,   ,      ]
 
-word_n |
+word_n | [     ,      ,   ,      ]
 
 /**
  * Updates the given cooccurrence matrix by incrementing the counts for
@@ -70,7 +69,6 @@ for word in line:
         keywords_seen_in_line.append(word);
     
 return keywords_seen_in_line;
-
 
 /**
  * Returns the vector (row) for the given word in the given matrix.

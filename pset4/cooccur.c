@@ -9,7 +9,8 @@
 struct cooccurrence_matrix {
     char ** keywords;
     int n; // number of keywords
-    smap * table; // pointer to smap
+    smap * table; // pointer to a dictionary mapping words to contexts
+    smap * keyword_indexer; // dictionary mapping words to their index in the ordered array
 };
 
 int hash(const char * word);
@@ -32,13 +33,22 @@ cooccurrence_matrix *cooccur_create(char *key[], int n) {
     // make space to store the keywords
     c->keywords = (char **) malloc(sizeof(char *) * n);
     
+    // make the keyword_indexer dictionary
+    c->keyword_indexer = smap_create(hash);
+    
     for(int i = 0; i < n; i++) {
+        
+        int * keyword_index = malloc(sizeof(int));
+        *keyword_index = i;
         
         // make space to store a single keyword
         char *copy = malloc(strlen(key[i]) + 1);
         strcpy(copy, key[i]);
         
         c->keywords[i] = copy;  
+        
+        // insert the keyword and its ordered index into the keyword_indexer
+        smap_put(c->keyword_indexer, c->keywords[i], keyword_index);
     }
     
     c->n = n;
@@ -111,16 +121,29 @@ double *cooccur_get_vector(cooccurrence_matrix *mat, const char *word);
 void cooccur_destroy(cooccurrence_matrix *mat) {
     
     for(int i = 0; i < mat->n; i++) {
+        
+        // free the keyword_indexer pointers
+        free(smap_get(mat->keyword_indexer, mat->keywords[i]));
+        
+        // free the table value pointer
         free(smap_get(mat->table, mat->keywords[i]));
+        
+        // free the keyword pointer
         free(mat->keywords[i]);
+        
+        
     }
     
-    // free the smap
+    // free the table smap pointer
     smap_destroy(mat->table);
-
     
+    // free the keyword_indexer smap pointer
+    smap_destroy(mat->keyword_indexer);
+
+    // free the keyword array pointer
     free(mat->keywords);
     
+    // free the struct pointer
     free(mat);
 
 }

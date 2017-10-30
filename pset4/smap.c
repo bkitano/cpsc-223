@@ -209,7 +209,6 @@ int *smap_get(smap *m, const char *key) {
   }
 }
 
-// TODO: rewrite
 void smap_for_each(smap *m, void (*f)(const char *, int *)) {
   for (int i = 0; i < m->capacity; i++) {
     if(m->table[i].filled) {
@@ -218,7 +217,6 @@ void smap_for_each(smap *m, void (*f)(const char *, int *)) {
   }
 } 
 
-// TODO: rewrite
 void smap_for_each_r(smap *m, void (*f)(const char *, int *, void *), void *arg) {
   for (int i = 0; i < m->capacity; i++) {
     if(m->table[i].filled) {
