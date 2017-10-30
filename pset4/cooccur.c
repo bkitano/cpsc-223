@@ -201,12 +201,16 @@ double *cooccur_get_vector(cooccurrence_matrix *mat, const char *word) {
     // cast all the entries as doubles
     double * drow = malloc(sizeof(double) * mat->n);
     
-    int sum = 0;
-    for(int i = 0; i < mat->n; i++) {
-        sum += row[i];
-    }
-    for(int i = 0; i < mat->n; i++) {
-        drow[i] = (double) row[i] / (double) sum;
+    int diagonal = row[*smap_get(mat->keyword_indexer, word)];
+    
+    if(diagonal == 0) {
+        for(int i = 0; i < mat->n; i++) {
+           drow[i] = (double) row[i];
+        }   
+    } else {
+        for(int i = 0; i < mat->n; i++) {
+            drow[i] = ((double) row[i]) / ( (double) diagonal);
+        }
     }
     
     return drow;
@@ -307,15 +311,46 @@ int main(int argc, char **argv) {
             
         }
         printf("n: %d\n", c->n);
+        
+        
+        // test the cooccur_get_vector
+        double * row = cooccur_get_vector(c, c->keywords[0]);
+        for(int i = 0; i < c->n; i++) {
+            printf("%lf\n", row[i]);
+        }
         */
         
         // create initial context
         int context_size = 0;
         char ** context = cooccur_read_context(c, stdin, &context_size);
-        printf("Stage 8\n");
+        
+        for(int i = 0; i < context_size; i++) {
+            printf("%s\n", context[i]);
+        }
+        printf("\n");
         
         while(context != NULL) {
             cooccur_update(c, context, context_size);
+            
+            /* WORKING
+            // print what the matrix looks like now
+            for(int i = 0; i < c->n; i++) {
+                printf("keyword: %s\n ", c->keywords[i]);
+                int * row = smap_get(c->table, c->keywords[i]);
+                double * drow = cooccur_get_vector(c, c->keywords[i]);
+                printf("row: [");
+                for (int j = 0; j < c->n; j++) {
+                    printf("%d ", row[j]);
+                }
+                printf("]\n");
+                printf("drow: [");
+                for (int j = 0; j < c->n; j++) {
+                    printf("%lf ", drow[j]);
+                }
+                printf("]\n");
+            }
+            */
+            
             printf("Stage 9\n");
             
             // free previous context
