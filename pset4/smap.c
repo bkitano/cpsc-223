@@ -34,14 +34,19 @@ void smap_embiggen(smap *m);
 
 
 // runs in O(1)
-smap *smap_create(int (*h)(const char *s))
-{
+smap *smap_create(int (*h)(const char *s)) {
+  
+  // make space for the smap
   smap *result = malloc(sizeof(smap));
   if (result != NULL)
     {
       result->size = 0;
       result->hash = h;
+      
+      // make space for the array of entries
       result->table = malloc(sizeof(entry) * SMAP_INITIAL_CAPACITY);
+      
+      // set all of the filled values to false
       for(int i = 0; i < SMAP_INITIAL_CAPACITY; i++) { // O(1) since initial capacity is a constant
         result->table[i].filled = false;
       }
@@ -68,14 +73,15 @@ int smap_size(const smap *m)
  * @return the index of key in table, or the index of the empty slot to put it in if it is not present
  */
 
-// TESTED, working as of 2219 O(1)
 int smap_table_find_key(const entry *table, const char *key, int (*hash)(const char *), int size, int capacity) {
-  // sequential search for key
+  
+  // calculate the digest
   int index = hash(key) % capacity; // O(1)
   
+  // if that entry is filled
   if(table[index].filled) {
     
-    // if the key is in that table
+    // if the correct key is in that table
     if(!strcmp( table[index].key, key )) { // assuming strcmp O(1)
       return index;
     } else { 
@@ -181,7 +187,7 @@ void smap_embiggen(smap *m) {
   // rehash and reindex every value in the old table
   for (int old_index = 0; old_index < old_capacity; old_index++) {
     
-    // if there was an entry here BAD READ
+    // if there was an entry here
     if(old_table[old_index].filled) {
       
       // put it in the correct spot

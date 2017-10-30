@@ -53,7 +53,8 @@ cooccurrence_matrix *cooccur_create(char *key[], int n) {
             int * keyword_index = malloc(sizeof(int)); //O(1)
             *keyword_index = c->n;
             (c->n)++;
-
+            
+            // add the keyword to the keywords array and the smap
             c->keywords[*keyword_index] = copy;  // O(1)
             smap_put(c->keyword_indexer, copy, keyword_index); // O(1)
         }
@@ -61,7 +62,8 @@ cooccurrence_matrix *cooccur_create(char *key[], int n) {
     
     // malloc'ing here to create the smap
     c->table = smap_create(hash); // O(1)
-    // add the keywords O(n^2)
+    
+    // add the keywords to the table O(n^2)
     for(int i = 0; i < c->n; i++) {
         
         // initialize a row filled with n 0's
@@ -170,6 +172,7 @@ char **cooccur_read_context(cooccurrence_matrix *mat, FILE *stream, int *n) {
                             
                                 // put it in the array
                                 keywords_appeared[*n] = copy;
+                                
                                 // increment the size
                                 (*n)++;
                             } // end of if copy
@@ -213,8 +216,10 @@ double *cooccur_get_vector(cooccurrence_matrix *mat, const char *word) {
     // cast all the entries as doubles
     double * drow = malloc(sizeof(double) * mat->n);
     
+    // the diagonal value is the value by which we scale
     int diagonal = row[*smap_get(mat->keyword_indexer, word)];
     
+    // to prevent division by zero errors
     if(diagonal == 0) {
         for(int i = 0; i < mat->n; i++) {
            drow[i] = (double) row[i];
@@ -263,6 +268,13 @@ void cooccur_destroy(cooccurrence_matrix *mat) {
 
 }
 
+/**
+ * a hash function which hashes the first 200 characters of a string 
+ * returns a large number.
+ * 
+ * @param word a pointer to a word aka the ingest
+ * @return a large number aka the digest
+ */ 
 int hash(const char * word) {
     
     int l = strlen(word);
@@ -283,6 +295,7 @@ int hash(const char * word) {
 
 int main(int argc, char **argv) {
     
+    // create an array to store the keywords from the command line
     char **keywords = malloc(sizeof(char *) * (argc-1));
     int n = 0;
     
@@ -290,6 +303,7 @@ int main(int argc, char **argv) {
         
         for(int i = 1; i < argc; i++) {
             
+            // copy each word from argv to keywords
             char * copy = malloc(strlen(argv[i]) + 1);
             if(copy != NULL) {
                 strcpy(copy, argv[i]);
@@ -301,63 +315,13 @@ int main(int argc, char **argv) {
         // create a cooccurrence_matrix
         cooccurrence_matrix * c = cooccur_create(keywords, n);
         
-        /*
-        // check if it instantiated properly
-        for(int i = 0; i < c->n; i ++) {
-            
-            // check to make sure indexing and ordered access works WORKS
-            printf("keyword %s to index %d\n", c->keywords[i], *smap_get(c->keyword_indexer, c->keywords[i]));
-            printf("index %d to keyword %s\n ", i, c->keywords[i]);
-            
-            
-            
-            // check to make sure everything has an array WORKS
-            printf("%s vector at instantiation: [", c->keywords[i]);
-            int * vector = smap_get(c->table, c->keywords[i]);
-            for(int j=0; j < n; j++) {
-                printf("%d ", vector[j]);
-            }
-            printf("]\n");
-            
-            
-        }
-        printf("n: %d\n", c->n);
-        
-        
-        // test the cooccur_get_vector
-        double * row = cooccur_get_vector(c, c->keywords[0]);
-        for(int i = 0; i < c->n; i++) {
-            printf("%lf\n", row[i]);
-        }
-        */
-        
         // create initial context
         int context_size = 0;
         char ** context = cooccur_read_context(c, stdin, &context_size);
         
+        // while there are lines to read in the corpus
         while(context != NULL) {
             cooccur_update(c, context, context_size);
-            
-            /*
-            // WORKING
-            // print what the matrix looks like now
-            for(int i = 0; i < c->n; i++) {
-                printf("keyword: %s\n ", c->keywords[i]);
-                int * row = smap_get(c->table, c->keywords[i]);
-                double * drow = cooccur_get_vector(c, c->keywords[i]);
-                printf("row: [");
-                for (int j = 0; j < c->n; j++) {
-                    printf("%d ", row[j]);
-                }
-                printf("]\n");
-                printf("drow: [");
-                for (int j = 0; j < c->n; j++) {
-                    printf("%lf ", drow[j]);
-                }
-                printf("]\n");
-                free(drow);
-            }
-            */
             
             // free previous context
             for(int i = 0; i < context_size; i++) {
@@ -370,19 +334,8 @@ int main(int argc, char **argv) {
             context = cooccur_read_context(c, stdin, &context_size);
         }
         
-        
         // print what the matrix looks like now
         for(int i = 0; i < c->n; i++) {
-            
-            /*
-            printf("keyword: %s\n ", c->keywords[i]);
-            int * row = smap_get(c->table, c->keywords[i]);
-            printf("row: [");
-            for (int j = 0; j < c->n; j++) {
-                printf("%d ", row[j]);
-            }
-            printf("]\n");
-            */
             
             double * drow = cooccur_get_vector(c, c->keywords[i]);
             printf("%s: [", c->keywords[i]);
@@ -392,9 +345,6 @@ int main(int argc, char **argv) {
             printf("%lf]\n", drow[c->n-1]);
             free(drow);
         }
-        
-        
-        // printf("Stage 14\n");
         
         // free cooccurrence_matrix
         cooccur_destroy(c);
