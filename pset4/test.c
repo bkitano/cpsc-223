@@ -114,9 +114,9 @@ int main(int argc, char **argv) {
 */
 int main() {
     char * line;
-    FILE * stream = NULL;
-    int buf = 10;
-    fgets(line, buf, stream);
-    printf("%d\n", (line == NULL));
+    
+    
+
+
     return 1;
 }

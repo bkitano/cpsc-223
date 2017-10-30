@@ -324,15 +324,11 @@ int main(int argc, char **argv) {
         int context_size = 0;
         char ** context = cooccur_read_context(c, stdin, &context_size);
         
-        for(int i = 0; i < context_size; i++) {
-            printf("%s\n", context[i]);
-        }
-        printf("\n");
-        
         while(context != NULL) {
             cooccur_update(c, context, context_size);
             
-            /* WORKING
+            /*
+            // WORKING
             // print what the matrix looks like now
             for(int i = 0; i < c->n; i++) {
                 printf("keyword: %s\n ", c->keywords[i]);
@@ -348,45 +344,46 @@ int main(int argc, char **argv) {
                     printf("%lf ", drow[j]);
                 }
                 printf("]\n");
+                free(drow);
             }
             */
-            
-            printf("Stage 9\n");
             
             // free previous context
             for(int i = 0; i < context_size; i++) {
                 free(context[i]);
-                printf("Stage 10\n");
             }
             free(context);
-            printf("Stage 11\n");
+
             // reset for new context    
             context_size = 0;
             context = cooccur_read_context(c, stdin, &context_size);
-            printf("Stage 12\n");
         }
         
-        // print out the heading
-        printf("\t");
-        for(int i = 0; i < c->n-1; i++) {
-            printf("%s | ", c->keywords[i]);
+        
+        // print what the matrix looks like now
+        for(int i = 0; i < c->n; i++) {
+            
+            /*
+            printf("keyword: %s\n ", c->keywords[i]);
+            int * row = smap_get(c->table, c->keywords[i]);
+            printf("row: [");
+            for (int j = 0; j < c->n; j++) {
+                printf("%d ", row[j]);
+            }
+            printf("]\n");
+            */
+            
+            double * drow = cooccur_get_vector(c, c->keywords[i]);
+            printf("%s: [", c->keywords[i]);
+            for (int j = 0; j < c->n - 1; j++) {
+                printf("%lf, ", drow[j]);
+            }
+            printf("%lf]\n", drow[c->n-1]);
+            free(drow);
         }
-        printf("%s\n", c->keywords[c->n-1]);
         
-        printf("Stage 13\n");
         
-        // access the first row SEGFAULT
-        double * t = cooccur_get_vector(c, "shine");
-        printf("Stage 14\n");
-        
-        printf("%s: [", "shine");
-        for (int i = 0; i < c->n - 1; i++) {
-            printf("%lf, ", t[i]);
-        }
-        printf("%lf", t[c->n - 1]);
-        printf("]\n");
-        
-        // free(t);
+        // printf("Stage 14\n");
         
         // free cooccurrence_matrix
         cooccur_destroy(c);
