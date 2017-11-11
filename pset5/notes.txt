@@ -1,0 +1,9 @@
+Missing children (and the empty tree) are represented by null pointers. 
+Typically, individual tree nodes are allocated separately using malloc; 
+however, for high-performance use it is not unusual for tree libraries 
+to do their own storage allocation out of large blocks obtained from 
+malloc.
+
+Node functions are local to
+isset.c, and not accessible
+in other files.

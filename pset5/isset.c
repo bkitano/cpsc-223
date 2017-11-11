@@ -4,91 +4,42 @@
 
 #include "isset.h"
 
-typedef struct _isset_node
-{
+// debug switch
+#define DEBUG
+
+typedef struct _isset_node {
   int start;
   int end;
   struct _isset_node *parent;
   struct _isset_node *left;
   struct _isset_node *right;
+  int size;
 } isset_node;
 
-typedef struct _isset_search_result
-{
-  isset_node *parent;
-  isset_node *n;
-  bool found;
-  int dir;
+typedef struct _isset_search_result {
+  isset_node *parent; // the parent node
+  isset_node *n; // the node (interval) where it belongs
+  bool found; // true if found
+  int dir; // 0 if found, negative if left of interval, positive if right
   isset_node *last_left;
   isset_node *last_right;
 } isset_search_result;
 
-struct isset
-{
+struct isset {
   isset_node *root;
-  int size;
-  int nodes;
+  int size; // total range of intervals
+  int nodes; // total number of nodes in tree
 };
 
-/**
- * Returns a pointer to a new node containing the interval [item, item].
- *
- * @param item an integer
- * @return a pointer to a new node containing the interval [item, item]
- */
 isset_node *isset_create_node(int item);
-
-/**
- * Deletes the given node in the given BST.
- *
- * @param s a pointer to a set, non-NULL
- * @param node a node in that set's tree
- */
 void isset_delete_node(isset* s, isset_node *node);
-
-/**
- * Finds the node containing the given integer in the given set's tree,
- * or, if the integer is not there, determines where it would be added.
- *
- * @param s a pointer to a set, non-NULL
- * @param item an integer
- * @param return a pointer to the struct in which to record the results
- * of the search
- */
 void isset_find_node(const isset *s, int item, isset_search_result *result);
-
-/**
- * Determines if the given integer comes before, within, or after the given
- * interval.
- *
- * @param s a pointer to a set, non-NULL
- * @param start an integer
- * @param end an integer greater than or equal to start
- * @param item an integer
- * @return a negative integer if item < start, a positive integer if
- * item > start, and 0 if start <= item <= end
- */
 int isset_interval_compare(const isset *s, int start, int end, int item);
-
-/**
- * Deletes all of the nodes in the tree rooted at the given node.
- * There is no effect if given pointer is NULL.
- *
- * @param n a pointer to a node
- */
 void isset_destroy_subtree(isset_node *n);
-
-/**
- * Prints the contents of the subtree rooted at the given node,
- * or "null" if the given pointer is NULL.
- *
- * @param node a pointer to a node
- * @param level the depth of that node
- */
 void isset_print_subtree(const isset_node *node, int level);
 
-isset *isset_create()
-{
+// 1625 already implemented correctly
+isset *isset_create() {
   isset *s = malloc(sizeof(isset));
 
   if (s != NULL)
@@ -101,8 +52,8 @@ isset *isset_create()
   return s;
 }
 
-int isset_size(const isset *s)
-{
+// implemented basically
+int isset_size(const isset *s) {
   if (s != NULL)
     {
       return s->size;
@@ -113,63 +64,113 @@ int isset_size(const isset *s)
     }
 }
 
-int isset_count_intervals(const isset *s)
-{
-  if (s != NULL)
-    {
+/**
+ * Why does this implementation make sense?
+ * 
+ * Consider the difference in the construction of isset. We have 'nodes' and 
+ * 'size.' What's the difference?
+ * 
+ * size is the number of integers in the tree. Nodes is the number of intervals.
+ */ 
+int isset_count_intervals(const isset *s) {
+  if (s != NULL) {
       return s->nodes;
-    }
-  else
-    {
+  }
+  else {
       return 0;
-    }
+  }
 }
 
-bool isset_contains(const isset *s, int item)
-{
-  if (s == NULL)
-    {
+// implicitly implemented correctly
+bool isset_contains(const isset *s, int item) {
+  if (s == NULL) {
       return false;
-    }
-  else
-    {
+  }
+  else {
       isset_search_result result;
       isset_find_node(s, item, &result);
       
       return result.found;
-    }
+  }
 }
 
-void isset_find_node(const isset *s, int item, isset_search_result *result)
-{
-  isset_node *parent = NULL;
-  isset_node *curr = s->root;
-  result->last_left = NULL;
-  result->last_right = NULL;
-  int dir = 0;
-  while (curr != NULL && (dir = isset_interval_compare(s, curr->start, curr->end, item)) != 0)
-    {
-      parent = curr;
-      if (dir < 0)
-	{
-	  result->last_left = curr;
-	  curr = curr->left;
-	}
-      else
-	{
-	  result->last_right = curr;
-	  curr = curr->right;
-	}
-    }
 
+/**
+ * Finds the node containing the given integer in the given set's tree,
+ * or, if the integer is not there, determines where it would be added.
+ *
+ * @param s a pointer to a set, non-NULL
+ * @param item an integer
+ * @param return a pointer to the struct in which to record the results
+ * of the search
+ * 
+ * DEPENDENCIES: isset_interval_compare
+ * 
+ * I believe this is implemented correctly.
+ */
+void isset_find_node(const isset *s, int item, isset_search_result *result) {
+  
+  isset_node *parent = NULL;
+  isset_node *curr = s->root; // the current node you're checking
+  result->last_left = NULL; 
+  result->last_right = NULL;
+  
+  int dir = 0;
+  
+  while (curr != NULL && (dir = isset_interval_compare(s, curr->start, curr->end, item)) != 0) {
+      parent = curr;
+      if (dir < 0) { // if the item is one the left of the interval
+    	  result->last_left = curr;
+    	  curr = curr->left;
+    	} else { // otherwise, it's on the right of the interval
+    	  result->last_right = curr;
+    	  curr = curr->right;
+  	  }
+  }
+
+  // when you've found the interval it belongs in
   result->parent = parent;
   result->n = curr;
   result->dir = dir;
   result->found = (curr != NULL);
 }
 
-int isset_interval_compare(const isset *s, int start, int end, int item)
-{
+
+/**
+ * Determines if the given integer comes before, within, or after the given
+ * interval.
+ *
+ * @param s a pointer to a set, non-NULL
+ * @param start an integer
+ * @param end an integer greater than or equal to start
+ * @param item an integer
+ * @return a negative integer if item < start, a positive integer if
+ * item > start, and 0 if start <= item <= end
+ * 
+ * so say an interval is -3 to 5
+ * if item = 4, then left = 4-(-3) = 7, right = 4 - 5 = -1, so it's in inside
+ * if item = -4, then left = -4 - (-3) = -1, right = -4 - 5 = -9, so it's to the left
+ * if item = 6, then left = 6 - -3 = 9, right = 4 - 5 = 1, so it's to the right
+ * 
+ * if a number is in the interval, then it is greater than the start
+ * and less than the end, so:
+ * left = item > start ==> item - start > 0 and
+ * right = item < end ==> item - end < 0
+ * 
+ * if a number is to the left of the interval, then
+ * item < start ==> left = item - start < 0
+ * thus the return value will be negative.
+ * 
+ * if a number is to the right of the interval, then
+ * item > end ==> right = item - end > 0
+ * thus the return value will be positive.
+ * 
+ * DEPENDENCIES: none
+ * 
+ * I believe this is implemented correctly.
+ */
+int isset_interval_compare(const isset *s, int start, int end, int item) {
+  
   int left = item - start;
   int right = item - end;
 
@@ -187,134 +188,165 @@ int isset_interval_compare(const isset *s, int start, int end, int item)
     }
 }
 
-bool isset_add(isset *s, int item)
-{
-  if (s == NULL)
-    {
+/**
+ * Adds the given integer to the given set.
+ *
+ * @param s a pointer to a set, non-NULL
+ * @param item an integer
+ * @return true if and only if the item was not in the set and was added
+ * 
+ * DEPENDENCIES: isset_find_node
+ */
+bool isset_add(isset *s, int item) {
+  
+  if (s == NULL) {
       return false;
-    }
+  }
   
   // check if item is already in the set
   isset_search_result result;
   isset_find_node(s, item, &result);
-  if (result.found)
-    {
+  if (result.found) {
       // in the set already; nothing more to do
       return false;
-    }
+  }
+  
+  /**
+   * this first set of if statements checks to see if the item
+   * we want to add is directly adjacent to the parent interval.
+   * If it is, we can simply augment the interval of the parent 
+   * node, rather than having to create a whole new node. This also
+   * allows us to calculate the number of intervals immediately.
+   */
 
-  // check if new item can be added to beginning/end of the node
-  // where search fell off the tree
-  if (result.dir < 0)
-    {
+  if (result.dir < 0) {
       // moved left; see if can prepend to parent
-      if (result.parent->start == item + 1)
-	{
-	  result.parent->start = item;
-	  s->size++;
+      if (result.parent->start == item + 1) {
+    	  result.parent->start = item;
+    	  s->size++;
 
-	  return true;
-	}
-    }
-  else if (result.dir > 0)
-    {
+    	  return true;
+	    }
+  } else if (result.dir > 0) {
       // moved right; see if can append to parent
-      if (result.parent->end == item - 1)
-	{
-	  result.parent->end = item;
-	  s->size++;
+      if (result.parent->end == item - 1) {
+    	  result.parent->end = item;
+    	  s->size++;
 
-	  return true;
-	}
-    }
+    	  return true;
+      }
+  }
 
-  // need to create a whole new node
+  /**
+   * Since it wasn't directly adjacent to an existing interval, 
+   * we need to place it into the tree. This is where we need
+   * to be doing rebalancing. 
+   */
   isset_node **incoming;
-  if (result.parent == NULL)
-    {
+  if (result.parent == NULL) {
       incoming = &s->root;
-    }
-  else if (result.dir < 0)
-    {
-      incoming = &result.parent->left;
-    }
-  else
-    {
-      incoming = &result.parent->right;
-    }
+  } else if (result.dir < 0) {
+    incoming = &result.parent->left;
+  } else {
+    incoming = &result.parent->right;
+  }
   
   isset_node *new_node = isset_create_node(item);
   *incoming = new_node;
 
-  if (new_node != NULL)
-    {
+  if (new_node != NULL) {
       new_node->parent = result.parent;
       s->size++;
       s->nodes++;
-  
       return true;
-    }
-  else
-    {
+  } else {
       return false;
-    }
+  }
+  
 }
 
-isset_node *isset_create_node(int item)
-{
+
+/**
+ * getHeight: recursively determines the height of a tree.
+ * @param n a node in a tree
+ */
+int getHeight(isset_node * n) {
+  
+  
+  if(n == NULL) { // if it's a null pointer
+    
+    printf("n is a null pointer\n");
+    
+    return -1;
+  } else { // else, take the max of the left and right + 1
+    
+    #ifdef DEBUG
+    printf("left child pointer: %p\n", (void *) n->left);
+    printf("right child pointer: %p\n", (void *) n->right);
+    #endif
+  
+    
+    int left_height = getHeight(n->left);
+    int right_height = getHeight(n->right);
+    return ((left_height > right_height ? left_height : right_height) + 1);
+    
+  }
+}
+
+/**
+ * Returns a pointer to a new node containing the interval [item, item].
+ *
+ * @param item an integer
+ * @return a pointer to a new node containing the interval [item, item]
+ */
+isset_node *isset_create_node(int item) {
   isset_node *result = (isset_node *)malloc(sizeof(isset_node));
 
-  if (result != NULL)
-    {
+  if (result != NULL) {
       result->right = NULL;
       result->left = NULL;
       result->start = item;
       result->end = item;
-    }
+      result->parent = NULL;
+  }
 
   return result;
 }
 
-bool isset_remove(isset *s, int item)
-{
+bool isset_remove(isset *s, int item) {
   return false;
 }
 
-void isset_delete_node(isset *s, isset_node *node)
-{
+
+/**
+ * Deletes the given node in the given BST.
+ *
+ * @param s a pointer to a set, non-NULL
+ * @param node a node in that set's tree
+ */
+void isset_delete_node(isset *s, isset_node *node) {
   // find pointer to the node to delete
   isset_node **incoming;
-  if (node->parent == NULL)
-    {
+ 
+  if (node->parent == NULL) {
       incoming = &s->root;
-    }
-  else if (node->parent->left == node)
-    {
+  } else if (node->parent->left == node) {
       incoming = &node->parent->left;
-    }
-  else
-    {
+  } else {
       incoming = &node->parent->right;
-    }
-
-  if (node->left == NULL && node->right == NULL)
-    {
+  }
+  
+  if (node->left == NULL && node->right == NULL) { // if it's a leaf
       *incoming = NULL;
-    }
-  else if (node->left == NULL)
-    {
+  } else if (node->left == NULL) {
       *incoming = node->right;
       node->right->parent = node->parent;
-    }
-  else if (node->right == NULL)
-    {
+  } else if (node->right == NULL) {
       *incoming = node->left;
       node->left->parent = node->parent;
-    }
-  else
-    {
+  } else {
       // TWO CHILDREN CASE (not needed until we do isset_remove)
-    }
+  }
 
   // free space for node
   free(node);
@@ -330,6 +362,7 @@ int isset_next_excluded(const isset *s, int item)
   return item;
 }
 
+// working
 void isset_destroy(isset *s)
 {
   isset_destroy_subtree(s->root);
@@ -339,6 +372,13 @@ void isset_destroy(isset *s)
   free(s);
 }
 
+
+/**
+ * Deletes all of the nodes in the tree rooted at the given node.
+ * There is no effect if given pointer is NULL.
+ *
+ * @param n a pointer to a node
+ */
 void isset_destroy_subtree(isset_node *n)
 {
   if (n != NULL)
@@ -349,6 +389,13 @@ void isset_destroy_subtree(isset_node *n)
     }
 }
 
+/**
+ * Prints the contents of the subtree rooted at the given node,
+ * or "null" if the given pointer is NULL.
+ *
+ * @param node a pointer to a node
+ * @param level the depth of that node
+ */
 void isset_print_subtree(const isset_node *node, int level)
 {
   for (int i = 0; i < level; i++)
@@ -366,3 +413,29 @@ void isset_print_subtree(const isset_node *node, int level)
       printf("null\n");
     }
 }
+
+
+#ifdef DEBUG
+int main(int argc, char **argv) {
+  printf("debugging:\n");
+  
+  isset * t = isset_create();
+  
+  isset_add(t, 10);
+  isset_add(t, 5);
+  isset_add(t, 4);
+  isset_add(t, 3);
+  isset_add(t, 12);
+  isset_add(t, 14);
+  isset_add(t, 18);
+  
+  printf("tree size: %d\n", t->size);
+  printf("tree nodes: %d\n", t->nodes);
+  printf("tree root pointer: %p\n", (void *) (t->root));
+  
+  int height = getHeight( t->root );
+  printf("height: %d\n", height);
+  
+  isset_destroy(t);
+}
+#endif

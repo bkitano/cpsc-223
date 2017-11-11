@@ -26,6 +26,9 @@ int isset_size(const isset *s);
  * 
  * @param s a pointer to a set, non-NULL
  * @return the number of intervals of integers in that set
+ * 
+ * This requires a tree traversal
+ * 
  */
 int isset_count_intervals(const isset *s);
 
