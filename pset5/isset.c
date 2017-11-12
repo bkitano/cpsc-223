@@ -241,6 +241,10 @@ bool isset_add(isset *s, int item) {
    * Since it wasn't directly adjacent to an existing interval, 
    * we need to place it into the tree. This is where we need
    * to be doing rebalancing. 
+   * 
+   * Why is it a ** and not a * ?
+   * because then we'd be malloc'ing space that's already
+   * allocated
    */
   isset_node **incoming;
   if (result.parent == NULL) {
@@ -284,12 +288,72 @@ int getHeight(isset_node * n) {
     printf("left child pointer: %p\n", (void *) n->left);
     printf("right child pointer: %p\n", (void *) n->right);
     #endif
-  
     
     int left_height = getHeight(n->left);
     int right_height = getHeight(n->right);
     return ((left_height > right_height ? left_height : right_height) + 1);
     
+  }
+}
+
+// adopted from Aspnes
+void rotateTree(isset_node **root, int direction) {
+  
+  // pointers to the objects which need moving
+  isset_node *x_;
+  isset_node *y_;
+  isset_node *b_;
+  
+  /**
+  *      y           x 
+  *     / \         / \
+  *    x   C  <=>  A   y
+  *   / \             / \
+  *  A   B           B   C
+  * 
+  * To right rotate, we set 
+  * x_ = x,
+  * y_ = *root, and 
+  * b_ = b.
+  * We then set: 
+  * *root to the x_
+  * y_ to the right child of x_, and
+  * b_ to the left child of y_
+  * 
+  * To left rotate, we set
+  * x_ = *root,
+  * y_ = y, and 
+  * b_ = b
+  * We then set:
+  * *root to y_
+  * x_ to the left child of y_, and
+  * b_ to the right child of x_
+  */
+  
+  if(direction < 0) { // if it's a left rotation
+  
+    // set
+    x_ = *root;
+    y_ = x_->right;
+    b_ = y_->left;
+    
+    // rotate
+    *root = y_;
+    y_->left = x_;
+    x_->right = b_;
+    
+  
+  } else { // it's a right rotation
+  
+    // set
+    y_ = *root;
+    x_ = y_->left;
+    b_ = x_->right;
+    
+    // rotate
+    *root = x_;
+    x_->right = y_;
+    y_->left = b_;
   }
 }
 
@@ -316,6 +380,7 @@ isset_node *isset_create_node(int item) {
 bool isset_remove(isset *s, int item) {
   return false;
 }
+
 
 
 /**
@@ -400,7 +465,7 @@ void isset_print_subtree(const isset_node *node, int level)
 {
   for (int i = 0; i < level; i++)
     {
-      printf(" ");
+      printf(" . ");
     }
   if (node != NULL)
     {
@@ -425,6 +490,7 @@ int main(int argc, char **argv) {
   isset_add(t, 5);
   isset_add(t, 4);
   isset_add(t, 3);
+  isset_add(t, 8);
   isset_add(t, 12);
   isset_add(t, 14);
   isset_add(t, 18);
@@ -435,6 +501,14 @@ int main(int argc, char **argv) {
   
   int height = getHeight( t->root );
   printf("height: %d\n", height);
+  
+  isset_print_subtree( t->root, 0);
+  
+  rotateTree(&(t->root), -1);
+  
+  printf("rotated:\n");
+  
+  isset_print_subtree( t->root, 0);
   
   isset_destroy(t);
 }
