@@ -1,11 +1,13 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <assert.h>
 
 #include "isset.h"
 
 // debug switch
 #define DEBUG
+#define VERBOSE
 
 typedef struct _isset_node {
   int start;
@@ -37,6 +39,11 @@ void isset_find_node(const isset *s, int item, isset_search_result *result);
 int isset_interval_compare(const isset *s, int start, int end, int item);
 void isset_destroy_subtree(isset_node *n);
 void isset_print_subtree(const isset_node *node, int level);
+int getHeight(isset_node * n);
+void rotateTree(isset_node **root, int direction);
+void rebalanceTree(isset_node **root);
+void totalRebalance(isset_node **root);
+
 
 // 1625 already implemented correctly
 isset *isset_create() {
@@ -220,21 +227,21 @@ bool isset_add(isset *s, int item) {
    */
 
   if (result.dir < 0) {
-      // moved left; see if can prepend to parent
-      if (result.parent->start == item + 1) {
-    	  result.parent->start = item;
-    	  s->size++;
+    // moved left; see if can prepend to parent
+    if (result.parent->start == item + 1) {
+  	  result.parent->start = item;
+  	  s->size++;
 
-    	  return true;
-	    }
+  	  return true;
+    }
   } else if (result.dir > 0) {
-      // moved right; see if can append to parent
-      if (result.parent->end == item - 1) {
-    	  result.parent->end = item;
-    	  s->size++;
+    // moved right; see if can append to parent
+    if (result.parent->end == item - 1) {
+  	  result.parent->end = item;
+  	  s->size++;
 
-    	  return true;
-      }
+  	  return true;
+    }
   }
 
   /**
@@ -248,7 +255,7 @@ bool isset_add(isset *s, int item) {
    */
   isset_node **incoming;
   if (result.parent == NULL) {
-      incoming = &s->root;
+      incoming = &s->root; // these values are NULL anyways
   } else if (result.dir < 0) {
     incoming = &result.parent->left;
   } else {
@@ -262,11 +269,11 @@ bool isset_add(isset *s, int item) {
       new_node->parent = result.parent;
       s->size++;
       s->nodes++;
+      totalRebalance(&(s->root));
       return true;
   } else {
       return false;
   }
-  
 }
 
 
@@ -279,15 +286,8 @@ int getHeight(isset_node * n) {
   
   if(n == NULL) { // if it's a null pointer
     
-    printf("n is a null pointer\n");
-    
     return -1;
   } else { // else, take the max of the left and right + 1
-    
-    #ifdef DEBUG
-    printf("left child pointer: %p\n", (void *) n->left);
-    printf("right child pointer: %p\n", (void *) n->right);
-    #endif
     
     int left_height = getHeight(n->left);
     int right_height = getHeight(n->right);
@@ -296,13 +296,13 @@ int getHeight(isset_node * n) {
   }
 }
 
-// adopted from Aspnes
+// adopted from Aspnes' notes, 2017
 void rotateTree(isset_node **root, int direction) {
   
   // pointers to the objects which need moving
-  isset_node *x_;
-  isset_node *y_;
-  isset_node *b_;
+  isset_node *x_; // will be destroyed when the function terminates 
+  isset_node *y_; // will be destroyed when the function terminates
+  isset_node *b_; // will be destroyed when the function terminates
   
   /**
   *      y           x 
@@ -333,9 +333,9 @@ void rotateTree(isset_node **root, int direction) {
   if(direction < 0) { // if it's a left rotation
   
     // set
-    x_ = *root;
-    y_ = x_->right;
-    b_ = y_->left;
+    x_ = *root; // persists
+    y_ = x_->right; // since the parent persists, it persists
+    b_ = y_->left; 
     
     // rotate
     *root = y_;
@@ -354,6 +354,62 @@ void rotateTree(isset_node **root, int direction) {
     *root = x_;
     x_->right = y_;
     y_->left = b_;
+  }
+}
+
+/**
+ * rebalanceTree: given the grandparent node of an issue, rebalance the tree
+ * @param root: a pointer to the pointer of a node
+ */
+void rebalanceTree(isset_node **root) {
+    
+    // check which of 4 ways we need to rotate:
+    // left imbalance
+    if(getHeight((*root)->left) > getHeight((*root)->right) + 2) { 
+      
+      // check which grandchild is the problem
+      if( getHeight( (*root)->left->right ) > getHeight( (*root)->left->left ) ) {
+        // a left right problem, so a left rotation on middle, then right rotation on grandparent
+        rotateTree(&(*root)->left, -1);
+      } // otherwise it's a left left problem, so just a right rotation on grandparent
+      rotateTree(root, 1);
+    }
+     
+    // right imbalance 
+    else if ( getHeight((*root)->right) >= getHeight((*root)->left) + 2) { // right imbalance
+      if( getHeight((*root)->left) > getHeight((*root)->right)) { // a right left problem, so a right rortation on middle, then left rotation on grandparent
+        rotateTree(&(*root)->right, 1);
+      } // otherwise, a right right problem, so just a left rotation on grandparent
+      rotateTree(root, -1);
+    }
+}
+
+/**
+ * totalRebalance: recursively parse the tree from the top down. If that
+ * node is imbalanced, balance it; if not, balance the left and right
+ * @param root: the starting node
+ */
+ 
+void totalRebalance(isset_node **root) {
+  #ifdef VERBOSE
+  printf("balancing root... left: %d, right %d \n", getHeight((*root)->left), getHeight((*root)->right));
+  #endif
+  rebalanceTree(root);
+  
+  #ifdef VERBOSE
+  printf("balancing left subtree...\n");
+  #endif
+  
+  if((*root)->left) {
+    totalRebalance( &((*root)->left) );
+  }
+  
+  #ifdef VERBOSE
+  printf("balancing right subtree...\n");
+  #endif
+  
+  if((*root)->right) {
+    totalRebalance( &((*root)->right) );
   }
 }
 
@@ -380,8 +436,6 @@ isset_node *isset_create_node(int item) {
 bool isset_remove(isset *s, int item) {
   return false;
 }
-
-
 
 /**
  * Deletes the given node in the given BST.
@@ -486,14 +540,10 @@ int main(int argc, char **argv) {
   
   isset * t = isset_create();
   
-  isset_add(t, 10);
-  isset_add(t, 5);
-  isset_add(t, 4);
-  isset_add(t, 3);
-  isset_add(t, 8);
-  isset_add(t, 12);
-  isset_add(t, 14);
-  isset_add(t, 18);
+  // the root
+ for(int i = 1; i < 20; i++) {
+   isset_add(t, 2*i);
+ }
   
   printf("tree size: %d\n", t->size);
   printf("tree nodes: %d\n", t->nodes);
@@ -501,12 +551,6 @@ int main(int argc, char **argv) {
   
   int height = getHeight( t->root );
   printf("height: %d\n", height);
-  
-  isset_print_subtree( t->root, 0);
-  
-  rotateTree(&(t->root), -1);
-  
-  printf("rotated:\n");
   
   isset_print_subtree( t->root, 0);
   
