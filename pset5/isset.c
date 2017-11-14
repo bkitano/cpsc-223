@@ -40,9 +40,9 @@ int isset_interval_compare(const isset *s, int start, int end, int item);
 void isset_destroy_subtree(isset_node *n);
 void isset_print_subtree(const isset_node *node, int level);
 int getHeight(isset_node * n);
-void rotateTree(isset_node *root, int direction);
-void rebalanceTree(isset_node *root);
-void totalRebalance(isset_node *root);
+void rotateTree(isset_node **root, int direction);
+void rebalanceTree(isset_node **root);
+void totalRebalance(isset_node **root);
 
 
 // 1625 already implemented correctly
@@ -269,7 +269,7 @@ bool isset_add(isset *s, int item) {
       new_node->parent = result.parent;
       s->size++;
       s->nodes++;
-      totalRebalance(s->root);
+      totalRebalance(&(s->root));
       return true;
   } else {
       return false;
@@ -280,8 +280,6 @@ bool isset_add(isset *s, int item) {
 /**
  * getHeight: recursively determines the height of a tree.
  * @param n a node in a tree
- * 
- * problem: there's an infinite loop here
  */
 int getHeight(isset_node * n) {
   
@@ -299,7 +297,7 @@ int getHeight(isset_node * n) {
 }
 
 // adopted from Aspnes' notes, 2017
-void rotateTree(isset_node *root, int direction) {
+void rotateTree(isset_node **root, int direction) {
   
   // pointers to the objects which need moving
   isset_node *x_; // will be destroyed when the function terminates 
@@ -335,27 +333,37 @@ void rotateTree(isset_node *root, int direction) {
   if(direction < 0) { // if it's a left rotation
   
     // set
-    x_ = root; // persists
+    x_ = *root; // persists
     y_ = x_->right; // since the parent persists, it persists
     b_ = y_->left; 
     
     // rotate
-    root = y_;
+    *root = y_;
     y_->left = x_;
+    x_->parent = y_;
+    
     x_->right = b_;
+    if(b_) {
+      b_->parent = x_;
+    }
     
   
   } else { // it's a right rotation
   
     // set
-    y_ = root;
+    y_ = *root;
     x_ = y_->left;
     b_ = x_->right;
     
     // rotate
-    root = x_;
+    *root = x_;
     x_->right = y_;
+    y_->parent = x_;
+    
     y_->left = b_;
+    if(b_) {
+      b_->parent = y_;
+    }
   }
 }
 
@@ -363,24 +371,24 @@ void rotateTree(isset_node *root, int direction) {
  * rebalanceTree: given the grandparent node of an issue, rebalance the tree
  * @param root: a pointer to the pointer of a node
  */
-void rebalanceTree(isset_node *root) {
+void rebalanceTree(isset_node **root) {
     
     // check which of 4 ways we need to rotate:
     // left imbalance
-    if(getHeight(root->left) > getHeight(root->right) + 2) { 
+    if(getHeight((*root)->left) > getHeight((*root)->right) + 2) { 
       
       // check which grandchild is the problem
-      if( getHeight( root->left->right ) > getHeight( root->left->left ) ) {
+      if( getHeight( (*root)->left->right ) > getHeight( (*root)->left->left ) ) {
         // a left right problem, so a left rotation on middle, then right rotation on grandparent
-        rotateTree( root->left, -1);
+        rotateTree(&(*root)->left, -1);
       } // otherwise it's a left left problem, so just a right rotation on grandparent
       rotateTree(root, 1);
     }
      
     // right imbalance 
-    else if ( getHeight(root->right) >= getHeight(root->left) + 2) { // right imbalance
-      if( getHeight(root->left) > getHeight(root->right)) { // a right left problem, so a right rortation on middle, then left rotation on grandparent
-        rotateTree(root->right, 1);
+    else if ( getHeight((*root)->right) >= getHeight((*root)->left) + 2) { // right imbalance
+      if( getHeight((*root)->left) > getHeight((*root)->right)) { // a right left problem, so a right rortation on middle, then left rotation on grandparent
+        rotateTree(&(*root)->right, 1);
       } // otherwise, a right right problem, so just a left rotation on grandparent
       rotateTree(root, -1);
     }
@@ -392,15 +400,15 @@ void rebalanceTree(isset_node *root) {
  * @param root: the starting node
  */
  
-void totalRebalance(isset_node *root) {
+void totalRebalance(isset_node **root) {
   rebalanceTree(root);
   
-  if(root->left) {
-    totalRebalance( root->left );
+  if((*root)->left) {
+    totalRebalance( &((*root)->left) );
   }
   
-  if(root->right) {
-    totalRebalance( root->right );
+  if((*root)->right) {
+    totalRebalance( &((*root)->right) );
   }
 }
 
@@ -543,16 +551,18 @@ void isset_delete_node(isset *s, isset_node *node) {
     * we need to do a few things: 
     */ 
     
+    printf("successor: [%d %d]\n", successor->start, successor->end);
+    
     // replace successor->parent->left to successor->right
     // remember that successor doesn't have a left child, so this is safe
-    isset_node * parent = successor->parent;
-    parent->left = successor->right;
+    successor->parent->left = successor->right;
     
     // set all of the subtrees of node to be the subtrees of successor
     successor->left = node->left;
     successor->right = node->right;
     
     // finally, set incoming to successor.
+    
     *incoming = successor;
   }
 
@@ -560,7 +570,7 @@ void isset_delete_node(isset *s, isset_node *node) {
   free(node);
   s->nodes--;
   
-  totalRebalance(s->root);
+  totalRebalance(&(s->root));
 }
 
 int isset_next_excluded(const isset *s, int item)
@@ -647,11 +657,11 @@ int main(int argc, char **argv) {
   
   // delete testing
   isset_search_result result;
-  isset_find_node(t, 2, &result); 
+  isset_find_node(t, 18, &result); 
   isset_node * d = result.n;
   isset_delete_node(t, d);
   
-  isset_print_subtree(t->root, 0);
+  isset_print_subtree( t->root, 0);
   
   isset_destroy(t);
 }
