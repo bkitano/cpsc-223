@@ -7,7 +7,8 @@
 
 // debug switch
 #define DEBUG
-#define VERBOSE
+// #define VERBOSE
+#define PTREE
 
 typedef struct _isset_node {
   int start;
@@ -270,6 +271,11 @@ bool isset_add(isset *s, int item) {
       s->size++;
       s->nodes++;
       totalRebalance(&(s->root));
+      
+      #ifdef PTREE
+      isset_print_subtree(s->root, 0);
+      #endif
+      
       return true;
   } else {
       return false;
@@ -294,6 +300,7 @@ int getHeight(isset_node * n) {
     return ((left_height > right_height ? left_height : right_height) + 1);
     
   }
+  
 }
 
 // adopted from Aspnes' notes, 2017
@@ -464,7 +471,7 @@ bool isset_remove(isset *s, int item) {
             isset_delete_node(s, n);
             
             // iteratively add the first subinterval
-            for(int i = new_start; i < item - 1; i++) {
+            for(int i = new_start; i < item; i++) {
                 isset_add(s, i);
             }
             
@@ -507,13 +514,17 @@ void isset_delete_node(isset *s, isset_node *node) {
     #endif
   
     incoming = &s->root;
-  } else if (node->parent->left == node) { // if we are deleting a node on the left
+  } 
+  
+  else if (node->parent->left == node) { // if we are deleting a node on the left
     #ifdef VERBOSE
     printf(" deleting a left child\n");
     #endif
   
       incoming = &node->parent->left;
-  } else {
+  } 
+  
+  else {
     
       #ifdef VERBOSE
       printf("deleting a right child \n");
@@ -594,7 +605,9 @@ void isset_delete_node(isset *s, isset_node *node) {
     * we need to do a few things: 
     */ 
     
+    #ifdef VERBOSE
     printf("successor: [%d %d]\n", successor->start, successor->end);
+    #endif
     
     // replace successor->parent->left to successor->right
     // remember that successor doesn't have a left child, so this is safe
@@ -608,12 +621,11 @@ void isset_delete_node(isset *s, isset_node *node) {
     
     *incoming = successor;
   }
-
+  
   // free space for node
   free(node);
   s->nodes--;
   
-  totalRebalance(&(s->root));
 }
 
 int isset_next_excluded(const isset *s, int item)
@@ -686,7 +698,7 @@ int main(int argc, char **argv) {
   
   // the root
  for(int i = 1; i < 20; i++) {
-   isset_add(t, 2*i);
+   isset_add(t, i);
  }
   
   printf("tree size: %d\n", t->size);
@@ -699,8 +711,10 @@ int main(int argc, char **argv) {
   isset_print_subtree( t->root, 0);
   
   // delete testing
-  isset_remove(t, 18);
+  int r = 10;
+  isset_remove(t, r);
   
+  printf("after removing %d\n", r);
   isset_print_subtree( t->root, 0);
   
   isset_destroy(t);

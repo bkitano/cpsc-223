@@ -1,6 +1,10 @@
 CC = gcc
 CFLAGS = -std=c99 -Wall -pedantic -g3
 
+tvgrind:
+	make Test
+	valgrind --tool=memcheck --leak-check=full -q ./Test a 1 a 2 a 3 a 4 a 5
+
 dvgrind:
 	make debug
 	valgrind --tool=memcheck --leak-check=yes -q ./debug
