@@ -7,3 +7,12 @@ malloc.
 Node functions are local to
 isset.c, and not accessible
 in other files.
+
+gdb:
+call <function>
+print <expression>
+finish
+next
+info locals
+info proc
+show backtrace
