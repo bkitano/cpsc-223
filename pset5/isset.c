@@ -433,8 +433,51 @@ isset_node *isset_create_node(int item) {
 }
 
 bool isset_remove(isset *s, int item) {
-  
-  return false;
+    isset_search_result result;
+    isset_find_node(s, 10, &result); 
+
+    if(result.found) {
+        isset_node * n = result.n;
+        
+        // is it at the end of an interval?
+        if(item == n->end && item != n->start ) {
+            n->end--;
+        } 
+        
+        // is it at the beginning of an interval?
+        else if(item == n->start && item != n->end ) {
+            n->start++;
+        } 
+        
+        // is it an entire interval?
+        else if(item == n->start && item == n->end ) {
+            isset_delete_node(s, n);
+        }
+        
+        // is it in the middle of an interval?
+        else {
+            // we break up the original interval into two sub intervals
+            int new_start = n->start;
+            int new_end = n->end;
+            
+            // we delete the original node
+            isset_delete_node(s, n);
+            
+            // iteratively add the first subinterval
+            for(int i = new_start; i < item - 1; i++) {
+                isset_add(s, i);
+            }
+            
+            // iteratively add the second subinterval
+            for(int i = item + 1; i < new_end; i++) {
+                isset_add(s, i);
+            }
+        }
+        return true;
+    } else {
+        return false;
+    }
+
 }
 
 /**
@@ -656,12 +699,7 @@ int main(int argc, char **argv) {
   isset_print_subtree( t->root, 0);
   
   // delete testing
-  isset_search_result result;
-  isset_find_node(t, 10, &result); 
-  if(result.found) {
-    isset_node * d = result.n;
-    isset_delete_node(t, d);
-  }
+  isset_remove(t, 18);
   
   isset_print_subtree( t->root, 0);
   
