@@ -657,9 +657,11 @@ int main(int argc, char **argv) {
   
   // delete testing
   isset_search_result result;
-  isset_find_node(t, 18, &result); 
-  isset_node * d = result.n;
-  isset_delete_node(t, d);
+  isset_find_node(t, 10, &result); 
+  if(result.found) {
+    isset_node * d = result.n;
+    isset_delete_node(t, d);
+  }
   
   isset_print_subtree( t->root, 0);
   
