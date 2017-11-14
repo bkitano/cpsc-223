@@ -391,22 +391,11 @@ void rebalanceTree(isset_node **root) {
  */
  
 void totalRebalance(isset_node **root) {
-  #ifdef VERBOSE
-  printf("balancing root... left: %d, right %d \n", getHeight((*root)->left), getHeight((*root)->right));
-  #endif
   rebalanceTree(root);
-  
-  #ifdef VERBOSE
-  printf("balancing left subtree...\n");
-  #endif
   
   if((*root)->left) {
     totalRebalance( &((*root)->left) );
   }
-  
-  #ifdef VERBOSE
-  printf("balancing right subtree...\n");
-  #endif
   
   if((*root)->right) {
     totalRebalance( &((*root)->right) );
@@ -434,6 +423,7 @@ isset_node *isset_create_node(int item) {
 }
 
 bool isset_remove(isset *s, int item) {
+  
   return false;
 }
 
@@ -444,32 +434,131 @@ bool isset_remove(isset *s, int item) {
  * @param node a node in that set's tree
  */
 void isset_delete_node(isset *s, isset_node *node) {
+  
+  #ifdef VERBOSE
+  printf("entered isset_delete_node\n");
+  #endif
+  
   // find pointer to the node to delete
   isset_node **incoming;
  
-  if (node->parent == NULL) {
-      incoming = &s->root;
-  } else if (node->parent->left == node) {
+ /**
+  * the pointer incoming stores the parent's pointer to its
+  * left or right child, whichever is the one to be deleted. 
+  * Then, when we need to change that to whatever, we can do 
+  * it quickly.
+  */ 
+  if (node->parent == NULL) { // if we are deleting the root
+    #ifdef VERBOSE
+    printf("deleting the root \n");
+    #endif
+  
+    incoming = &s->root;
+  } else if (node->parent->left == node) { // if we are deleting a node on the left
+    #ifdef VERBOSE
+    printf(" deleting a left child\n");
+    #endif
+  
       incoming = &node->parent->left;
   } else {
-      incoming = &node->parent->right;
+    
+      #ifdef VERBOSE
+      printf("deleting a right child \n");
+      #endif
+      
+      incoming = &node->parent->right; // we are deleting a node on the right
   }
-  
+  /**
+   * Here, because incoming is a leaf, we can safely set the pointer
+   * which incoming points to to a null pointer.
+   */
   if (node->left == NULL && node->right == NULL) { // if it's a leaf
+  
+    #ifdef VERBOSE
+  printf("deleting a leaf\n");
+  #endif
+  
       *incoming = NULL;
-  } else if (node->left == NULL) {
+  } 
+  
+  /**
+   * Here, the node has one child. In the case of having a right child:
+   * 1. store the pointer of node->right
+   * 2. change the pointer of node->right->parent to node->parent
+   * 3. change *incoming to node->right 
+   * (set the parent's new child to node->right)
+   */ 
+  // one child cases
+  else if (node->left == NULL) {
+    
+      #ifdef VERBOSE
+  printf("only child on the right\n");
+  #endif
+    
       *incoming = node->right;
       node->right->parent = node->parent;
+      
   } else if (node->right == NULL) {
+    
+      #ifdef VERBOSE
+  printf("only child on the left\n");
+  #endif
+  
       *incoming = node->left;
       node->left->parent = node->parent;
-  } else {
-      // TWO CHILDREN CASE (not needed until we do isset_remove)
+  } 
+  
+  /**
+   * In the two child case, we need to identify the successor
+   * node, which is the next largest node. This node is also
+   * the smallest node of the right subtree, so we will 
+   * traverse the right subtree until we have found reached the 
+   * left most leaf. This value will be our replacement.
+   */ 
+  // two children case
+  else {
+    
+      #ifdef VERBOSE
+  printf("single parent, two kids\n");
+  #endif
+    
+    // TWO CHILDREN CASE (not needed until we do isset_remove)
+    
+    // 1. find the successor
+    
+    // a. initialize a starter, the root of the right subtree
+    isset_node * successor = node->right;
+    
+    // b. while the starter's left child isn't null
+    while(successor->left) {
+    
+      // c. reset successor to be the left child.
+      successor = successor->left;
+    }
+    
+    /** 2. now that we have found the successor (note that it doesn't
+    * have a left child, since we recursed to the bottom!), 
+    * we need to do a few things: 
+    */ 
+    
+    // replace successor->parent->left to successor->right
+    // remember that successor doesn't have a left child, so this is safe
+    isset_node * parent = successor->parent;
+    parent->left = successor->right;
+    
+    // set all of the subtrees of node to be the subtrees of successor
+    successor->left = node->left;
+    successor->right = node->right;
+    
+    // finally, set incoming to successor.
+    *incoming = successor;
   }
 
   // free space for node
   free(node);
   s->nodes--;
+  
+  totalRebalance(&(s->root));
 }
 
 int isset_next_excluded(const isset *s, int item)
@@ -553,6 +642,14 @@ int main(int argc, char **argv) {
   printf("height: %d\n", height);
   
   isset_print_subtree( t->root, 0);
+  
+  // delete testing
+  isset_search_result result;
+  isset_find_node(t, 18, &result); 
+  isset_node * d = result.n;
+  isset_delete_node(t, d);
+  
+  isset_print_subtree(t->root, 0);
   
   isset_destroy(t);
 }
