@@ -15,7 +15,7 @@ grundy: grundy.o isset.o
 grundy.o: grundy.c isset.h
 	${CC} ${CFLAGS} -c $^
 	
-debug: isset.o
+debug: isset1.o
 	${CC} ${CFLAGS} -o $@ $^
 
 Test: isset_test.o isset.o
@@ -24,6 +24,6 @@ Test: isset_test.o isset.o
 isset_test.o: isset_test.c isset.h
 	${CC} ${CFLAGS} -c $^
 	
-isset.o: isset.c isset.h
+isset1.o: isset1.c isset.h
 	${CC} ${CFLAGS} -c $^
 	

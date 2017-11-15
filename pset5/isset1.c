@@ -41,9 +41,9 @@ int isset_interval_compare(const isset *s, int start, int end, int item);
 void isset_destroy_subtree(isset_node *n);
 void isset_print_subtree(const isset_node *node, int level);
 int getHeight(isset_node * n);
-void rotateTree(isset_node **root, int direction);
-void rebalanceTree(isset_node **root);
-void totalRebalance(isset_node **root);
+void rotateTree(isset *s, isset_node *root, int direction);
+void rebalanceTree(isset *s, isset_node *root);
+void totalRebalance(isset *s, isset_node *root);
 
 
 // 1625 already implemented correctly
@@ -272,7 +272,7 @@ bool isset_add(isset *s, int item) {
       new_node->parent = result.parent;
       s->size++;
       s->nodes++;
-      totalRebalance(&(s->root));
+      totalRebalance(s, s->root);
       
       #ifdef PTREE
       isset_print_subtree(s->root, 0);
@@ -305,101 +305,104 @@ int getHeight(isset_node * n) {
   
 }
 
-// adopted from Aspnes' notes, 2017
-void rotateTree(isset_node **root, int direction) {
-  
-  // pointers to the objects which need moving
-  isset_node *x_; // will be destroyed when the function terminates 
-  isset_node *y_; // will be destroyed when the function terminates
-  isset_node *b_; // will be destroyed when the function terminates
-  
-  /**
-  *      y           x 
-  *     / \         / \
-  *    x   C  <=>  A   y
-  *   / \             / \
-  *  A   B           B   C
-  * 
-  * To right rotate, we set 
-  * x_ = x,
-  * y_ = *root, and 
-  * b_ = b.
-  * We then set: 
-  * *root to the x_
-  * y_ to the right child of x_, and
-  * b_ to the left child of y_
-  * 
-  * To left rotate, we set
-  * x_ = *root,
-  * y_ = y, and 
-  * b_ = b
-  * We then set:
-  * *root to y_
-  * x_ to the left child of y_, and
-  * b_ to the right child of x_
-  */
-  
-  if(direction < 0) { // if it's a left rotation
-  
-    // set
-    x_ = *root; // persists
-    y_ = x_->right; // since the parent persists, it persists
-    b_ = y_->left; 
+//LEFT-RIGHT-ROTATE FUNCTIONS
+void rotateTree(isset * s, isset_node * x, int dir) {
+  // right rotation
+  if(dir > 0) {
     
-    // rotate
-    *root = y_;
-    y_->left = x_;
-    x_->parent = y_;
+    isset_node *y;
     
-    x_->right = b_;
-    if(b_) {
-      b_->parent = x_;
+    y = x->left;
+    
+    //rotate
+    if(y != NULL) {
+      x->left = y->right;
+      if(y->right != NULL) {
+        y->right->parent = x;
+      }
+      y->parent = x->parent;
     }
     
-  
-  } else { // it's a right rotation
-  
-    // set
-    y_ = *root;
-    x_ = y_->left;
-    b_ = x_->right;
-    
-    // rotate
-    *root = x_;
-    x_->right = y_;
-    y_->parent = x_;
-    
-    y_->left = b_;
-    if(b_) {
-      b_->parent = y_;
+    //if x no parent, set new y to be root
+    if(x->parent == NULL) {
+      s->root = y;
     }
+    
+    //if x had parent
+    else {
+      if(x->parent->left != NULL && x->start == x->parent->left->start) {
+        x->parent->left = y;
+      } else if(x->parent->right != NULL && x->start == x->parent->right->start) {
+         x->parent->right = y;
+      }
+    } 
+    
+    if(y != NULL) {
+      y->right = x;
+    }
+    
+    x->parent = y;
+  } 
+  // left rotation
+  else {
+    isset_node *y;
+    y = x->right;
+    
+    //rotate
+    if(y != NULL) {
+      x->right = y->left;
+      if(y->left != NULL) {
+        y->left->parent = x;
+      }
+      y->parent = x->parent;
+    } 
+    
+    if(x->parent == NULL) {
+      s->root = y;
+    }
+    
+  //otherwise, x was root (no parent)
+    else {
+      if(x->parent->left != NULL && x->start == x->parent->left->start) {
+         x->parent->left = y;
+      } 
+      else if(x->parent->right != NULL && x->start == x->parent->right->start) {
+          x->parent->right = y;
+      }
+    }
+      
+    if(y != NULL) {
+      y->left = x;
+    }
+    x->parent = y;
   }
 }
+
 
 /**
  * rebalanceTree: given the grandparent node of an issue, rebalance the tree
  * @param root: a pointer to the pointer of a node
  */
-void rebalanceTree(isset_node **root) {
+void rebalanceTree(isset * s, isset_node * root) {
     
     // check which of 4 ways we need to rotate:
     // left imbalance
-    if(getHeight((*root)->left) > getHeight((*root)->right) + 2) { 
+    if(getHeight(root->left) > getHeight(root->right) + 2) { 
       
       // check which grandchild is the problem
-      if( getHeight( (*root)->left->right ) > getHeight( (*root)->left->left ) ) {
+      if( getHeight( root->left->right ) > getHeight( root->left->left ) ) {
         // a left right problem, so a left rotation on middle, then right rotation on grandparent
-        rotateTree(&(*root)->left, -1);
+        rotateTree(s, root->left, -1);
       } // otherwise it's a left left problem, so just a right rotation on grandparent
-      rotateTree(root, 1);
+      rotateTree(s, root, 1);
     }
      
     // right imbalance 
-    else if ( getHeight((*root)->right) >= getHeight((*root)->left) + 2) { // right imbalance
-      if( getHeight((*root)->left) > getHeight((*root)->right)) { // a right left problem, so a right rortation on middle, then left rotation on grandparent
-        rotateTree(&(*root)->right, 1);
+    else if ( getHeight(root->right) >= getHeight(root->left) + 2) { // right imbalance
+      if( getHeight(root->left) > getHeight(root->right)) { // a right left problem, so a right rortation on middle, then left rotation on grandparent
+        rotateTree(s, root->right, 1);
       } // otherwise, a right right problem, so just a left rotation on grandparent
-      rotateTree(root, -1);
+      rotateTree(s, root, -1);
     }
 }
 
@@ -409,15 +412,15 @@ void rebalanceTree(isset_node **root) {
  * @param root: the starting node
  */
  
-void totalRebalance(isset_node **root) {
-  rebalanceTree(root);
+void totalRebalance(isset * s, isset_node * root) {
+  rebalanceTree(s, root);
   
-  if((*root)->left) {
-    totalRebalance( &((*root)->left) );
+  if(root->left) {
+    totalRebalance(s, root->left );
   }
   
-  if((*root)->right) {
-    totalRebalance( &((*root)->right) );
+  if(root->right) {
+    totalRebalance(s, root->right );
   }
 }
 
@@ -444,7 +447,7 @@ isset_node *isset_create_node(int item) {
 bool isset_remove(isset *s, int item) {
   printf("item to remove: %d\n", item);
     isset_search_result result;
-    isset_find_node(s, 10, &result); 
+    isset_find_node(s, item, &result); 
 
     if(result.found) {
       #ifdef VERBOSE
@@ -454,44 +457,65 @@ bool isset_remove(isset *s, int item) {
         
         // is it at the end of an interval?
         if(item == n->end && item != n->start ) {
+            // make the interval smaller
             n->end--;
+            // update the size
+            n->size--;
+            return true;
         } 
         
         // is it at the beginning of an interval?
         else if(item == n->start && item != n->end ) {
+            
+            // make the interval smaller
             n->start++;
+            // update the size
+            n->size--;
+            return true;
         } 
         
         // is it an entire interval?
         else if(item == n->start && item == n->end ) {
+            // just delete the whole thing
             isset_delete_node(s, n);
+            
+            // update the size
+            s->size--;
+            
+            // we removed a node, so decrement
+            s->nodes--;
+            return true;
         }
         
         // is it in the middle of an interval?
         else {
-            // we break up the original interval into two sub intervals
-            int new_start = n->start;
-            int new_end = n->end;
-            
-            // we delete the original node
-            isset_delete_node(s, n);
-            
-            // iteratively add the first subinterval
-            for(int i = new_start; i < item; i++) {
-                isset_add(s, i);
-            }
-            
-            // iteratively add the second subinterval
-            for(int i = item + 1; i < new_end; i++) {
-                isset_add(s, i);
-            }
+          
+          // we break up the original interval into two sub intervals
+          int new_start = n->start;
+          
+          // for the left side, we create a new node
+          isset_node * new_left = isset_create_node(new_start);
+          new_left->end = item - 1;
+          
+          if(n->left) {
+            n->left->parent = new_left;
+          }
+          new_left->left = n->left;
+          
+          new_left->parent = n; // position this new left below the original
+          n->left = new_left;
+          
+          // now, reset the original
+          n->start = item + 1;
+          
+          s->size--;
+          s->nodes++;
+          return true;
         }
-        return true;
     } else {
       printf("not found");
         return false;
     }
-
 }
 
 /**
@@ -618,14 +642,21 @@ void isset_delete_node(isset *s, isset_node *node) {
     
     // replace successor->parent->left to successor->right
     // remember that successor doesn't have a left child, so this is safe
-    successor->parent->left = successor->right;
     if(successor->right) {
+      successor->parent->left = successor->right;
       successor->right->parent = successor->parent;
     }
     
     // set all of the subtrees of node to be the subtrees of successor
     successor->left = node->left;
-    successor->right = node->right;
+    if(node->left) {
+      node->left->parent = successor;
+    }
+    
+    if(node->right != successor) {
+      successor->right = node->right;
+      node->right->parent = successor;
+    }
     
     // finally, set incoming to successor.
     
@@ -707,10 +738,7 @@ int main(int argc, char **argv) {
   isset * t = isset_create();
   isset_add(t, 5);
   isset_add(t, 6);
-  // the root
-// for(int i = 1; i < 10; i++) {
-//   isset_add(t, 2*i);
-// }
+  isset_add(t, 7);
   
   printf("tree size: %d\n", t->size);
   printf("tree nodes: %d\n", t->nodes);
@@ -722,10 +750,11 @@ int main(int argc, char **argv) {
   isset_print_subtree( t->root, 0);
   
   // delete testing
-  isset_remove(t, 5);
+  isset_remove(t, 6);
   
   isset_print_subtree( t->root, 0);
   
+  printf("asdfasdfasdf");
   isset_destroy(t);
 }
 #endif
