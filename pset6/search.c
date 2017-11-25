@@ -18,7 +18,7 @@ int main(int argc, char **argv)
       ldigraph_add_edge(g, 2, 0);
       ldigraph_add_edge(g, 2, 3);
 
-      // search(g, ldigraph_bfs, 0, 3);
+      search(g, ldigraph_bfs, 0, 3);
       search(g, ldigraph_dfs, 0, 3);
       search(g, ldigraph_ofs, 0, 3);
       

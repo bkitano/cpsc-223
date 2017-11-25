@@ -131,56 +131,72 @@ bool ldigraph_has_edge(const ldigraph *g, int from, int to) {
   }
 }
 
+// #define bfsdbg
 ldig_search *ldigraph_bfs(const ldigraph *g, int from) {
-  
-  int * q = malloc(sizeof(int) * g->n); // a queue to track the layers
-  assert(q);
 
   ldig_search * s = ldig_search_create(g, from); // the search result
-  
-  // dummies to track the queue
-  int head = 0;
-  int tail = 0;
-  
-  // add the root to the queue
-  q[tail] = from;
-  s->dist[from] = 0;
-  tail++;
-  
-  while(head < tail) {
-    
-    // the current node that we just pulled from the top of the queue
-    int curr = q[head];
-    
-    // set its color to black, since we are now visiting
-    s->color[curr] = BLACK;
-    
-    // for each neighbor:
-    for(int i = 0; i < g->list_size[curr]; i++) {
-      int neighbor = g->adj[curr][i];
-      
-      // if they are white, aka not yet visited:
-      if(s->color[neighbor] == WHITE) {
-        // 1. enqueue them
-        q[tail] = neighbor;
-        tail++;
-        
-        // 2. set their color to gray, as they are now queued up to visit
-        s->color[neighbor] = GRAY;
-        
-        // 3. set their pred to the curr
-        s->pred[neighbor] = curr;
-        
-        // 4. set their distance to be 1+curr
-        s->dist[neighbor] = s->dist[curr] + 1;
-      } // else, do nothing
+
+  int * q = malloc(sizeof(int) * g->n); // a queue to track the layers
+
+  if(q != NULL) {
+    // initialize all the values
+    for(int i = 0; i < g->n; i++) {
+      q[i] = -1;
     }
-    // dequeue by moving the head over
-    head--;
-  } // end of while
   
-  free(q);
-  
+    // dummies to track the queue
+    int head = 0;
+    int tail = 0;
+    
+    // add the root to the queue
+    q[tail] = from;
+    s->dist[from] = 0;
+    tail++;
+    
+    #ifdef bfsdbg
+      for(int i = 0; i < g->n; i++) {
+        printf("%d\n", q[i]);
+      }
+      printf("%d\n", head);
+      printf("%d\n", q[head]);
+      
+    #endif
+    
+    int curr = q[head];
+    while(head < tail) {
+      
+      // the current node that we just pulled from the top of the queue
+      curr = q[head];
+      
+      // set its color to black, since we are now visiting
+      s->color[curr] = BLACK;
+      
+      // for each neighbor:
+      for(int i = 0; i < g->list_size[curr]; i++) {
+        int neighbor = g->adj[curr][i];
+        
+        // if they are white, aka not yet visited:
+        if(s->color[neighbor] == WHITE) {
+          // 1. enqueue them
+          q[tail] = neighbor;
+          tail++;
+          
+          // 2. set their color to gray, as they are now queued up to visit
+          s->color[neighbor] = GRAY;
+          
+          // 3. set their pred to the curr
+          s->pred[neighbor] = curr;
+          
+          // 4. set their distance to be 1+curr
+          s->dist[neighbor] = s->dist[curr] + 1;
+        } // else, do nothing
+      }
+      // dequeue by moving the head over
+      head++;
+    } // end of while
+    
+    free(q);
+  }
   return s;
 }
 
