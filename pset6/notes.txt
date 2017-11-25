@@ -1,0 +1,33 @@
+depth first search algorithm:
+
+we need to keep a list of vertices we've visited already, so that we
+don't go into infinite loops
+
+we want to check if there is a path from one vertex to the next, which
+we'll do at each node, and recurse through all of the neighbors
+
+def vertexDFS( node, destination, visited ):
+    if(node in visited) {
+        return false;
+    }
+    visited.add(node);
+    
+    if(node == destination):
+        return true;
+    
+    for neighbor in node.neighbors: 
+        vertexDFS(neighbor, destination, visited);
+    
+    return false;
+}
+    
+breadth first search algorithm:
+
+we want to check each vertex level by level.
+
+ldigraph_dfs_visit:
+1. gets the list of neighbors for the node in question (from)
+2. for each neighbor aka outgoing edge:
+    2a. 
+    
+ldigraph_search_create: makes an empty search result object
