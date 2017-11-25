@@ -1,6 +1,24 @@
-make debug
-make[1]: Entering directory `/home/ubuntu/workspace/pset5'
-gcc -std=c99 -Wall -pedantic -g3 -c isset.c isset.h
-gcc -std=c99 -Wall -pedantic -g3 -o debug isset.o
-make[1]: Leaving directory `/home/ubuntu/workspace/pset5'
-valgrind --tool=memcheck --leak-check=yes -q ./debug
+4 added
+3 added
+7 added
+10 added
+100 added
+5 added
+2 added
+6 added
+1 added
+15 added
+12 added
+14 added
+element count = 12
+12 removed
+element count = 13
+11 added
+7 present
+100 removed
+1 removed
+6 removed
+15 removed
+interval count = 4
+element count = 104
+200 removed

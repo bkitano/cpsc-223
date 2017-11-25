@@ -9,6 +9,8 @@ typedef struct isset isset;
  * Creates a set of integers.
  *
  * @return a pointer to a new empty set of integers
+ * 
+ * 1625 already implemented correctly
  */
 isset *isset_create();
 
@@ -17,6 +19,8 @@ isset *isset_create();
  *
  * @param s a pointer to a set, non-NULL
  * @return the total number of integers in that set
+ * 
+ * 1625 already implemented correctly
  */
 int isset_size(const isset *s);
 

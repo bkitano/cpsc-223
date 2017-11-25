@@ -1,6 +1,10 @@
 CC = gcc
 CFLAGS = -std=c99 -Wall -pedantic -g3
 
+tvgrind:
+	make Test
+	valgrind --tool=memcheck --leak-check=full -q ./Test a 1 a 2 a 3 a 4 a 5
+
 dvgrind:
 	make debug
 	valgrind --tool=memcheck --leak-check=yes -q ./debug
@@ -11,7 +15,7 @@ grundy: grundy.o isset.o
 grundy.o: grundy.c isset.h
 	${CC} ${CFLAGS} -c $^
 	
-debug: isset.o
+debug: isset1.o
 	${CC} ${CFLAGS} -o $@ $^
 
 Test: isset_test.o isset.o
@@ -20,6 +24,6 @@ Test: isset_test.o isset.o
 isset_test.o: isset_test.c isset.h
 	${CC} ${CFLAGS} -c $^
 	
-isset.o: isset.c isset.h
+isset1.o: isset1.c isset.h
 	${CC} ${CFLAGS} -c $^
 	
