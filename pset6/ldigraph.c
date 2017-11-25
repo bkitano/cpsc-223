@@ -136,7 +136,7 @@ ldig_search *ldigraph_bfs(const ldigraph *g, int from) {
   int * q = malloc(sizeof(int) * g->n); // a queue to track the layers
   assert(q);
 
-  ldig_search s = ldig_search_create(g, from); // the search result
+  ldig_search * s = ldig_search_create(g, from); // the search result
   
   // dummies to track the queue
   int head = 0;
@@ -155,12 +155,9 @@ ldig_search *ldigraph_bfs(const ldigraph *g, int from) {
     // set its color to black, since we are now visiting
     s->color[curr] = BLACK;
     
-    // set its distance to its parent + 1
-    s->dist[curr] = s->dist[s->pred[curr]] + 1;
-    
     // for each neighbor:
     for(int i = 0; i < g->list_size[curr]; i++) {
-      int neighbor = adj[curr][i];
+      int neighbor = g->adj[curr][i];
       
       // if they are white, aka not yet visited:
       if(s->color[neighbor] == WHITE) {
@@ -169,16 +166,22 @@ ldig_search *ldigraph_bfs(const ldigraph *g, int from) {
         tail++;
         
         // 2. set their color to gray, as they are now queued up to visit
-        s->color[neighbor] == GRAY;
+        s->color[neighbor] = GRAY;
         
         // 3. set their pred to the curr
-        s->pred[neighbor] == curr;
+        s->pred[neighbor] = curr;
+        
+        // 4. set their distance to be 1+curr
+        s->dist[neighbor] = s->dist[curr] + 1;
       } // else, do nothing
     }
+    // dequeue by moving the head over
     head--;
-  }
+  } // end of while
   
   free(q);
+  
+  return s;
 }
 
 ldig_search *ldigraph_dfs(const ldigraph *g, int from) {
@@ -268,8 +271,43 @@ ldig_search *ldig_search_create(const ldigraph *g, int from) {
   }
 }
 
-int *ldig_search_path(const ldig_search *s, int to, int *len) {
-  return NULL;
+int * ldig_search_path(const ldig_search *s, int to, int *len) {
+  // a path array to store the path
+  // why can we set the size to be of size n? because a tree has n-1 edges.
+  int n = s->g->n;
+  int * path = malloc(sizeof(int) * n);
+  // initialize all the values
+  for(int i = 0; i < n; i++) {
+    path[i] = -1;
+  }
+  
+  int from = s->from; // the start
+  int curr = to; // the end
+  int step = 0; // a dummy for the length
+  
+  do {
+    path[step] = curr;
+    step++;
+  } while ( step <= n && (curr = s->pred[curr]) != from);
+  path[step] = curr;
+  
+  // if the path doesn't exist
+  if(curr != from) {
+    *len = -1;
+    return NULL;
+  } else {
+  
+    *len = step;
+    
+    // since the algorithm places things in from back to front, this will flip.
+    for(int i = 0; i < step; i++) {
+      int temp = path[step - i];
+      path[step - i] = path[i];
+      path[i] = temp;
+    }
+    
+    return path;
+  }
 }
 
 void ldig_search_destroy(ldig_search *s) {
