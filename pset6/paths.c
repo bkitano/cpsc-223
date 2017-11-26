@@ -5,18 +5,16 @@
 
 #include "ldigraph.h"
 
-void read_points(FILE *stream, int n, ldigraph * g);
+void read_points(FILE *stream, ldigraph * g);
 
 int main(int argc, char **argv) {
     
     FILE *fptr;
     char * filename = argv[1];
-    char ch;
  
     /*  open the file for reading */
     fptr = fopen(filename, "r");
-    if (fptr == NULL)
-    {
+    if (fptr == NULL) {
         printf("Cannot open file \n");
         exit(0);
     }
@@ -24,15 +22,16 @@ int main(int argc, char **argv) {
     // read n, the number of points
     int n;
     fscanf(fptr, "%d", &n);
-    printf("%d\n", n);
+    printf("n: %d\n", n);
 
-    // ldigraph *g = ldigraph_create(n);
+    ldigraph *g = ldigraph_create(n);
     
-    // // read into one list
-    // read_points(stdin, n, g);
+    // read lines
+    read_points(fptr, g);
 
     fclose(fptr);
-    return 1;
+    ldigraph_destroy(g);
+    return 0;
 }
 
 
@@ -43,17 +42,18 @@ int main(int argc, char **argv) {
  * @param l a pointer to a list
  * @param n a non-negative integer
  */
-void read_points(FILE *stream, int n, ldigraph * g) {
-  for(int i = 0; i < n; i++) {
-    
+void read_points(FILE *stream, ldigraph * g) {
+
     int x;
     int y;
     
-    fscanf(stream, "%d %d \n", &x, &y);
-    
-    printf("from: %d, to: %d\n", x,y);
-    
-    // ldigraph_add_edge(g, x, y);
-    
-  }
+    // while there are lines to read
+    while( fscanf(stream, "%d %d \n", &x, &y) == 2 ) {
+        
+        // print them lol
+        printf("from: %d, to: %d\n", x, y);
+        
+        // add them
+        // ldigraph_add_edge(g, x, y);
+    }
 }
