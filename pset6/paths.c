@@ -6,6 +6,7 @@
 #include "ldigraph.h"
 
 void read_points(FILE *stream, ldigraph * g);
+void search(const ldigraph *g, ldig_search *(method)(const ldigraph *, int), int from, int to);
 
 int main(int argc, char **argv) {
     
@@ -22,15 +23,29 @@ int main(int argc, char **argv) {
     // read n, the number of points
     int n;
     fscanf(fptr, "%d", &n);
-    printf("n: %d\n", n);
 
     ldigraph *g = ldigraph_create(n);
     
     // read lines
     read_points(fptr, g);
-
+    
+    for(int i = 2; i < argc; i++) {
+    
+        if(strcmp(argv[i], "-breadth") == 0) {
+            search(g, ldigraph_bfs, atoi(argv[i+1]), atoi(argv[i+2]));
+        } 
+        else if(strcmp(argv[i], "-depth") == 0) {
+            search(g, ldigraph_dfs, atoi(argv[i+1]), atoi(argv[i+2]));
+        } 
+        else if(strcmp(argv[i], "-degree") == 0) {
+            search(g, ldigraph_ofs, atoi(argv[i+1]), atoi(argv[i+2]));
+        } 
+    
+    }
+    
     fclose(fptr);
     ldigraph_destroy(g);
+
     return 0;
 }
 
@@ -50,10 +65,43 @@ void read_points(FILE *stream, ldigraph * g) {
     // while there are lines to read
     while( fscanf(stream, "%d %d \n", &x, &y) == 2 ) {
         
-        // print them lol
-        printf("from: %d, to: %d\n", x, y);
-        
         // add them
-        // ldigraph_add_edge(g, x, y);
+        ldigraph_add_edge(g, x, y);
     }
 }
+
+
+void search(const ldigraph *g, ldig_search *(method)(const ldigraph *, int), int from, int to) {
+  ldig_search *s = method(g, from);
+  
+  if (s != NULL) {
+    int len;
+    int *path = ldig_search_path(s, to, &len);
+    
+        if (method == ldigraph_bfs) {
+            printf("-breadth ");
+        } else if (method == ldigraph_dfs) {
+            printf("-depth ");
+        } else if (method == ldigraph_ofs) {
+            printf("-degree ");
+        }
+    
+    if (path != NULL) {
+      printf("%d->%d: [", from, to);
+      for (int i = 0; i <= len; i++) {
+        if (i > 0) {
+          printf(", ");
+        }
+        printf("%d", path[i]);
+      }
+      
+      printf("]\n");
+      free(path);
+    } else {
+      printf("%d->%d: no path\n", from, to);
+    }
+    
+    ldig_search_destroy(s);
+  }
+}
+

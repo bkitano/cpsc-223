@@ -1,0 +1,126 @@
+make Paths
+make[1]: Entering directory `/home/ubuntu/workspace/pset6'
+gcc -std=c99 -pedantic -Wall -g3 -c ldigraph.c ldigraph.h
+gcc -std=c99 -pedantic -Wall -g3 -o Paths paths.o ldigraph.o
+make[1]: Leaving directory `/home/ubuntu/workspace/pset6'
+valgrind --leak-check=yes --tool=memcheck -q ./Paths t1.in -degree 0 3
+from: 0
+unsorted: 
+index: 1; outdegree: 2
+index: 3; outdegree: 0
+
+sorted: 
+index: 1; outdegree: 2
+index: 3; outdegree: 0
+colors before for loop: 
+index: 0; color: 1
+index: 1; color: 0
+index: 2; color: 0
+index: 3; color: 0
+pred before for loop: 
+index: 0; pred: -1
+index: 1; pred: -1
+index: 2; pred: -1
+index: 3; pred: -1
+next index: 1
+from: 1
+unsorted: 
+index: 3; outdegree: 0
+index: 2; outdegree: 2
+
+sorted: 
+index: 2; outdegree: 2
+index: 3; outdegree: 0
+colors before for loop: 
+index: 0; color: 1
+index: 1; color: 1
+index: 2; color: 0
+index: 3; color: 0
+pred before for loop: 
+index: 0; pred: -1
+index: 1; pred: 0
+index: 2; pred: -1
+index: 3; pred: -1
+next index: 2
+from: 2
+unsorted: 
+index: 0; outdegree: 2
+index: 3; outdegree: 0
+
+sorted: 
+index: 0; outdegree: 2
+index: 3; outdegree: 0
+colors before for loop: 
+index: 0; color: 1
+index: 1; color: 1
+index: 2; color: 1
+index: 3; color: 0
+pred before for loop: 
+index: 0; pred: -1
+index: 1; pred: 0
+index: 2; pred: 1
+index: 3; pred: -1
+next index: 0
+next index: 3
+from: 3
+unsorted: 
+
+sorted: 
+colors before for loop: 
+index: 0; color: 1
+index: 1; color: 1
+index: 2; color: 1
+index: 3; color: 1
+pred before for loop: 
+index: 0; pred: -1
+index: 1; pred: 0
+index: 2; pred: 1
+index: 3; pred: 2
+colors after for loop: 
+index: 0; color: 1
+index: 1; color: 1
+index: 2; color: 1
+index: 3; color: 2
+pred after for loop: 
+index: 0; pred: -1
+index: 1; pred: 0
+index: 2; pred: 1
+index: 3; pred: 2
+colors after for loop: 
+index: 0; color: 1
+index: 1; color: 1
+index: 2; color: 2
+index: 3; color: 2
+pred after for loop: 
+index: 0; pred: -1
+index: 1; pred: 0
+index: 2; pred: 1
+index: 3; pred: 2
+next index: 3
+colors after for loop: 
+index: 0; color: 1
+index: 1; color: 2
+index: 2; color: 2
+index: 3; color: 2
+pred after for loop: 
+index: 0; pred: -1
+index: 1; pred: 0
+index: 2; pred: 1
+index: 3; pred: 2
+next index: 3
+colors after for loop: 
+index: 0; color: 2
+index: 1; color: 2
+index: 2; color: 2
+index: 3; color: 2
+pred after for loop: 
+index: 0; pred: -1
+index: 1; pred: 0
+index: 2; pred: 1
+index: 3; pred: 2
+final pred: 
+-1
+0
+1
+2
+-degree 0->3: [0, 2, 1, 3]

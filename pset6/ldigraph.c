@@ -236,21 +236,6 @@ ldig_search *ldigraph_dfs(const ldigraph *g, int from) {
   return s;
 }
 
-ldig_search *ldigraph_ofs(const ldigraph *g, int from) {
-  if (g == NULL || from < 0 || from >= g->n) {
-    return NULL;
-  }
-
-  ldig_search *s = ldig_search_create(g, from);
-  if (s != NULL) {
-    // start at from
-    s->color[from] = GRAY;
-    s->dist[from] = 0;
-    ldigraph_ofs_visit(g, s, from, comparator);
-  }
-  return s;
-}
-
 void ldigraph_dfs_visit(const ldigraph* g, ldig_search *s, int from) {
   // get vertices we can reach in one edge from from
   const int *neighbors = g->adj[from];
@@ -273,12 +258,34 @@ void ldigraph_dfs_visit(const ldigraph* g, ldig_search *s, int from) {
   s->color[from] = BLACK;
 }
 
+
+ldig_search *ldigraph_ofs(const ldigraph *g, int from) {
+  if (g == NULL || from < 0 || from >= g->n) {
+    return NULL;
+  }
+
+  ldig_search *s = ldig_search_create(g, from);
+  if (s != NULL) {
+    // start at from
+    s->color[from] = GRAY;
+    s->dist[from] = 0;
+    ldigraph_ofs_visit(g, s, from, comparator);
+  }
+  
+  return s;
+}
+
 #define ofsdbg
 void ldigraph_ofs_visit(const ldigraph* g, ldig_search *s, int from, int (*comparator)(const node*, const node*)) {
+  
+  #ifdef ofsdbg
+    printf("from: %d\n", from);
+  #endif
+  
   // get vertices we can reach in one edge from from
   const int *neighbors = g->adj[from];
   
-  // create an array of nodes from lowest to highest degree
+  // create an empty array for nodes from lowest to highest degree
   node * nodes = malloc(sizeof(node) * g->list_size[from]);
   assert(nodes);
   
@@ -289,23 +296,42 @@ void ldigraph_ofs_visit(const ldigraph* g, ldig_search *s, int from, int (*compa
   }
   
   #ifdef ofsdbg
+  printf("unsorted: \n");
   for(int i = 0; i < g->list_size[from]; i++) {
     printf("index: %d; outdegree: %d\n", nodes[i].index, nodes[i].outdegree);
   }
+    printf("\n");
   #endif
   
   // the array is unsorted; use qsort
   qsort( nodes, g->list_size[from], sizeof(node), (int(*) (const void*, const void*)) comparator );
   
   #ifdef ofsdbg
+  printf("sorted: \n");
   for(int i = 0; i < g->list_size[from]; i++) {
     printf("index: %d; outdegree: %d\n", nodes[i].index, nodes[i].outdegree);
   }
+  
+  printf("colors before for loop: \n");
+  for(int i = 0; i < g->n; i++) {
+    printf("index: %d; color: %d\n",i, s->color[i]);
+  }
+  
+  printf("pred before for loop: \n");
+  for(int i = 0; i < g->n; i++) {
+    printf("index: %d; pred: %d\n",i, s->pred[i]);
+  }
+
   #endif
   
   // iterate over outgoing edges
   for (int i = 0; i < g->list_size[from]; i++) {
     int to = nodes[i].index;
+    
+    #ifdef ofsdbg
+    printf("next index: %d\n", to);
+    #endif
+    
     if (s->color[to] == WHITE) {
 	  // found an edge to a new vertex -- explore it
   	  s->color[to] = GRAY;
@@ -313,12 +339,24 @@ void ldigraph_ofs_visit(const ldigraph* g, ldig_search *s, int from, int (*compa
   	  s->pred[to] = from;
   	  
   	  // do this in the order of highest to lowest degree
-  	  ldigraph_dfs_visit(g, s, to);
+  	  ldigraph_ofs_visit(g, s, to, comparator);
 	  }
   }
   
   // mark current vertex finished
   s->color[from] = BLACK;
+  
+  #ifdef ofsdbg
+  printf("colors after for loop: \n");
+  for(int i = 0; i < g->n; i++) {
+    printf("index: %d; color: %d\n",i, s->color[i]);
+  }
+  
+  printf("pred after for loop: \n");
+  for(int i = 0; i < g->n; i++) {
+    printf("index: %d; pred: %d\n",i, s->pred[i]);
+  }
+  #endif
   
   free(nodes);
 }
@@ -385,10 +423,20 @@ ldig_search *ldig_search_create(const ldigraph *g, int from) {
   }
 }
 
+#define spdbg
 int * ldig_search_path(const ldig_search *s, int to, int *len) {
   // a path array to store the path
   // why can we set the size to be of size n? because a tree has n-1 edges.
+  
   int n = s->g->n;
+  
+  #ifdef spdbg
+  printf("final pred: \n");
+  for(int i = 0; i < n; i ++) {
+      printf("%d\n", s->pred[i]);
+  }
+  #endif
+  
   int * path = malloc(sizeof(int) * n);
   // initialize all the values
   for(int i = 0; i < n; i++) {

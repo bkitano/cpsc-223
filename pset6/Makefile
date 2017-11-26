@@ -3,7 +3,7 @@ CFLAGS = -std=c99 -pedantic -Wall -g3
 
 ptest:
 	make Paths
-	valgrind --leak-check=yes --tool=memcheck -q ./Paths t2.in
+	valgrind --leak-check=yes --tool=memcheck -q ./Paths t1.in -degree 0 3
 	
 Paths: paths.o ldigraph.o
 	${CC} ${CFLAGS} -o $@ $^
