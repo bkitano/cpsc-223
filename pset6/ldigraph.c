@@ -60,6 +60,23 @@ void ldigraph_dfs_visit(const ldigraph* g, ldig_search *s, int from);
  */
 ldig_search *ldig_search_create(const ldigraph *g, int from);
 
+/**
+ * Visits the given vertex in the given search of the given graph, 
+ * but sorts according to the spec before iterating.
+ * 
+ * @param g a pointer to a directed graph
+ * @param s the search result
+ * @param from the start
+ * @param comparator the compare function for qsort
+ */ 
+void ldigraph_ofs_visit(const ldigraph* g, ldig_search *s, int from, int (*comparator)(const node*, const node*));
+
+/**
+ * Does the comparison specified by the spec.
+ */
+int comparator(const node * a, const node * b);
+
+
 ldigraph *ldigraph_create(int n) {
   if (n < 1) {
     return NULL;
@@ -220,7 +237,18 @@ ldig_search *ldigraph_dfs(const ldigraph *g, int from) {
 }
 
 ldig_search *ldigraph_ofs(const ldigraph *g, int from) {
-  return NULL;
+  if (g == NULL || from < 0 || from >= g->n) {
+    return NULL;
+  }
+
+  ldig_search *s = ldig_search_create(g, from);
+  if (s != NULL) {
+    // start at from
+    s->color[from] = GRAY;
+    s->dist[from] = 0;
+    ldigraph_ofs_visit(g, s, from, comparator);
+  }
+  return s;
 }
 
 void ldigraph_dfs_visit(const ldigraph* g, ldig_search *s, int from) {
@@ -245,6 +273,7 @@ void ldigraph_dfs_visit(const ldigraph* g, ldig_search *s, int from) {
   s->color[from] = BLACK;
 }
 
+#define ofsdbg
 void ldigraph_ofs_visit(const ldigraph* g, ldig_search *s, int from, int (*comparator)(const node*, const node*)) {
   // get vertices we can reach in one edge from from
   const int *neighbors = g->adj[from];
@@ -259,12 +288,24 @@ void ldigraph_ofs_visit(const ldigraph* g, ldig_search *s, int from, int (*compa
     nodes[i].outdegree = g->list_size[neighbors[i]];
   }
   
+  #ifdef ofsdbg
+  for(int i = 0; i < g->list_size[from]; i++) {
+    printf("index: %d; outdegree: %d\n", nodes[i].index, nodes[i].outdegree);
+  }
+  #endif
+  
   // the array is unsorted; use qsort
   qsort( nodes, g->list_size[from], sizeof(node), (int(*) (const void*, const void*)) comparator );
   
+  #ifdef ofsdbg
+  for(int i = 0; i < g->list_size[from]; i++) {
+    printf("index: %d; outdegree: %d\n", nodes[i].index, nodes[i].outdegree);
+  }
+  #endif
+  
   // iterate over outgoing edges
   for (int i = 0; i < g->list_size[from]; i++) {
-    int to = neighbors[i];
+    int to = nodes[i].index;
     if (s->color[to] == WHITE) {
 	  // found an edge to a new vertex -- explore it
   	  s->color[to] = GRAY;
@@ -292,9 +333,9 @@ int comparator(const node * a, const node * b) {
   int a_out = a->outdegree;
   int b_out = b->outdegree;
   if( a_out == b_out ) {
-    return a->index - b->index;
+    return (a->index - b->index);
   } else {
-    return a_out - b_out;
+    return -(a_out - b_out);
   }
 }
 
@@ -392,7 +433,7 @@ void ldig_search_destroy(ldig_search *s) {
   }
 }
 
-#define MAIN
+// #define MAIN
 #ifdef MAIN
 int main(int argc, char **argv) {
   

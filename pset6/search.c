@@ -5,25 +5,25 @@
 
 void search(const ldigraph *g, ldig_search *(method)(const ldigraph *, int), int from, int to);
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
   ldigraph *g = ldigraph_create(4);
 
-  if (g != NULL)
-    {
-      ldigraph_add_edge(g, 0, 1);
-      ldigraph_add_edge(g, 0, 3);
-      ldigraph_add_edge(g, 1, 3);
-      ldigraph_add_edge(g, 1, 2);
-      ldigraph_add_edge(g, 2, 0);
-      ldigraph_add_edge(g, 2, 3);
+  if (g != NULL) {
+    ldigraph_add_edge(g, 0, 1);
+    ldigraph_add_edge(g, 0, 3);
+    ldigraph_add_edge(g, 1, 3);
+    ldigraph_add_edge(g, 1, 2);
+    ldigraph_add_edge(g, 2, 0);
+    ldigraph_add_edge(g, 2, 3);
 
-      search(g, ldigraph_bfs, 0, 3);
-      search(g, ldigraph_dfs, 0, 3);
-      search(g, ldigraph_ofs, 0, 3);
-      
-      ldigraph_destroy(g);
-    }
+    search(g, ldigraph_bfs, 0, 3);
+    search(g, ldigraph_dfs, 0, 3);
+    search(g, ldigraph_ofs, 0, 3);
+    
+    ldigraph_destroy(g);
+  }
+  
+  return 1;
 }
 
 void search(const ldigraph *g, ldig_search *(method)(const ldigraph *, int), int from, int to) {

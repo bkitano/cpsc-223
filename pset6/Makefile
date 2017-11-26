@@ -1,6 +1,16 @@
 CC = gcc
 CFLAGS = -std=c99 -pedantic -Wall -g3
 
+ptest:
+	make Paths
+	valgrind --leak-check=yes --tool=memcheck -q ./Paths t1.in
+	
+Paths: paths.o ldigraph.o
+	${CC} ${CFLAGS} -o $@ $^
+	
+paths.o: paths.c
+	${CC} ${CFLAGS} -c $^
+
 stest:
 	make search
 	valgrind --leak-check=yes --tool=memcheck -q ./search
