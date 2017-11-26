@@ -275,7 +275,7 @@ ldig_search *ldigraph_ofs(const ldigraph *g, int from) {
   return s;
 }
 
-#define ofsdbg
+// #define ofsdbg
 void ldigraph_ofs_visit(const ldigraph* g, ldig_search *s, int from, int (*comparator)(const node*, const node*)) {
   
   #ifdef ofsdbg
@@ -300,7 +300,6 @@ void ldigraph_ofs_visit(const ldigraph* g, ldig_search *s, int from, int (*compa
   for(int i = 0; i < g->list_size[from]; i++) {
     printf("index: %d; outdegree: %d\n", nodes[i].index, nodes[i].outdegree);
   }
-    printf("\n");
   #endif
   
   // the array is unsorted; use qsort
@@ -311,6 +310,7 @@ void ldigraph_ofs_visit(const ldigraph* g, ldig_search *s, int from, int (*compa
   for(int i = 0; i < g->list_size[from]; i++) {
     printf("index: %d; outdegree: %d\n", nodes[i].index, nodes[i].outdegree);
   }
+  printf("\n");
   
   printf("colors before for loop: \n");
   for(int i = 0; i < g->n; i++) {
@@ -321,7 +321,7 @@ void ldigraph_ofs_visit(const ldigraph* g, ldig_search *s, int from, int (*compa
   for(int i = 0; i < g->n; i++) {
     printf("index: %d; pred: %d\n",i, s->pred[i]);
   }
-
+  printf("\n");
   #endif
   
   // iterate over outgoing edges
@@ -423,7 +423,7 @@ ldig_search *ldig_search_create(const ldigraph *g, int from) {
   }
 }
 
-#define spdbg
+// #define spdbg
 int * ldig_search_path(const ldig_search *s, int to, int *len) {
   // a path array to store the path
   // why can we set the size to be of size n? because a tree has n-1 edges.
@@ -460,13 +460,18 @@ int * ldig_search_path(const ldig_search *s, int to, int *len) {
   } else {
   
     *len = step;
+    #ifdef spdbg
+    printf("step: %d\n", step);
+    #endif
     
+    /*
     // since the algorithm places things in from back to front, this will flip.
-    for(int i = 0; i < step; i++) {
-      int temp = path[step - i];
-      path[step - i] = path[i];
-      path[i] = temp;
+    for(int i = 0; i < (step-1) / 2; i++) {
+      int temp = path[i];
+      path[i] = path[step-i];
+      path[step-i] = temp;
     }
+    */
     
     return path;
   }
