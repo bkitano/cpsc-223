@@ -2,11 +2,13 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "ldigraph.h"
 
 void read_points(FILE *stream, ldigraph * g);
 void search(const ldigraph *g, ldig_search *(method)(const ldigraph *, int), int from, int to);
+bool isNumber(char * arg);
 
 int main(int argc, char **argv) {
     
@@ -30,15 +32,34 @@ int main(int argc, char **argv) {
     read_points(fptr, g);
     
     for(int i = 2; i < argc; i++) {
-    
+        
         if(strcmp(argv[i], "-breadth") == 0) {
-            search(g, ldigraph_bfs, atoi(argv[i+1]), atoi(argv[i+2]));
+            int from = atoi(argv[i+1]);
+            int k = i+2;
+            while(k < argc && isNumber(argv[k])) {
+                int to = atoi(argv[k]);
+                search(g, ldigraph_bfs, from, to);
+                k++;
+            }
         } 
         else if(strcmp(argv[i], "-depth") == 0) {
-            search(g, ldigraph_dfs, atoi(argv[i+1]), atoi(argv[i+2]));
+            int from = atoi(argv[i+1]);
+            int k = i+2;
+            while(k < argc && isNumber(argv[k])) {
+                int to = atoi(argv[k]);
+                search(g, ldigraph_dfs, from, to);
+                k++;
+            }        
         } 
         else if(strcmp(argv[i], "-degree") == 0) {
-            search(g, ldigraph_ofs, atoi(argv[i+1]), atoi(argv[i+2]));
+            int from = atoi(argv[i+1]);
+            int k = i+2;
+            
+            while(k < argc && isNumber(argv[k])) {
+                int to = atoi(argv[k]);
+                search(g, ldigraph_dfs, from, to);
+                k++;
+            }   
         } 
     
     }
@@ -105,3 +126,13 @@ void search(const ldigraph *g, ldig_search *(method)(const ldigraph *, int), int
   }
 }
 
+bool isNumber(char * arg) {
+    int i = 0;
+    while (arg[i] != '\0') {
+        if(isalpha(arg[i])) {
+            return false;
+        }
+        i++;
+    }
+    return true;
+}
