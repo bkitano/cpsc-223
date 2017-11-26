@@ -7,7 +7,6 @@
 
 #include "ldigraph.h"
 
-// #define MAIN
 
 struct ldigraph {
   int n;          // the number of vertices
@@ -15,6 +14,11 @@ struct ldigraph {
   int *list_cap;  // the capacity of each adjacency list
   int **adj;      // the adjacency lists
 };
+
+typedef struct node {
+  int index;
+  int outdegree;
+} node;
 
 struct ldig_search {
   const ldigraph *g;
@@ -241,12 +245,22 @@ void ldigraph_dfs_visit(const ldigraph* g, ldig_search *s, int from) {
   s->color[from] = BLACK;
 }
 
-void ldigraph_ofs_visit(const ldigraph* g, ldig_search *s, int from) {
+void ldigraph_ofs_visit(const ldigraph* g, ldig_search *s, int from, int (*comparator)(const node*, const node*)) {
   // get vertices we can reach in one edge from from
   const int *neighbors = g->adj[from];
   
-  // create an array of neighbors from lowest to highest degree
-  int * deg_nebs = malloc(sizeof(int) * g->list_size[from]);
+  // create an array of nodes from lowest to highest degree
+  node * nodes = malloc(sizeof(node) * g->list_size[from]);
+  assert(nodes);
+  
+  // fill the array
+  for(int i = 0; i < g->list_size[from]; i++) {
+    nodes[i].index = neighbors[i];
+    nodes[i].outdegree = g->list_size[neighbors[i]];
+  }
+  
+  // the array is unsorted; use qsort
+  qsort( nodes, g->list_size[from], sizeof(node), (int(*) (const void*, const void*)) comparator );
   
   // iterate over outgoing edges
   for (int i = 0; i < g->list_size[from]; i++) {
@@ -265,7 +279,23 @@ void ldigraph_ofs_visit(const ldigraph* g, ldig_search *s, int from) {
   // mark current vertex finished
   s->color[from] = BLACK;
   
-  free(deg_nebs);
+  free(nodes);
+}
+
+/**
+ * Returns the larger outdegree; or, if the outdegree is
+ * equal, the larger index.
+ */
+int comparator(const node * a, const node * b) {
+  
+  // get the values we need at those indices
+  int a_out = a->outdegree;
+  int b_out = b->outdegree;
+  if( a_out == b_out ) {
+    return a->index - b->index;
+  } else {
+    return a_out - b_out;
+  }
 }
 
 void ldigraph_destroy(ldigraph *g) {
@@ -362,12 +392,70 @@ void ldig_search_destroy(ldig_search *s) {
   }
 }
 
+#define MAIN
 #ifdef MAIN
 int main(int argc, char **argv) {
-  printf("asdf\n");
   
-  ldigraph * t = ldigraph_create(5);
+  ldigraph *g = ldigraph_create(7);
+  assert(g);
   
+    ldigraph_add_edge(g, 0, 1);
+    ldigraph_add_edge(g, 0, 3);
+    ldigraph_add_edge(g, 1, 3);
+    ldigraph_add_edge(g, 1, 2);
+    ldigraph_add_edge(g, 2, 0);
+    ldigraph_add_edge(g, 2, 3);
+    ldigraph_add_edge(g, 3, 1);
+    ldigraph_add_edge(g, 3, 4);
+    ldigraph_add_edge(g, 3, 5);
+    ldigraph_add_edge(g, 3, 6);
+    ldigraph_add_edge(g, 3, 2);
+    ldigraph_add_edge(g, 4, 1);
+    ldigraph_add_edge(g, 4, 0);
+    ldigraph_add_edge(g, 4, 5);
+    ldigraph_add_edge(g, 4, 6);
+    ldigraph_add_edge(g, 4, 2);
+    ldigraph_add_edge(g, 4, 3);
+    ldigraph_add_edge(g, 5, 0);
+    ldigraph_add_edge(g, 5, 4);
+    ldigraph_add_edge(g, 5, 3);
+    ldigraph_add_edge(g, 5, 2);
+    ldigraph_add_edge(g, 5, 1);
+    ldigraph_add_edge(g, 6, 6);
+    ldigraph_add_edge(g, 6, 1);
+    ldigraph_add_edge(g, 6, 4);
+    ldigraph_add_edge(g, 6, 3);
+    ldigraph_add_edge(g, 6, 2);
+    ldigraph_add_edge(g, 6, 0);
+    ldigraph_add_edge(g, 6, 5);
+  
+  int from = 5;
+
+  // create an array of nodes from lowest to highest degree
+  node * nodes = malloc(sizeof(node) * g->list_size[from]);
+  assert(nodes);
+  
+  int * neighbors = g->adj[from];
+  
+  // fill the array
+  for(int i = 0; i < g->list_size[from]; i++) {
+    nodes[i].index = neighbors[i];
+    nodes[i].outdegree = g->list_size[neighbors[i]];
+  }
+  
+  for(int i = 0; i < g->list_size[from]; i++) {
+      printf("index: %d; outdegree: %d\n", nodes[i].index, nodes[i].outdegree);
+  }
+  
+  // the array is unsorted; use qsort
+  qsort( nodes, g->list_size[from], sizeof(node), (int(*) (const void*, const void*)) comparator );
+  printf("\n");
+  for(int i = 0; i < g->list_size[from]; i++) {
+      printf("index: %d; outdegree: %d\n", nodes[i].index, nodes[i].outdegree);
+  }
+  
+  ldigraph_destroy(g);
+  free(nodes);
   
   return 1;
 }
