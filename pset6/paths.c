@@ -109,15 +109,19 @@ void search(const ldigraph *g, ldig_search *(method)(const ldigraph *, int), int
     
     if (path != NULL) {
       printf("%d->%d: [", from, to);
-      for (int i = len; i >= 0; i--) {
-        if (i < len) {
-          printf(", ");
-        }
-        printf("%d", path[i]);
+      if(len == 0) {
+          printf("%d]\n", from);
+      } else {
+          for (int i = len; i >= 0; i--) {
+            if (i < len) {
+              printf(", ");
+            }
+            printf("%d", path[i]);
+          }
+          
+          printf("]\n");
+          free(path);
       }
-      
-      printf("]\n");
-      free(path);
     } else {
       printf("%d->%d: no path\n", from, to);
     }
