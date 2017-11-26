@@ -241,6 +241,33 @@ void ldigraph_dfs_visit(const ldigraph* g, ldig_search *s, int from) {
   s->color[from] = BLACK;
 }
 
+void ldigraph_ofs_visit(const ldigraph* g, ldig_search *s, int from) {
+  // get vertices we can reach in one edge from from
+  const int *neighbors = g->adj[from];
+  
+  // create an array of neighbors from lowest to highest degree
+  int * deg_nebs = malloc(sizeof(int) * g->list_size[from]);
+  
+  // iterate over outgoing edges
+  for (int i = 0; i < g->list_size[from]; i++) {
+    int to = neighbors[i];
+    if (s->color[to] == WHITE) {
+	  // found an edge to a new vertex -- explore it
+  	  s->color[to] = GRAY;
+  	  s->dist[to] = s->dist[from] + 1;
+  	  s->pred[to] = from;
+  	  
+  	  // do this in the order of highest to lowest degree
+  	  ldigraph_dfs_visit(g, s, to);
+	  }
+  }
+  
+  // mark current vertex finished
+  s->color[from] = BLACK;
+  
+  free(deg_nebs);
+}
+
 void ldigraph_destroy(ldigraph *g) {
   if (g != NULL) {
     for (int i = 0; i < g->n; i++) {
