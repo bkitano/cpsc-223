@@ -407,6 +407,7 @@ ldig_search *ldig_search_create(const ldigraph *g, int from) {
           s->dist[i] = -1;
           s->pred[i] = -1;
         }
+        s->pred[from] = from;
       }
       else {
         free(s->pred);
@@ -423,7 +424,7 @@ ldig_search *ldig_search_create(const ldigraph *g, int from) {
   }
 }
 
-#define spdbg
+// #define spdbg
 int * ldig_search_path(const ldig_search *s, int to, int *len) {
   // a path array to store the path
   // why can we set the size to be of size n? because a tree has n-1 edges.
@@ -459,6 +460,7 @@ int * ldig_search_path(const ldig_search *s, int to, int *len) {
     curr = s->pred[curr];
     step++;
   }
+  path[step] = curr;
   
   // if the path doesn't exist
   if(curr != from) {

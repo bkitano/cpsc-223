@@ -18,7 +18,6 @@ int main(int argc, char **argv) {
     /*  open the file for reading */
     fptr = fopen(filename, "r");
     if (fptr == NULL) {
-        printf("Cannot open file \n");
         exit(0);
     }
     
@@ -34,6 +33,11 @@ int main(int argc, char **argv) {
     for(int i = 2; i < argc; i++) {
         
         if(strcmp(argv[i], "-breadth") == 0) {
+            if(argv[i+1] == NULL) {
+                exit(0);
+            } else if (!isNumber(argv[i+1])) {
+                exit(0);
+            }
             int from = atoi(argv[i+1]);
             int k = i+2;
             while(k < argc && isNumber(argv[k])) {
@@ -43,6 +47,11 @@ int main(int argc, char **argv) {
             }
         } 
         else if(strcmp(argv[i], "-depth") == 0) {
+            if(argv[i+1] == NULL) {
+                exit(0);
+            } else if (!isNumber(argv[i+1])) {
+                exit(0);
+            }
             int from = atoi(argv[i+1]);
             int k = i+2;
             while(k < argc && isNumber(argv[k])) {
@@ -52,12 +61,17 @@ int main(int argc, char **argv) {
             }        
         } 
         else if(strcmp(argv[i], "-degree") == 0) {
+            if(argv[i+1] == NULL) {
+                exit(0);
+            } else if (!isNumber(argv[i+1])) {
+                exit(0);
+            }
             int from = atoi(argv[i+1]);
             int k = i+2;
             
             while(k < argc && isNumber(argv[k])) {
                 int to = atoi(argv[k]);
-                search(g, ldigraph_dfs, from, to);
+                search(g, ldigraph_ofs, from, to);
                 k++;
             }   
         } 
@@ -66,7 +80,7 @@ int main(int argc, char **argv) {
     
     fclose(fptr);
     ldigraph_destroy(g);
-
+    
     return 0;
 }
 
