@@ -1,0 +1,57 @@
+ESTIMATE: 15 hours
+11/26
+passing all test cases, submitted
+24 mins
+
+fixed another bug
+0 secs
+
+added multiple search parsing
+0 secs
+
+finished implementation, time to try public test cases
+0 secs
+
+found the ofs problem, time to address it
+0 secs
+
+reads points
+0 secs
+
+ofs doesn't work, but the file reader does!
+30 mins
+
+ostensible ofs sorting
+9 mins
+
+11/25
+sketch out for ofs
+43 secs
+
+leak free bfs
+9 mins
+
+Merge pull request #2 from bkitano/t2…
+5 mins
+
+Merge pull request #1 from bkitano/t1…
+4 mins
+
+a leak free pathfinder
+3 mins
+
+added bfs 
+4 hrs 41 mins
+
+TOTAL: 6:10
+
+I worked with:
+David Schwartz
+
+Discussion:
+The hardest part was most certainly implementing the
+bfs and ofs without dumb errors from copy and pasting.
+One of the trickier parts was handling the sorting for
+ofs, but David suggested the elegant solution of using
+a struct and qsort, rather than having to implement
+qsort on my own.

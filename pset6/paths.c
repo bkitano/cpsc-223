@@ -33,6 +33,9 @@ int main(int argc, char **argv) {
     for(int i = 2; i < argc; i++) {
         
         if(strcmp(argv[i], "-breadth") == 0) {
+            
+            // if it doesn't have an argument or if it isn't a
+            // number
             if(argv[i+1] == NULL) {
                 exit(0);
             } else if (!isNumber(argv[i+1])) {
@@ -74,7 +77,7 @@ int main(int argc, char **argv) {
                 search(g, ldigraph_ofs, from, to);
                 k++;
             }   
-        } 
+        }
     
     }
     
@@ -144,6 +147,11 @@ void search(const ldigraph *g, ldig_search *(method)(const ldigraph *, int), int
   }
 }
 
+/**
+ * determines if the string is a number.
+ * @param arg the string in question
+ * @return true if they're all numbers, false otherwise.
+ */
 bool isNumber(char * arg) {
     int i = 0;
     while (arg[i] != '\0') {

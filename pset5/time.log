@@ -1,0 +1,28 @@
+ESTIMATE: 20 hours
+November 1: Wrote starter code
+Novmeber 11: getHeight working (3 hours)
+November 11: added a rotator (3 hours)
+November 13: draft of remove (5 hours)
+November 14: added delete node (3 hours)
+November 14: fixed deleteNode (2 hours)
+November 14: fixed invalid reads (1 hour)
+November 15: fixed rotations (3 hours)
+TOTAL: 20 hours
+
+I consulted:
+David Schwartz
+Noah Ritz
+Kanniel Yao
+Gigi Stark
+
+Problems:
+1. Rotating - I think rotating was difficult for me to implement because I didn't 
+realize the complexity of the actual algorithm until it was very late in the deadline.
+I know understand the importance of starting early, and thank God for late days. Aspnes
+implements it in the notes using double pointers, and that held me up for a long time,
+so I ended up having to get help to implement it with single pointers.
+
+2. Merging - Merging had a lot of special cases, and I was not privy to the insight
+required to see that. I am grateful to the people who helped me work the cases out.
+
+3. Pointers - double pointers are hard.

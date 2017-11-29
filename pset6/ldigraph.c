@@ -15,6 +15,7 @@ struct ldigraph {
   int **adj;      // the adjacency lists
 };
 
+// links the node with its outdegree for ofs
 typedef struct node {
   int index;
   int outdegree;
@@ -73,6 +74,8 @@ void ldigraph_ofs_visit(const ldigraph* g, ldig_search *s, int from, int (*compa
 
 /**
  * Does the comparison specified by the spec.
+ * @param a a node
+ * @param b a node
  */
 int comparator(const node * a, const node * b);
 
