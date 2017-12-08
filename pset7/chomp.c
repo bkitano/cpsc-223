@@ -4,6 +4,7 @@
 #include <stdio.h>
 
 #include "chomp.h"
+#include "smap.h"
 
 char **chomp_states(int rows, int cols, int *n)
 {
@@ -146,8 +147,8 @@ char **chomp_successors(const char *s, int *n) {
 						for(int i = 0; i < col; i++) {
 							state[i] = s[i];
 						}
-						
-						for(int tower = col; tower < ncols; tower++) {
+						state[col] = h + '0';
+						for(int tower = col + 1; tower < ncols; tower++) {
 							
 							#ifdef CSDBG
 							printf("tower: %d\n", tower);
@@ -199,8 +200,6 @@ int main(int argc, char **argv) {
 	}
 	free(states);
 	
-	smap_destroy(state_to_pos);
-
 	return 0;
 }
 #endif

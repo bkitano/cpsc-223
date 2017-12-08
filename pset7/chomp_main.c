@@ -124,13 +124,20 @@ int main(int argc, char **argv) {
     int * temp = smap_get(state_to_pos, succ[t]);
     
     // keep iterating until we find a win
-    while(t >= 0 && temp != NULL && *temp != WIN) {
+    while(t >= 0 && temp != NULL) {
+      
+      if(*temp != WIN) {
+        printf("WIN: %s\n", next);
+        string_array_free(succ, succs);
+        smap_destroy(state_to_pos);
+        string_array_free(states, apcount);
+        return 0;
+      }
+      
       t--;
       next = succ[t];
       temp = smap_get(state_to_pos, succ[t]);  
     }
-    
-    printf("WIN: %s\n", next);
     
     string_array_free(succ, succs);
   }
