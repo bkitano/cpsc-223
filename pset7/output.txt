@@ -1,0 +1,165 @@
+make t1
+make[1]: Entering directory `/home/ubuntu/workspace/pset7'
+gcc -std=c99 -Wall -g3 -pedantic -c chomp.c chomp.h
+gcc -std=c99 -Wall -g3 -pedantic -o t1 chomp.o
+make[1]: Leaving directory `/home/ubuntu/workspace/pset7'
+valgrind --tool=memcheck --leak-check=yes -q ./t1
+nstates: 14
+column in question: 0
+height of column in question: 5
+h: 0
+tower: 0
+tower height: 5
+tower: 1
+tower height: 4
+tower: 2
+tower height: 3
+tower: 3
+tower height: 1
+tower: 4
+tower height: 1
+state: 00000
+h: 1
+tower: 0
+tower height: 5
+tower: 1
+tower height: 4
+tower: 2
+tower height: 3
+tower: 3
+tower height: 1
+tower: 4
+tower height: 1
+state: 11111
+h: 2
+tower: 0
+tower height: 5
+tower: 1
+tower height: 4
+tower: 2
+tower height: 3
+tower: 3
+tower height: 1
+tower: 4
+tower height: 1
+state: 22211
+h: 3
+tower: 0
+tower height: 5
+tower: 1
+tower height: 4
+tower: 2
+tower height: 3
+tower: 3
+tower height: 1
+tower: 4
+tower height: 1
+state: 33311
+h: 4
+tower: 0
+tower height: 5
+tower: 1
+tower height: 4
+tower: 2
+tower height: 3
+tower: 3
+tower height: 1
+tower: 4
+tower height: 1
+state: 44311
+column in question: 1
+height of column in question: 4
+h: 0
+tower: 1
+tower height: 4
+tower: 2
+tower height: 3
+tower: 3
+tower height: 1
+tower: 4
+tower height: 1
+state: 50000
+h: 1
+tower: 1
+tower height: 4
+tower: 2
+tower height: 3
+tower: 3
+tower height: 1
+tower: 4
+tower height: 1
+state: 51111
+h: 2
+tower: 1
+tower height: 4
+tower: 2
+tower height: 3
+tower: 3
+tower height: 1
+tower: 4
+tower height: 1
+state: 52211
+h: 3
+tower: 1
+tower height: 4
+tower: 2
+tower height: 3
+tower: 3
+tower height: 1
+tower: 4
+tower height: 1
+state: 53311
+column in question: 2
+height of column in question: 3
+h: 0
+tower: 2
+tower height: 3
+tower: 3
+tower height: 1
+tower: 4
+tower height: 1
+state: 54000
+h: 1
+tower: 2
+tower height: 3
+tower: 3
+tower height: 1
+tower: 4
+tower height: 1
+state: 54111
+h: 2
+tower: 2
+tower height: 3
+tower: 3
+tower height: 1
+tower: 4
+tower height: 1
+state: 54211
+column in question: 3
+height of column in question: 1
+h: 0
+tower: 3
+tower height: 1
+tower: 4
+tower height: 1
+state: 54300
+column in question: 4
+height of column in question: 1
+h: 0
+tower: 4
+tower height: 1
+state: 54310
+possible: 00000
+possible: 11111
+possible: 22211
+possible: 33311
+possible: 44311
+possible: 50000
+possible: 51111
+possible: 52211
+possible: 53311
+possible: 54000
+possible: 54111
+possible: 54211
+possible: 54300
+possible: 54310
