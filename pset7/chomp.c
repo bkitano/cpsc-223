@@ -184,7 +184,7 @@ char **chomp_successors(const char *s, int *n) {
 	}
 }
 
-#define MAIN
+// #define MAIN
 #ifdef MAIN
 int main(int argc, char **argv) {
 
@@ -198,6 +198,8 @@ int main(int argc, char **argv) {
 		free(states[i]);
 	}
 	free(states);
+	
+	smap_destroy(state_to_pos);
 
 	return 0;
 }

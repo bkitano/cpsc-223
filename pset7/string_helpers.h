@@ -1,5 +1,6 @@
 #ifndef __STRING_HELPERS_H__
 #define __STRING_HELPERS_H__
+#include <stdio.h>
 
 /**
  * Frees all the strings in the given array.

@@ -9,7 +9,13 @@
 
 enum {CURRENT, OTHER};
 
+// #define dbg
 int main(int argc, char **argv) {
+  
+  int WIN = 1;
+  int LOSS = 0;
+  
+  // error checking on input
   if (argc < 2 || strlen(argv[1]) == 0 || argv[1][0] == '0') {
     fprintf(stderr, "USAGE: %s state\n", argv[0]);
     return 1;
@@ -31,34 +37,107 @@ int main(int argc, char **argv) {
   	}
   }
 
-  int count;
-  char **states = chomp_states(rows, cols, &count);
+  // gets all possible states for the board
+  int apcount;
+  char **states = chomp_states(rows, cols, &apcount); // free'd at 136
   if (states == NULL) {
     fprintf(stderr, "%s: error allocating memory\n", argv[0]);
     return 1;
   }
-
+  
   // create a map from states (strings) to position values
-
+  smap * state_to_pos = smap_create(string_hash_java); // free'd at 
+  
   // set final state to win for current player
-
+  
+  // create final state
+  char final_state[cols + 1];
+  for(int i = 0; i < cols; i++) {
+    final_state[i] = '0';
+  }
+  final_state[cols] = '\0';
+  
+  // works
+  smap_put(state_to_pos, final_state, &WIN);
+  
   // for each other state
-  for (int i = 1; i < count; i++) {
+  for (int i = 1; i < apcount; i++) {
+    
     // get successor states
     int succ_count;
     char **succ = chomp_successors(states[i], &succ_count);
+    
     if (succ != NULL) {
+      
 	  // if all successor states are wins then set states[i] to loss
 	  // else set states[i] to win
-	  }
+	  
+  	  int j = 0;
+  	  int * outcome = smap_get(state_to_pos, succ[0]);
+  	  
+  	  // while the outcomes are all wins
+  	  while (j < succ_count && outcome != NULL && *outcome != LOSS) {
+  	    outcome = smap_get(state_to_pos, succ[j]); // will return null if it's not there
+  	    j++;
+  	  }
+      
+      #ifdef dbg
+  	  if (j < succ_count) {
+  	    printf("j: %d, succ[j]: %s \n", j, succ[j] );
+  	  }
+  	  #endif
+  	  
+  	  // if we've hit a loss, then we insert it as a win
+  	  if(j < succ_count) {
+  	    smap_put(state_to_pos, states[i], &WIN);
+  	  } 
+  	  // else outcome is a WIN, so it iterated through everything.
+  	  else {
+  	    smap_put(state_to_pos, states[i], &LOSS);
+  	  }
 
+	  } // end of if checking succ != NULL
+	  
     string_array_free(succ, succ_count);
-  }
+  } // end of for iterating through all possible trays
+
 
   // look up result for argv[1]
-
+  int * result = smap_get(state_to_pos, argv[1]);
+  
   // if a loss then print LOSS
+  if(*result == LOSS) {
+    printf("LOSS\n");
+  } 
+  
+  else {
+    
+    // get the successors
+    int succs;
+    char ** succ = chomp_successors(argv[1], &succs);
+    if(succ == NULL) {
+      return 1;
+    }
+    
+    int t = succs-1;
+    char * next = succ[t];
+    int * temp = smap_get(state_to_pos, succ[t]);
+    
+    // keep iterating until we find a win
+    while(t >= 0 && temp != NULL && *temp != WIN) {
+      t--;
+      next = succ[t];
+      temp = smap_get(state_to_pos, succ[t]);  
+    }
+    
+    printf("WIN: %s\n", next);
+    
+    string_array_free(succ, succs);
+  }
+  
+  
   // else find first successor that is a win and output WIN: that successor
   
-  string_array_free(states, count);
+  smap_destroy(state_to_pos);
+  string_array_free(states, apcount);
 }
