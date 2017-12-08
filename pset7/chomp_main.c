@@ -77,15 +77,14 @@ int main(int argc, char **argv) {
   	  
   	  // while the outcomes are all wins
   	  while (j < succ_count && outcome != NULL && *outcome != LOSS) {
-  	    outcome = smap_get(state_to_pos, succ[j]); // will return null if it's not there
+  	   // printf("succ[%d]: %s | outcome: %d\n", j, succ[j], *outcome );
+  	    
   	    j++;
+  	    if(j < succ_count) {
+  	      outcome = smap_get(state_to_pos, succ[j]); // will return null if it's not there
+  	    }
+  	    
   	  }
-      
-      #ifdef dbg
-  	  if (j < succ_count) {
-  	    printf("j: %d, succ[j]: %s \n", j, succ[j] );
-  	  }
-  	  #endif
   	  
   	  // if we've hit a loss, then we insert it as a win
   	  if(j < succ_count) {
@@ -101,16 +100,20 @@ int main(int argc, char **argv) {
     string_array_free(succ, succ_count);
   } // end of for iterating through all possible trays
 
-
   // look up result for argv[1]
   int * result = smap_get(state_to_pos, argv[1]);
   
-  // if a loss then print LOSS
-  if(*result == LOSS) {
-    printf("LOSS\n");
-  } 
+  int succs;
+  char ** succ = chomp_successors(argv[1], &succs);
   
-  else {
+  // string_array_fprintf(stdout, succ, succs);
+  string_array_free(succ, succs);
+
+  
+  // if a loss then print LOSS
+  if (*result == LOSS) {
+    printf("LOSS\n");
+  } else {
     
     // get the successors
     int succs;

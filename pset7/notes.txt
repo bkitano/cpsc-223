@@ -37,3 +37,10 @@ int    | 4
 double | 8
 char * | 8
 int *  | 8
+
+failing: 4321000 --> WIN 2221000 (4300000)
+failing: 99986 --> WIN 88886 (99984)
+failing: 87765 --> WIN 86665 (87000)
+failing: 8888888888 --> WIN 8888844444 (8888888833)
+
+Need to keep recursing down once you've gone all the way left

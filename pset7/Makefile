@@ -3,7 +3,7 @@ CC = gcc
 
 test2: 
 	make Chomp
-	valgrind --leak-check=yes --tool=memcheck -q ./Chomp 33333
+	valgrind --leak-check=yes --tool=memcheck -q ./Chomp 33322
 
 Chomp: chomp_main.o chomp.o smap.o string_helpers.o
 	${CC} ${CFLAGS} -o $@ $^ 
