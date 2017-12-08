@@ -73,18 +73,18 @@ int main(int argc, char **argv) {
 	  // else set states[i] to win
 	  
   	  int j = 0;
-  	  int * outcome = smap_get(state_to_pos, succ[0]);
+  	 // int * outcome = smap_get(state_to_pos, succ[0]);
   	  
   	  // while the outcomes are all wins
-  	  while (j < succ_count && outcome != NULL && *outcome != LOSS) {
+  	  while (j < succ_count && smap_get(state_to_pos, succ[j]) != NULL && *(smap_get(state_to_pos, succ[j])) != LOSS) {
   	   // printf("succ[%d]: %s | outcome: %d\n", j, succ[j], *outcome );
   	    
   	    j++;
-  	    if(j < succ_count) {
-  	      outcome = smap_get(state_to_pos, succ[j]); // will return null if it's not there
-  	    }
+  	   // if(j < succ_count) { // to prevent seg faults
+  	   //   outcome = smap_get(state_to_pos, succ[j]); // will return null if it's not there
+  	   // }
   	    
-  	  }
+  	  } // end of while 
   	  
   	  // if we've hit a loss, then we insert it as a win
   	  if(j < succ_count) {
@@ -103,46 +103,42 @@ int main(int argc, char **argv) {
   // look up result for argv[1]
   int * result = smap_get(state_to_pos, argv[1]);
   
-  int succs;
-  char ** succ = chomp_successors(argv[1], &succs);
-  
-  // string_array_fprintf(stdout, succ, succs);
-  string_array_free(succ, succs);
-
-  
   // if a loss then print LOSS
   if (*result == LOSS) {
     printf("LOSS\n");
   } else {
     
     // get the successors
-    int succs;
-    char ** succ = chomp_successors(argv[1], &succs);
-    if(succ == NULL) {
+    int nsuccs;
+    char ** nsucc = chomp_successors(argv[1], &nsuccs);
+    if(nsucc == NULL) {
       return 1;
     }
     
-    int t = succs-1;
-    char * next = succ[t];
-    int * temp = smap_get(state_to_pos, succ[t]);
+    // string_array_fprintf(stdout, nsucc, nsuccs);
+    
+    int t = 0;
+    char * next = nsucc[t];
+    
+    int * temp = smap_get(state_to_pos, nsucc[t]);
     
     // keep iterating until we find a win
-    while(t >= 0 && temp != NULL) {
+    while(t < nsuccs  && temp != NULL) {
       
-      if(*temp != WIN) {
+      if(*temp == LOSS) {
         printf("WIN: %s\n", next);
-        string_array_free(succ, succs);
+        string_array_free(nsucc, nsuccs);
         smap_destroy(state_to_pos);
         string_array_free(states, apcount);
         return 0;
       }
       
-      t--;
-      next = succ[t];
-      temp = smap_get(state_to_pos, succ[t]);  
+      t++;
+      next = nsucc[t];
+      temp = smap_get(state_to_pos, nsucc[t]);  
     }
     
-    string_array_free(succ, succs);
+    string_array_free(nsucc, nsuccs);
   }
   
   
